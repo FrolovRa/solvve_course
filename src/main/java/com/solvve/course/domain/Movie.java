@@ -1,5 +1,6 @@
 package com.solvve.course.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,12 +13,13 @@ public class Movie {
     @GeneratedValue
     private UUID id;
 
-    private float rating;
+    private double rating;
 
     private String name;
 
     private String genre;
 
+    @Column(name = "main_actor")
     private String mainActor;
 
     public UUID getId() {
@@ -28,11 +30,11 @@ public class Movie {
         this.id = id;
     }
 
-    public float getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
@@ -65,7 +67,7 @@ public class Movie {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Movie movie = (Movie) o;
-        return Float.compare(movie.rating, rating) == 0 &&
+        return Double.compare(movie.rating, rating) == 0 &&
                 id.equals(movie.id) &&
                 name.equals(movie.name) &&
                 genre.equals(movie.genre) &&

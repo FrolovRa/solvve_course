@@ -1,0 +1,19 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="frolov" id="create tables">
+        <createTable tableName="movie">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="rating" type="double"/>
+            <column name="name" type="varchar(50)"/>
+            <column name="genre" type="varchar(25)"/>
+            <column name="main_actor" type="varchar(25)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
