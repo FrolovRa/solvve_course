@@ -42,5 +42,4 @@ public class MovieService {
         dto.setMainActor(movie.getMainActor());
         return dto;
     }
-
 }

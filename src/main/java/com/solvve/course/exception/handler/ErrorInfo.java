@@ -7,7 +7,7 @@ public class ErrorInfo {
     private final Class exceptionClass;
     private final String message;
 
-    public ErrorInfo(HttpStatus status, Class exceptionClass, String message) {
+    ErrorInfo(HttpStatus status, Class exceptionClass, String message) {
         this.status = status;
         this.exceptionClass = exceptionClass;
         this.message = message;

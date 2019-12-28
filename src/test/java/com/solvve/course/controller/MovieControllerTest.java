@@ -20,7 +20,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,6 +68,13 @@ public class MovieControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         Assert.assertTrue(resultJson.contains(exception.getMessage()));
+    }
+
+    @Test
+    public void testGetMovieWithNotValidId() throws Exception {
+        mvc.perform(get("/api/v1/movies/{id}", 42)).andExpect(status().isBadRequest());
+
+        verifyNoInteractions(movieService);
     }
 
     @Test
