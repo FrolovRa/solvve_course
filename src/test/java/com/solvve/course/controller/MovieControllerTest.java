@@ -2,6 +2,7 @@ package com.solvve.course.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solvve.course.domain.Movie;
+import com.solvve.course.dto.MovieCreateDto;
 import com.solvve.course.dto.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.service.MovieService;
@@ -11,14 +12,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -64,6 +68,29 @@ public class MovieControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         Assert.assertTrue(resultJson.contains(exception.getMessage()));
+    }
 
+    @Test
+    public void testAddMovie() throws Exception {
+        MovieCreateDto movieCreateDto = new MovieCreateDto();
+        movieCreateDto.setName("Mr.Nobody");
+        movieCreateDto.setGenre("Drama");
+        movieCreateDto.setMainActor("Jared Leto");
+
+        MovieReadDto movieReadDto = new MovieReadDto();
+        movieReadDto.setId(UUID.randomUUID());
+        movieReadDto.setName("Mr.Nobody");
+        movieReadDto.setGenre("Drama");
+        movieReadDto.setMainActor("Jared Leto");
+
+        when(movieService.addMovie(movieCreateDto)).thenReturn(movieReadDto);
+
+        String resultJson = mvc.perform(post("/api/v1/movies")
+                .content(objectMapper.writeValueAsString(movieCreateDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        MovieReadDto actualMovieReadDto = objectMapper.readValue(resultJson, MovieReadDto.class);
+        assertThat(actualMovieReadDto).isEqualToComparingFieldByField(movieReadDto);
     }
 }
