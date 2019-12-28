@@ -2,6 +2,7 @@ package com.solvve.course.service;
 
 import com.solvve.course.domain.Movie;
 import com.solvve.course.dto.MovieReadDto;
+import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,9 @@ public class MovieService {
     MovieRepository movieRepository;
 
     public MovieReadDto getMovie(UUID id) {
-        Movie movieFromDb = movieRepository.findById(id).get();
+        Movie movieFromDb = movieRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Movie.class, id));
         return mapToReadDto(movieFromDb);
     }
 

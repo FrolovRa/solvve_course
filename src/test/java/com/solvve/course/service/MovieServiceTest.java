@@ -2,6 +2,7 @@ package com.solvve.course.service;
 
 import com.solvve.course.domain.Movie;
 import com.solvve.course.dto.MovieReadDto;
+import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.MovieRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,5 +41,10 @@ public class MovieServiceTest {
         MovieReadDto movieReadDto = movieService.getMovie(movie.getId());
 
         assertThat(movieReadDto).isEqualToComparingFieldByField(movie);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void testGetMovieByWrongId() {
+        movieService.getMovie(UUID.randomUUID());
     }
 }

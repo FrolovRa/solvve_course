@@ -1,8 +1,11 @@
 package com.solvve.course.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solvve.course.domain.Movie;
 import com.solvve.course.dto.MovieReadDto;
+import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.service.MovieService;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
+@WebMvcTest(controllers = MovieController.class)
 public class MovieControllerTest {
 
     @Autowired
@@ -47,5 +50,20 @@ public class MovieControllerTest {
         MovieReadDto actualMovie = objectMapper.readValue(resultJson, MovieReadDto.class);
 
         assertEquals(actualMovie, movieReadDto);
+    }
+
+    @Test
+    public void testGetMovieByWrongId() throws Exception {
+        UUID wrongId = UUID.randomUUID();
+
+        RuntimeException exception = new EntityNotFoundException(Movie.class, wrongId);
+        when(movieService.getMovie(wrongId)).thenThrow(exception);
+
+        String resultJson = mvc.perform(get("/api/v1/movies/{id}", wrongId))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getContentAsString();
+
+        Assert.assertTrue(resultJson.contains(exception.getMessage()));
+
     }
 }
