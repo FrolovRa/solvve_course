@@ -2,7 +2,6 @@ package com.solvve.course.dto;
 
 import com.solvve.course.domain.*;
 import com.solvve.course.domain.Character;
-import com.solvve.course.domain.constant.Genre;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -10,13 +9,13 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-public class MovieCreateDto {
+public class MoviePatchDto {
 
     private String name;
 
     private String description;
 
-    private Set<Genre> genres;
+    private Set genres;
 
     private List<Character> characters;
 
@@ -27,4 +26,6 @@ public class MovieCreateDto {
     private List<Director> directors;
 
     private List<Writer> writers;
+
+    private List<MovieReview> reviews;
 }

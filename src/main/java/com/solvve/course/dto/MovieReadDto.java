@@ -1,81 +1,34 @@
 package com.solvve.course.dto;
 
-import java.util.Objects;
+import com.solvve.course.domain.*;
+import com.solvve.course.domain.Character;
+import com.solvve.course.domain.constant.Genre;
+import lombok.Data;
+
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+@Data
 public class MovieReadDto {
 
     private UUID id;
-    private double rating;
+
     private String name;
-    private String genre;
-    private String mainActor;
 
-    public UUID getId() {
-        return id;
-    }
+    private String description;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    private Set<Genre> genres;
 
-    public double getRating() {
-        return rating;
-    }
+    private List<Character> characters;
 
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
+    private List<Actor> cast;
 
-    public String getName() {
-        return name;
-    }
+    private List<Actor> stars;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    private List<Director> directors;
 
-    public String getGenre() {
-        return genre;
-    }
+    private List<Writer> writers;
 
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public String getMainActor() {
-        return mainActor;
-    }
-
-    public void setMainActor(String mainActor) {
-        this.mainActor = mainActor;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MovieReadDto that = (MovieReadDto) o;
-        return Double.compare(that.rating, rating) == 0 &&
-                id.equals(that.id) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(genre, that.genre) &&
-                Objects.equals(mainActor, that.mainActor);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, rating, name, genre, mainActor);
-    }
-
-    @Override
-    public String toString() {
-        return "MovieReadDto{" +
-                "id=" + id +
-                ", rating=" + rating +
-                ", name='" + name + '\'' +
-                ", genre='" + genre + '\'' +
-                ", mainActor='" + mainActor + '\'' +
-                '}';
-    }
+    private List<MovieReview> reviews;
 }

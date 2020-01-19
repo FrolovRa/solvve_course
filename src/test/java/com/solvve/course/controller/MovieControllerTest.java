@@ -2,6 +2,7 @@ package com.solvve.course.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solvve.course.domain.Movie;
+import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.MovieCreateDto;
 import com.solvve.course.dto.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
@@ -16,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,10 +45,9 @@ public class MovieControllerTest {
     public void testGetMovie() throws Exception {
         MovieReadDto movieReadDto = new MovieReadDto();
         movieReadDto.setId(UUID.randomUUID());
-        movieReadDto.setRating(7.8d);
         movieReadDto.setName("Mr.Nobody");
-        movieReadDto.setGenre("Drama");
-        movieReadDto.setMainActor("Jared Leto");
+        movieReadDto.setDescription("cool film");
+        movieReadDto.setGenres(Collections.singleton(Genre.ACTION));
         when(movieService.getMovie(movieReadDto.getId())).thenReturn(movieReadDto);
 
         String resultJson = mvc.perform(get("/api/v1/movies/{id}", movieReadDto.getId()))
@@ -81,14 +83,14 @@ public class MovieControllerTest {
     public void testAddMovie() throws Exception {
         MovieCreateDto movieCreateDto = new MovieCreateDto();
         movieCreateDto.setName("Mr.Nobody");
-        movieCreateDto.setGenre("Drama");
-        movieCreateDto.setMainActor("Jared Leto");
+        movieCreateDto.setDescription("cool film");
+        movieCreateDto.setGenres(Collections.singleton(Genre.ACTION));
 
         MovieReadDto movieReadDto = new MovieReadDto();
         movieReadDto.setId(UUID.randomUUID());
         movieReadDto.setName("Mr.Nobody");
-        movieReadDto.setGenre("Drama");
-        movieReadDto.setMainActor("Jared Leto");
+        movieReadDto.setDescription("cool film");
+        movieReadDto.setGenres(Collections.singleton(Genre.ACTION));
 
         when(movieService.addMovie(movieCreateDto)).thenReturn(movieReadDto);
 

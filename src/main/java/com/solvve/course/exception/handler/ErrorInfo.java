@@ -1,8 +1,11 @@
 package com.solvve.course.exception.handler;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class ErrorInfo {
+
     private final HttpStatus status;
     private final Class exceptionClass;
     private final String message;
@@ -11,17 +14,5 @@ public class ErrorInfo {
         this.status = status;
         this.exceptionClass = exceptionClass;
         this.message = message;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    public Class getExceptionClass() {
-        return exceptionClass;
-    }
-
-    public String getMessage() {
-        return message;
     }
 }

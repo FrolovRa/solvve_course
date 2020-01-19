@@ -13,7 +13,7 @@ import java.util.UUID;
 public class MovieController {
 
     @Autowired
-    MovieService movieService;
+    private MovieService movieService;
 
     @GetMapping("/{id}")
     public MovieReadDto getMovie(@PathVariable UUID id) {

@@ -11,6 +11,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 @ControllerAdvice
 public class RestExceptionHandler {
+
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<Object> handleException(Exception ex) {
         if (ex instanceof MethodArgumentTypeMismatchException) {

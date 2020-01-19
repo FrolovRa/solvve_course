@@ -14,7 +14,7 @@ import java.util.UUID;
 public class MovieService {
 
     @Autowired
-    MovieRepository movieRepository;
+    private MovieRepository movieRepository;
 
     public MovieReadDto getMovie(UUID id) {
         Movie movieFromDb = movieRepository
@@ -26,8 +26,13 @@ public class MovieService {
     public MovieReadDto addMovie(MovieCreateDto movieCreateDto) {
         Movie movie = new Movie();
         movie.setName(movieCreateDto.getName());
-        movie.setGenre(movieCreateDto.getGenre());
-        movie.setMainActor(movieCreateDto.getMainActor());
+        movie.setDescription(movieCreateDto.getDescription());
+        movie.setGenres(movieCreateDto.getGenres());
+        movie.setCast(movieCreateDto.getCast());
+        movie.setCharacters(movieCreateDto.getCharacters());
+        movie.setStars(movieCreateDto.getStars());
+        movie.setDirectors(movieCreateDto.getDirectors());
+        movie.setWriters(movieCreateDto.getWriters());
 
         movie = movieRepository.save(movie);
         return mapToReadDto(movie);
@@ -36,10 +41,15 @@ public class MovieService {
     private MovieReadDto mapToReadDto(Movie movie) {
         MovieReadDto dto = new MovieReadDto();
         dto.setId(movie.getId());
-        dto.setRating(movie.getRating());
         dto.setName(movie.getName());
-        dto.setGenre(movie.getGenre());
-        dto.setMainActor(movie.getMainActor());
+        dto.setDescription(movie.getDescription());
+        dto.setGenres(movie.getGenres());
+        dto.setCast(movie.getCast());
+        dto.setCharacters(movie.getCharacters());
+        dto.setStars(movie.getStars());
+        dto.setDirectors(movie.getDirectors());
+        dto.setWriters(movie.getWriters());
+        dto.setReviews(movie.getReviews());
         return dto;
     }
 }

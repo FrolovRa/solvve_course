@@ -1,92 +1,42 @@
 package com.solvve.course.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Objects;
-import java.util.UUID;
+import com.solvve.course.domain.constant.Genre;
+import lombok.Data;
+
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
+@Data
 public class Movie {
+
     @Id
     @GeneratedValue
     private UUID id;
 
-    private double rating;
-
     private String name;
 
-    private String genre;
+    private String description;
 
-    @Column(name = "main_actor")
-    private String mainActor;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public String getMainActor() {
-        return mainActor;
-    }
-
-    public void setMainActor(String mainActor) {
-        this.mainActor = mainActor;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Movie movie = (Movie) o;
-        return Double.compare(movie.rating, rating) == 0 &&
-                id.equals(movie.id) &&
-                name.equals(movie.name) &&
-                genre.equals(movie.genre) &&
-                mainActor.equals(movie.mainActor);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, rating, name, genre, mainActor);
-    }
-
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "id=" + id +
-                ", rating=" + rating +
-                ", name='" + name + '\'' +
-                ", genre='" + genre + '\'' +
-                ", mainActor='" + mainActor + '\'' +
-                '}';
-    }
+    @ElementCollection(targetClass = Genre.class, fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "movie_genres",
+            joinColumns = @JoinColumn(name = "movie_id")
+    )
+    @Enumerated(EnumType.STRING)
+    private Set<Genre> genres = new HashSet<>();
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.PERSIST)
+    private List<Character> characters = new ArrayList<>();
+    @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
+    private List<Actor> cast = new ArrayList<>();
+    @ManyToMany(mappedBy = "moviesAsStar", cascade = CascadeType.PERSIST)
+    private List<Actor> stars = new ArrayList<>();
+    @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
+    private List<Director> directors = new ArrayList<>();
+    @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
+    private List<Writer> writers = new ArrayList<>();
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.PERSIST)
+    private List<MovieReview> reviews = new ArrayList<>();
+    @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
+    private List<NewsPost> posts = new ArrayList<>();
 }
