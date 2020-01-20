@@ -31,4 +31,6 @@ public class MovieReadDto {
     private List<Writer> writers;
 
     private List<MovieReview> reviews;
+
+    private List<NewsPost> posts;
 }

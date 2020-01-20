@@ -27,4 +27,6 @@ public class MovieCreateDto {
     private List<Director> directors;
 
     private List<Writer> writers;
+
+    private List<NewsPost> posts;
 }

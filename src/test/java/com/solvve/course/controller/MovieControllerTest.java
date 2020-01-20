@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solvve.course.domain.Movie;
 import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.MovieCreateDto;
+import com.solvve.course.dto.MoviePatchDto;
 import com.solvve.course.dto.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.service.MovieService;
@@ -19,13 +20,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -43,11 +44,7 @@ public class MovieControllerTest {
 
     @Test
     public void testGetMovie() throws Exception {
-        MovieReadDto movieReadDto = new MovieReadDto();
-        movieReadDto.setId(UUID.randomUUID());
-        movieReadDto.setName("Mr.Nobody");
-        movieReadDto.setDescription("cool film");
-        movieReadDto.setGenres(Collections.singleton(Genre.ACTION));
+        MovieReadDto movieReadDto = createMovieReadDto();
         when(movieService.getMovie(movieReadDto.getId())).thenReturn(movieReadDto);
 
         String resultJson = mvc.perform(get("/api/v1/movies/{id}", movieReadDto.getId()))
@@ -81,16 +78,8 @@ public class MovieControllerTest {
 
     @Test
     public void testAddMovie() throws Exception {
-        MovieCreateDto movieCreateDto = new MovieCreateDto();
-        movieCreateDto.setName("Mr.Nobody");
-        movieCreateDto.setDescription("cool film");
-        movieCreateDto.setGenres(Collections.singleton(Genre.ACTION));
-
-        MovieReadDto movieReadDto = new MovieReadDto();
-        movieReadDto.setId(UUID.randomUUID());
-        movieReadDto.setName("Mr.Nobody");
-        movieReadDto.setDescription("cool film");
-        movieReadDto.setGenres(Collections.singleton(Genre.ACTION));
+        MovieCreateDto movieCreateDto = createMovieCreateDto();
+        MovieReadDto movieReadDto = createMovieReadDto();
 
         when(movieService.addMovie(movieCreateDto)).thenReturn(movieReadDto);
 
@@ -101,5 +90,54 @@ public class MovieControllerTest {
                 .andReturn().getResponse().getContentAsString();
         MovieReadDto actualMovieReadDto = objectMapper.readValue(resultJson, MovieReadDto.class);
         assertThat(actualMovieReadDto).isEqualToComparingFieldByField(movieReadDto);
+    }
+
+    @Test
+    public void testPatchMovie() throws Exception {
+        UUID id = UUID.randomUUID();
+        MoviePatchDto moviePatchDto = new MoviePatchDto();
+        moviePatchDto.setName("Epic");
+        moviePatchDto.setDescription("test Description");
+        moviePatchDto.setGenres(new HashSet<>(Arrays.asList(Genre.COMEDY, Genre.WESTERN)));
+
+        MovieReadDto movieReadDto = createMovieReadDto();
+
+        when(movieService.patchMovie(id, moviePatchDto)).thenReturn(movieReadDto);
+
+        String resultJson = mvc.perform(patch("/api/v1/movies/" + id)
+                .content(objectMapper.writeValueAsString(moviePatchDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        MovieReadDto actualMovieReadDto = objectMapper.readValue(resultJson, MovieReadDto.class);
+        assertThat(actualMovieReadDto).isEqualToComparingFieldByField(movieReadDto);
+    }
+
+    @Test
+    public void testDeleteMovie() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        mvc.perform(delete("/api/v1/movies/" + id)).andExpect(status().isOk());
+
+        verify(movieService).deleteMovie(id);
+    }
+
+    private MovieCreateDto createMovieCreateDto() {
+        MovieCreateDto movieCreateDto = new MovieCreateDto();
+        movieCreateDto.setName("Mr.Nobody");
+        movieCreateDto.setDescription("cool film");
+        movieCreateDto.setGenres(Collections.singleton(Genre.ACTION));
+
+        return movieCreateDto;
+    }
+
+    private MovieReadDto createMovieReadDto() {
+        MovieReadDto movieReadDto = new MovieReadDto();
+        movieReadDto.setId(UUID.randomUUID());
+        movieReadDto.setName("Mr.Nobody");
+        movieReadDto.setDescription("cool film");
+        movieReadDto.setGenres(Collections.singleton(Genre.ACTION));
+
+        return movieReadDto;
     }
 }

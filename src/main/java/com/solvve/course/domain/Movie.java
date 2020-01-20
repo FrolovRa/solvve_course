@@ -25,18 +25,25 @@ public class Movie {
     )
     @Enumerated(EnumType.STRING)
     private Set<Genre> genres = new HashSet<>();
+
     @OneToMany(mappedBy = "movie", cascade = CascadeType.PERSIST)
     private List<Character> characters = new ArrayList<>();
+
     @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
     private List<Actor> cast = new ArrayList<>();
+
     @ManyToMany(mappedBy = "moviesAsStar", cascade = CascadeType.PERSIST)
     private List<Actor> stars = new ArrayList<>();
+
     @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
     private List<Director> directors = new ArrayList<>();
+
     @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
     private List<Writer> writers = new ArrayList<>();
+
     @OneToMany(mappedBy = "movie", cascade = CascadeType.PERSIST)
     private List<MovieReview> reviews = new ArrayList<>();
+
     @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
     private List<NewsPost> posts = new ArrayList<>();
 }
