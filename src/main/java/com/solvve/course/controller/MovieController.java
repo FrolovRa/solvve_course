@@ -1,8 +1,8 @@
 package com.solvve.course.controller;
 
-import com.solvve.course.dto.MovieCreateDto;
-import com.solvve.course.dto.MoviePatchDto;
-import com.solvve.course.dto.MovieReadDto;
+import com.solvve.course.dto.movie.MovieCreateDto;
+import com.solvve.course.dto.movie.MoviePatchDto;
+import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -19,6 +19,7 @@ public class Person {
     private UUID id;
 
     private String name;
+
     @ManyToMany(mappedBy = "persons")
-    private List<NewsPost> posts = new ArrayList<>();
+    private List<Publication> posts = new ArrayList<>();
 }

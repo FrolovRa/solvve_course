@@ -8,14 +8,18 @@ import java.util.UUID;
 
 @Data
 @Entity
-public class Complaint {
+public class CharacterReviewComplaint {
+
     @Id
     @GeneratedValue
     private UUID id;
+
     @ManyToOne
     private User user;
+
     @ManyToOne
-    private Review review;
+    private CharacterReview review;
+
     @Enumerated(EnumType.STRING)
     private ComplaintReason reason;
 

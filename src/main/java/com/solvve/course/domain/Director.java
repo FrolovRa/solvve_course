@@ -14,8 +14,10 @@ public class Director {
     @Id
     @GeneratedValue
     private UUID id;
+
     @OneToOne
     private Person person;
+
     @ManyToMany
     private List<Movie> movies = new ArrayList<>();
 }

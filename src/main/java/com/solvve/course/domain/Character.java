@@ -22,6 +22,7 @@ public class Character {
     private double rating;
     @ManyToOne
     private Movie movie;
+
     @OneToMany(mappedBy = "character")
     private List<CharacterReview> reviews = new ArrayList<>();
 }

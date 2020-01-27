@@ -12,8 +12,10 @@ public class CharacterRatingPair {
     @Id
     @GeneratedValue
     private UUID id;
+
     @ManyToOne
     private User user;
+
     @ManyToOne
     private Character character;
 

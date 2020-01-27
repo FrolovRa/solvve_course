@@ -1,15 +1,14 @@
 package com.solvve.course.service;
 
 import com.solvve.course.domain.Movie;
-import com.solvve.course.dto.MovieCreateDto;
-import com.solvve.course.dto.MoviePatchDto;
-import com.solvve.course.dto.MovieReadDto;
+import com.solvve.course.dto.movie.MovieCreateDto;
+import com.solvve.course.dto.movie.MoviePatchDto;
+import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;

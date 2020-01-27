@@ -9,11 +9,12 @@ import java.util.UUID;
 
 @Data
 @Entity
-public class NewsPost {
+public class Publication {
 
     @Id
     @GeneratedValue
     private UUID id;
+
     @OneToOne
     private Principal manager;
 
@@ -23,8 +24,10 @@ public class NewsPost {
 
     @ManyToMany
     private List<Movie> movies = new ArrayList<>();
+
     @ManyToMany
     private List<Person> persons = new ArrayList<>();
+
     @ManyToMany
     private List<User> liked = new ArrayList<>();
 }

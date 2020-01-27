@@ -1,8 +1,8 @@
 package com.solvve.course.service;
 
 import com.solvve.course.domain.Actor;
-import com.solvve.course.dto.ActorCreateDto;
-import com.solvve.course.dto.ActorReadDto;
+import com.solvve.course.dto.actor.ActorCreateDto;
+import com.solvve.course.dto.actor.ActorReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;

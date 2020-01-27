@@ -15,8 +15,10 @@ public class MovieRatingPair {
     @Id
     @GeneratedValue
     private UUID id;
+
     @ManyToOne
     private User user;
+
     @ManyToOne
     private Movie movie;
 

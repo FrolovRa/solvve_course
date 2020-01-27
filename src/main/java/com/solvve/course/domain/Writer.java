@@ -14,6 +14,7 @@ public class Writer {
     @Id
     @GeneratedValue
     private UUID id;
+
     @OneToOne
     private Person person;
 

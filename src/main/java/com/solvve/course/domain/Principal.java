@@ -17,6 +17,7 @@ public class Principal {
     private String name;
 
     private String email;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

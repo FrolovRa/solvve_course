@@ -45,5 +45,5 @@ public class Movie {
     private List<MovieReview> reviews = new ArrayList<>();
 
     @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
-    private List<NewsPost> posts = new ArrayList<>();
+    private List<Publication> posts = new ArrayList<>();
 }
