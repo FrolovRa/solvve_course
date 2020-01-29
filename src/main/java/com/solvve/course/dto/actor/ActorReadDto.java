@@ -1,7 +1,6 @@
 package com.solvve.course.dto.actor;
 
-import com.solvve.course.domain.Character;
-import com.solvve.course.domain.*;
+import com.solvve.course.domain.Person;
 import com.solvve.course.dto.character.CharacterReadDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import lombok.Data;

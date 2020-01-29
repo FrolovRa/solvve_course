@@ -34,16 +34,4 @@ public class Movie {
 
     @ManyToMany(mappedBy = "moviesAsStar", cascade = CascadeType.PERSIST)
     private List<Actor> stars = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
-    private List<Director> directors = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
-    private List<Writer> writers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.PERSIST)
-    private List<MovieReview> reviews = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
-    private List<Publication> posts = new ArrayList<>();
 }

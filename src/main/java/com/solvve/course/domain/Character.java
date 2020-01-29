@@ -2,9 +2,10 @@ package com.solvve.course.domain;
 
 import lombok.Data;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 @Data
@@ -19,10 +20,6 @@ public class Character {
     @ManyToOne
     private Actor actor;
 
-    private double rating;
     @ManyToOne
     private Movie movie;
-
-    @OneToMany(mappedBy = "character")
-    private List<CharacterReview> reviews = new ArrayList<>();
 }

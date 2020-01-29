@@ -53,17 +53,6 @@
             </column>
         </createTable>
 
-        <createTable tableName="writer">
-            <column name="id" type="uuid">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="person_id" type="uuid">
-                <constraints referencedTableName="person" referencedColumnNames="id"
-                             foreignKeyName="fk__writer__person" nullable="false"
-                             deleteCascade="true"/>
-            </column>
-        </createTable>
-
         <createTable tableName="actor">
             <column name="id" type="uuid">
                 <constraints primaryKey="true"/>
@@ -93,101 +82,7 @@
             </column>
         </createTable>
 
-        <createTable tableName="character_rating_pair">
-            <column name="id" type="uuid">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="value" type="double"/>
-            <column name="user_id" type="uuid">
-                <constraints referencedTableName="user" referencedColumnNames="id"
-                             foreignKeyName="fk__character_rating_pair__user" nullable="false"/>
-            </column>
-            <column name="character_id" type="uuid">
-                <constraints referencedTableName="character" referencedColumnNames="id"
-                             foreignKeyName="fk__character_rating_pair__character" nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="movie_rating_pair">
-            <column name="id" type="uuid">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="value" type="double"/>
-            <column name="user_id" type="uuid">
-                <constraints referencedTableName="user" referencedColumnNames="id"
-                             foreignKeyName="fk__movie_rating_pair__user" nullable="false"/>
-            </column>
-            <column name="movie_id" type="uuid">
-                <constraints referencedTableName="movie" referencedColumnNames="id"
-                             foreignKeyName="fk__movie_rating_pair__movie" nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="review">
-            <column name="id" type="uuid">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="status" type="varchar(18)"/>
-            <column name="user_id" type="uuid">
-                <constraints referencedTableName="user" referencedColumnNames="id"
-                             foreignKeyName="fk__movie_review__user" nullable="false"/>
-            </column>
-            <column name="moderator_id" type="uuid">
-                <constraints referencedTableName="principal" referencedColumnNames="id"
-                             foreignKeyName="fk__movie_review__principal"/>
-            </column>
-            <column name="content" type="varchar(2000)"/>
-            <column name="movie_id" type="uuid">
-                <constraints referencedTableName="movie" referencedColumnNames="id"
-                             foreignKeyName="fk__review__movie" nullable="false"/>
-            </column>
-            <column name="character_id" type="uuid">
-                <constraints referencedTableName="character" referencedColumnNames="id"
-                             foreignKeyName="fk__review__character" nullable="false"/>
-            </column>
-            <column name="dtype" type="varchar(100)"/>
-        </createTable>
-
-        <createTable tableName="complaint">
-            <column name="id" type="uuid">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="user_id" type="uuid">
-                <constraints referencedTableName="user" referencedColumnNames="id"
-                             foreignKeyName="fk__complaint__user" nullable="false"/>
-            </column>
-            <column name="review_id" type="uuid">
-                <constraints referencedTableName="review" referencedColumnNames="id"
-                             foreignKeyName="fk__complaint__review" nullable="false"/>
-            </column>
-            <column name="comment" type="varchar(1000)"/>
-            <column name="reason" type="varchar(8)"/>
-        </createTable>
-
-        <createTable tableName="news_post">
-            <column name="id" type="uuid">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="manager_id" type="uuid">
-                <constraints referencedTableName="principal" referencedColumnNames="id"
-                             foreignKeyName="fk__news_post__principal" nullable="false"/>
-            </column>
-            <column name="title" type="varchar(100)"/>
-            <column name="content" type="varchar(2000)"/>
-        </createTable>
-
         <!--create util tables for many-to-many relations in database-->
-        <createTable tableName="review_user_likes">
-            <column name="reviews_id" type="uuid">
-                <constraints referencedTableName="review" referencedColumnNames="id"
-                             foreignKeyName="fk__review_user_likes__review" nullable="false"/>
-            </column>
-            <column name="users_id" type="uuid">
-                <constraints referencedTableName="user" referencedColumnNames="id"
-                             foreignKeyName="fk__review_user_likes__user" nullable="false"/>
-            </column>
-        </createTable>
-
         <createTable tableName="actor_movies">
             <column name="cast_id" type="uuid">
                 <constraints referencedTableName="actor" referencedColumnNames="id"
@@ -207,72 +102,6 @@
             <column name="movies_as_star_id" type="uuid">
                 <constraints referencedTableName="movie" referencedColumnNames="id"
                              foreignKeyName="fk__actor_movies_as_star__movie" nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="director_movies">
-            <column name="directors_id" type="uuid">
-                <constraints referencedTableName="director" referencedColumnNames="id"
-                             foreignKeyName="fk__director_movies__director" nullable="false"/>
-            </column>
-            <column name="movies_id" type="uuid">
-                <constraints referencedTableName="movie" referencedColumnNames="id"
-                             foreignKeyName="fk__director_movies__movie" nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="writer_movies">
-            <column name="writers_id" type="uuid">
-                <constraints referencedTableName="writer" referencedColumnNames="id"
-                             foreignKeyName="fk__writer_movies__writer" nullable="false"/>
-            </column>
-            <column name="movies_id" type="uuid">
-                <constraints referencedTableName="movie" referencedColumnNames="id"
-                             foreignKeyName="fk__writer_movies__movie" nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="news_post_liked">
-            <column name="liked_posts_id" type="uuid">
-                <constraints referencedTableName="news_post" referencedColumnNames="id"
-                             foreignKeyName="fk__news_post_liked__news_post" nullable="false"/>
-            </column>
-            <column name="liked_id" type="uuid">
-                <constraints referencedTableName="user" referencedColumnNames="id"
-                             foreignKeyName="fk__news_post_liked__user" nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="news_post_movies">
-            <column name="posts_id" type="uuid">
-                <constraints referencedTableName="news_post" referencedColumnNames="id"
-                             foreignKeyName="fk__news_post_movies__news_post" nullable="false"/>
-            </column>
-            <column name="movies_id" type="uuid">
-                <constraints referencedTableName="movie" referencedColumnNames="id"
-                             foreignKeyName="fk__news_post_movies__movie" nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="news_post_persons">
-            <column name="posts_id" type="uuid">
-                <constraints referencedTableName="news_post" referencedColumnNames="id"
-                             foreignKeyName="fk__news_post_persons__news_post" nullable="false"/>
-            </column>
-            <column name="persons_id" type="uuid">
-                <constraints referencedTableName="person" referencedColumnNames="id"
-                             foreignKeyName="fk__news_post_persons__person" nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="user_liked_reviews">
-            <column name="liked_id" type="uuid">
-                <constraints referencedTableName="user" referencedColumnNames="id"
-                             foreignKeyName="fk__user_liked_reviews__user" nullable="false"/>
-            </column>
-            <column name="liked_reviews_id" type="uuid">
-                <constraints referencedTableName="review" referencedColumnNames="id"
-                             foreignKeyName="fk__user_liked_reviews__review" nullable="false"/>
             </column>
         </createTable>
 

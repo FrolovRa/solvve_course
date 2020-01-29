@@ -21,19 +21,4 @@ public class User {
     private boolean blockedReview;
 
     private int trustLevel;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    private List<MovieRatingPair> ratedMovies = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    private List<CharacterRatingPair> ratedCharacter = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "liked", cascade = CascadeType.PERSIST)
-    private List<Publication> likedPosts = new ArrayList<>();
-
-    @ManyToMany
-    private List<MovieReview> likedMovieReviews = new ArrayList<>();
-
-    @ManyToMany
-    private List<CharacterReview> likedCharacterReviews = new ArrayList<>();
 }

@@ -20,6 +20,4 @@ public class Person {
 
     private String name;
 
-    @ManyToMany(mappedBy = "persons")
-    private List<Publication> posts = new ArrayList<>();
 }
