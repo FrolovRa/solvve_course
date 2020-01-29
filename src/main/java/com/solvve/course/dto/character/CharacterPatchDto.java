@@ -15,8 +15,6 @@ public class CharacterPatchDto {
 
     private ActorReadDto actor;
 
-    private double rating;
-
     private MovieReadDto movie;
 
     private List<CharacterReviewReadDto> reviews = new ArrayList<>();
