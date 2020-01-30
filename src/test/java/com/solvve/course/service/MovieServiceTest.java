@@ -82,7 +82,8 @@ public class MovieServiceTest {
 
         MovieReadDto patchedMovie = movieService.patchMovie(movieFromDb.getId(), moviePatchDto);
 
-        assertThat(moviePatchDto).isEqualToComparingFieldByField(patchedMovie);
+        assertThat(moviePatchDto).isEqualToIgnoringGivenFields(patchedMovie,
+                "characters", "cast", "stars");
     }
 
     @Test

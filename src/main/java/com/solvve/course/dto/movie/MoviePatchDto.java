@@ -5,6 +5,8 @@ import com.solvve.course.dto.actor.ActorReadDto;
 import com.solvve.course.dto.character.CharacterReadDto;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

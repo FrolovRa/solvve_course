@@ -15,33 +15,27 @@ public class ActorService {
 
     @Autowired
     private ActorRepository actorRepository;
+    @Autowired
+    private TranslationService translationService;
 
     public ActorReadDto getActor(UUID id) {
-        Actor actorFromDb = actorRepository
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Actor.class, id));
-        return mapToReadDto(actorFromDb);
+        Actor actorFromDb = getActorRequired(id);
+        return translationService.toReadDto(actorFromDb);
     }
 
     public ActorReadDto addActor(ActorCreateDto actorCreateDto) {
-        Actor actor = new Actor();
-        actor.setPerson(actorCreateDto.getPerson());
-        actor.setCharacters(actorCreateDto.getCharacters());
-        actor.setMovies(actorCreateDto.getMovies());
-        actor.setMoviesAsStar(actor.getMoviesAsStar());
-
+        Actor actor = translationService.toEntity(actorCreateDto);
         actor = actorRepository.save(actor);
-        return mapToReadDto(actor);
+        return translationService.toReadDto(actor);
     }
 
-    private ActorReadDto mapToReadDto(Actor actor) {
-        ActorReadDto dto = new ActorReadDto();
-        dto.setId(actor.getId());
-        dto.setCharacters(actor.getCharacters());
-        dto.setMovies(actor.getMovies());
-        dto.setMoviesAsStar(actor.getMoviesAsStar());
-        dto.setPerson(actor.getPerson());
+    public void deleteActor(UUID id) {
+        actorRepository.delete(getActorRequired(id));
+    }
 
-        return dto;
+    private Actor getActorRequired(UUID id) {
+        return actorRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Actor.class, id));
     }
 }

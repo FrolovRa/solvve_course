@@ -5,6 +5,8 @@ import com.solvve.course.dto.actor.ActorReadDto;
 import com.solvve.course.dto.character.CharacterReadDto;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -15,11 +17,11 @@ public class MovieCreateDto {
 
     private String description;
 
-    private Set<Genre> genres;
+    private Set<Genre> genres = new HashSet<>();
 
-    private List<CharacterReadDto> characters;
+    private List<CharacterReadDto> characters = new ArrayList<>();
 
-    private List<ActorReadDto> cast;
+    private List<ActorReadDto> cast = new ArrayList<>();
 
-    private List<ActorReadDto> stars;
+    private List<ActorReadDto> stars = new ArrayList<>();
 }

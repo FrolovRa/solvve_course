@@ -7,9 +7,11 @@ import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -18,27 +20,18 @@ public class MovieService {
 
     @Autowired
     private MovieRepository movieRepository;
+    @Autowired
+    private TranslationService translationService;
 
     public MovieReadDto getMovie(UUID id) {
         Movie movieFromDb = getMovieRequired(id);
-        return mapToReadDto(movieFromDb);
+        return translationService.toReadDto(movieFromDb);
     }
 
     public MovieReadDto addMovie(MovieCreateDto movieCreateDto) {
-        Movie movie = new Movie();
-        movie.setName(movieCreateDto.getName());
-        movie.setDescription(movieCreateDto.getDescription());
-        movie.setGenres(movieCreateDto.getGenres());
-        movie.setCast(movieCreateDto.getCast());
-        movie.setCharacters(movieCreateDto.getCharacters());
-        movie.setStars(movieCreateDto.getStars());
-        movie.setDirectors(movieCreateDto.getDirectors());
-        movie.setWriters(movieCreateDto.getWriters());
-        movie.setPosts(null);
-        movie.setReviews(null);
-
+        Movie movie = translationService.toEntity(movieCreateDto);
         movie = movieRepository.save(movie);
-        return mapToReadDto(movie);
+        return translationService.toReadDto(movie);
     }
 
 
@@ -49,16 +42,18 @@ public class MovieService {
             movieFromDb.setName(moviePatchDto.getName());
         }
 
-        if (nonNull(moviePatchDto.getDirectors())) {
-            movieFromDb.setDirectors(moviePatchDto.getDirectors());
-        }
-
         if (nonNull(moviePatchDto.getCast())) {
-            movieFromDb.setCast(moviePatchDto.getCast());
+            movieFromDb.setCast(moviePatchDto.getCast()
+                    .stream()
+                    .map(translationService::toEntity)
+                    .collect(Collectors.toList()));
         }
 
         if (nonNull(moviePatchDto.getCharacters())) {
-            movieFromDb.setCharacters(moviePatchDto.getCharacters());
+            movieFromDb.setCharacters(moviePatchDto.getCharacters()
+                    .stream()
+                    .map(translationService::toEntity)
+                    .collect(Collectors.toList()));
         }
 
         if (nonNull(moviePatchDto.getGenres())) {
@@ -66,32 +61,19 @@ public class MovieService {
         }
 
         if (nonNull(moviePatchDto.getStars())) {
-            movieFromDb.setStars(moviePatchDto.getStars());
-        }
-
-        if (nonNull(moviePatchDto.getWriters())) {
-            movieFromDb.setWriters(moviePatchDto.getWriters());
+            movieFromDb.setStars(moviePatchDto.getStars()
+                    .stream()
+                    .map(translationService::toEntity)
+                    .collect(Collectors.toList()));
         }
 
         if (nonNull(moviePatchDto.getDescription())) {
             movieFromDb.setDescription(moviePatchDto.getDescription());
         }
 
-        if (nonNull(moviePatchDto.getWriters())) {
-            movieFromDb.setWriters(moviePatchDto.getWriters());
-        }
-
-        if (nonNull(moviePatchDto.getReviews())) {
-            movieFromDb.setReviews(moviePatchDto.getReviews());
-        }
-
-        if (nonNull(moviePatchDto.getPosts())) {
-            movieFromDb.setPosts(moviePatchDto.getPosts());
-        }
-
         Movie patchedMovie = movieRepository.save(movieFromDb);
 
-        return mapToReadDto(patchedMovie);
+        return translationService.toReadDto(patchedMovie);
     }
 
     public void deleteMovie(UUID id) {
@@ -102,21 +84,5 @@ public class MovieService {
         return movieRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Movie.class, id));
-    }
-
-    private MovieReadDto mapToReadDto(Movie movie) {
-        MovieReadDto dto = new MovieReadDto();
-        dto.setId(movie.getId());
-        dto.setName(movie.getName());
-        dto.setDescription(movie.getDescription());
-        dto.setGenres(movie.getGenres());
-        dto.setCast(movie.getCast());
-        dto.setCharacters(movie.getCharacters());
-        dto.setStars(movie.getStars());
-        dto.setDirectors(movie.getDirectors());
-        dto.setWriters(movie.getWriters());
-        dto.setReviews(movie.getReviews());
-        dto.setPosts(movie.getPosts());
-        return dto;
     }
 }

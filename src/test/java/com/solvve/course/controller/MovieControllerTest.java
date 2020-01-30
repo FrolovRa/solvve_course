@@ -8,6 +8,7 @@ import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.service.MovieService;
+import com.solvve.course.service.TranslationService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
