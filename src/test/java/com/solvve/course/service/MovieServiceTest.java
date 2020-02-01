@@ -18,14 +18,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -123,4 +119,20 @@ public class MovieServiceTest {
         movieService.deleteMovie(UUID.randomUUID());
     }
 
+    @Test
+    @Transactional
+    public void testFindMoviesByGenre() {
+        MovieCreateDto horrorMovie = new MovieCreateDto();
+        horrorMovie.setGenres(new HashSet<>(Collections.singletonList(Genre.HORROR)));
+        MovieReadDto horrorReadDto = movieService.addMovie(horrorMovie);
+
+        MovieCreateDto comedyMovie = new MovieCreateDto();
+        comedyMovie.setGenres(new HashSet<>(Collections.singletonList(Genre.COMEDY)));
+        MovieReadDto comedyReadDto = movieService.addMovie(comedyMovie);
+
+        List<MovieReadDto> result =  movieService
+                .findMoviesByGenre(Genre.HORROR);
+        assertEquals(1, result.size());
+        assertEquals(result.get(0), horrorReadDto);
+    }
 }
