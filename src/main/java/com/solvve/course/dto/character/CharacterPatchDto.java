@@ -11,7 +11,5 @@ public class CharacterPatchDto {
 
     private ActorReadDto actor;
 
-    private double rating;
-
     private MovieReadDto movie;
 }

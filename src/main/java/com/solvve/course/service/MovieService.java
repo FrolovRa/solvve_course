@@ -34,7 +34,6 @@ public class MovieService {
         return translationService.toReadDto(movie);
     }
 
-
     public MovieReadDto patchMovie(UUID id, MoviePatchDto moviePatchDto) {
         Movie movieFromDb = getMovieRequired(id);
 

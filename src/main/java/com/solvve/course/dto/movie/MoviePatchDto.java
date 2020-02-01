@@ -5,8 +5,7 @@ import com.solvve.course.dto.actor.ActorReadDto;
 import com.solvve.course.dto.character.CharacterReadDto;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +15,8 @@ public class MoviePatchDto {
     private String name;
 
     private String description;
+
+    private LocalDate release;
 
     private Set<Genre> genres;
 

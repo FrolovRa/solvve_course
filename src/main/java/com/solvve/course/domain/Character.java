@@ -1,6 +1,8 @@
 package com.solvve.course.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,8 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import java.util.UUID;
 
-@Data
+
 @Entity
+@Data
 public class Character {
 
     @Id
@@ -17,9 +20,11 @@ public class Character {
     private UUID id;
 
     private String name;
+    @ToString.Exclude
     @ManyToOne
     private Actor actor;
-
+    @ToString.Exclude
     @ManyToOne
     private Movie movie;
+
 }

@@ -5,6 +5,7 @@ import com.solvve.course.dto.actor.ActorReadDto;
 import com.solvve.course.dto.character.CharacterReadDto;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,8 @@ public class MovieCreateDto {
     private String name;
 
     private String description;
+
+    private LocalDate release;
 
     private Set<Genre> genres = new HashSet<>();
 

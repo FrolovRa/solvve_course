@@ -4,6 +4,7 @@ import com.solvve.course.domain.constant.Genre;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -17,6 +18,8 @@ public class Movie {
     private String name;
 
     private String description;
+
+    private LocalDate release;
 
     @ElementCollection(targetClass = Genre.class, fetch = FetchType.EAGER)
     @CollectionTable(

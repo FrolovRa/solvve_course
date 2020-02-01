@@ -1,5 +1,6 @@
 package com.solvve.course.dto.actor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.solvve.course.dto.character.CharacterReadDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.dto.person.PersonReadDto;

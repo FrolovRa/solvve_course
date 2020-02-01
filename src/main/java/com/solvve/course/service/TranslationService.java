@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+
 @Service
 public class TranslationService {
 
@@ -25,19 +27,42 @@ public class TranslationService {
         MovieReadDto dto = new MovieReadDto();
         dto.setId(movie.getId());
         dto.setName(movie.getName());
+        dto.setRelease(movie.getRelease());
         dto.setCast(movie.getCast()
                 .stream()
-                .map(this::toReadDto)
+                .map(actor -> {
+                    ActorReadDto actorDto = new ActorReadDto();
+                    actorDto.setId(actor.getId());
+                    actorDto.setPerson(this.toReadDto(actor.getPerson()));
+
+                    return actorDto;
+                })
                 .collect(Collectors.toList()));
         dto.setCharacters(movie.getCharacters()
                 .stream()
-                .map(this::toReadDto)
+                .map(character -> {
+                    CharacterReadDto characterDto = new CharacterReadDto();
+                    characterDto.setId(character.getId());
+                    characterDto.setName(character.getName());
+                    ActorReadDto actorDto = new ActorReadDto();
+                    actorDto.setId(character.getActor().getId());
+                    actorDto.setPerson(this.toReadDto(character.getActor().getPerson()));
+                    characterDto.setActor(actorDto);
+
+                    return characterDto;
+                })
                 .collect(Collectors.toList()));
         dto.setDescription(movie.getDescription());
         dto.setGenres(movie.getGenres());
         dto.setStars(movie.getStars()
                 .stream()
-                .map(this::toReadDto)
+                .map(actor -> {
+                    ActorReadDto actorDto = new ActorReadDto();
+                    actorDto.setId(actor.getId());
+                    actorDto.setPerson(this.toReadDto(actor.getPerson()));
+
+                    return actorDto;
+                })
                 .collect(Collectors.toList()));
 
         return dto;
@@ -58,7 +83,17 @@ public class TranslationService {
         dto.setId(actor.getId());
         dto.setCharacters(actor.getCharacters()
                 .stream()
-                .map(this::toReadDto)
+                .map(character -> {
+                    CharacterReadDto characterDto = new CharacterReadDto();
+                    characterDto.setId(character.getId());
+                    characterDto.setName(character.getName());
+                    ActorReadDto actorDto = new ActorReadDto();
+                    actorDto.setId(character.getActor().getId());
+                    actorDto.setPerson(this.toReadDto(character.getActor().getPerson()));
+                    characterDto.setActor(actorDto);
+
+                    return characterDto;
+                })
                 .collect(Collectors.toList()));
         dto.setMovies(actor.getMovies()
                 .stream()
@@ -103,6 +138,8 @@ public class TranslationService {
     }
 
     public Movie toEntity(MovieReadDto dto) {
+        if (isNull(dto)) return null;
+
         Movie movie = new Movie();
         movie.setId(dto.getId());
         movie.setName(dto.getName());
@@ -125,6 +162,8 @@ public class TranslationService {
     }
 
     public Character toEntity(CharacterReadDto dto) {
+        if (isNull(dto)) return null;
+
         Character character = new Character();
         character.setId(dto.getId());
         character.setName(dto.getName());
@@ -135,6 +174,8 @@ public class TranslationService {
     }
 
     public Actor toEntity(ActorReadDto dto) {
+        if (isNull(dto)) return null;
+
         Actor actor = new Actor();
         actor.setId(dto.getId());
         actor.setCharacters(dto.getCharacters()
@@ -155,6 +196,8 @@ public class TranslationService {
     }
 
     public Person toEntity(PersonReadDto dto) {
+        if (isNull(dto)) return null;
+
         Person person = new Person();
         person.setId(dto.getId());
         person.setName(dto.getName());
@@ -163,6 +206,8 @@ public class TranslationService {
     }
 
     public User toEntity(UserReadDto dto) {
+        if (isNull(dto)) return null;
+
         User user = new User();
         user.setId(dto.getId());
         user.setBlockedReview(dto.isBlockedReview());
@@ -173,6 +218,8 @@ public class TranslationService {
     }
 
     public Principal toEntity(PrincipalReadDto dto) {
+        if (isNull(dto)) return null;
+
         Principal principal = new Principal();
         principal.setId(dto.getId());
         principal.setBlocked(dto.isBlocked());
@@ -184,8 +231,11 @@ public class TranslationService {
     }
 
     public Movie toEntity(MovieCreateDto dto) {
+        if (isNull(dto)) return null;
+
         Movie movie = new Movie();
         movie.setName(dto.getName());
+        movie.setRelease(dto.getRelease());
         movie.setCast(dto.getCast()
                 .stream()
                 .map(this::toEntity)
@@ -205,6 +255,8 @@ public class TranslationService {
     }
 
     public Character toEntity(CharacterCreateDto dto) {
+        if (isNull(dto)) return null;
+
         Character character = new Character();
         character.setName(dto.getName());
         character.setMovie(this.toEntity(dto.getMovie()));
@@ -214,6 +266,8 @@ public class TranslationService {
     }
 
     public Actor toEntity(ActorCreateDto dto) {
+        if (isNull(dto)) return null;
+
         Actor actor = new Actor();
         actor.setCharacters(dto.getCharacters()
                 .stream()
@@ -233,6 +287,8 @@ public class TranslationService {
     }
 
     public Person toEntity(PersonCreateDto dto) {
+        if (isNull(dto)) return null;
+
         Person person = new Person();
         person.setName(dto.getName());
 
@@ -240,6 +296,8 @@ public class TranslationService {
     }
 
     public User toEntity(UserCreateDto dto) {
+        if (isNull(dto)) return null;
+
         User user = new User();
         user.setBlockedReview(dto.isBlockedReview());
         user.setPrincipal(this.toEntity(dto.getPrincipal()));
@@ -249,6 +307,8 @@ public class TranslationService {
     }
 
     public Principal toEntity(PrincipalCreateDto dto) {
+        if (isNull(dto)) return null;
+
         Principal principal = new Principal();
         principal.setBlocked(dto.isBlocked());
         principal.setEmail(dto.getEmail());

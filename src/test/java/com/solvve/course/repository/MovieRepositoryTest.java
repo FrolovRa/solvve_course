@@ -1,7 +1,6 @@
 package com.solvve.course.repository;
 
 import com.solvve.course.domain.Movie;
-import com.solvve.course.service.TranslationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

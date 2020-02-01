@@ -15,7 +15,5 @@ public class CharacterReadDto {
 
     private ActorReadDto actor;
 
-    private double rating;
-
     private MovieReadDto movie;
 }
