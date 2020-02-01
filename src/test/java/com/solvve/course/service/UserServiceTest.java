@@ -2,6 +2,7 @@ package com.solvve.course.service;
 
 import com.solvve.course.domain.User;
 import com.solvve.course.dto.user.UserCreateDto;
+import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.dto.user.UserReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.UserRepository;
@@ -61,6 +62,29 @@ public class UserServiceTest {
 
         UserReadDto userFromDb = userService.getUser(readDto.getId());
         assertThat(readDto).isEqualToComparingFieldByField(userFromDb);
+    }
+
+    @Test
+    public void testPatchUser() {
+        UserPatchDto userPatchDto = new UserPatchDto();
+        userPatchDto.setPrincipal(translationService.toReadDto(utils.getPrincipalFromDb()));
+        userPatchDto.setBlockedReview(true);
+        userPatchDto.setTrustLevel(2);
+
+        User user = utils.getUserFromDb();
+        UserReadDto patchedUser = userService.patchUser(user.getId(), userPatchDto);
+
+        assertThat(userPatchDto).isEqualToComparingFieldByField(patchedUser);
+    }
+
+    @Test
+    public void testEmptyPatchUser() {
+        UserPatchDto userPatchDto = new UserPatchDto();
+
+        User user = utils.getUserFromDb();
+        UserReadDto patchedUser = userService.patchUser(user.getId(), userPatchDto);
+
+        assertThat(translationService.toReadDto(user)).isEqualToComparingFieldByField(patchedUser);
     }
 
     @Test(expected = EntityNotFoundException.class)
