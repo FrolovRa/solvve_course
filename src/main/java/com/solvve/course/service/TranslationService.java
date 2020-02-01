@@ -206,7 +206,7 @@ public class TranslationService {
     public User toEntity(UserReadDto dto) {
         User user = new User();
         user.setId(dto.getId());
-        user.setBlockedReview(dto.isBlockedReview());
+        user.setBlockedReview(dto.getBlockedReview());
         user.setPrincipal(this.toEntity(dto.getPrincipal()));
         user.setTrustLevel(dto.getTrustLevel());
 
@@ -283,7 +283,7 @@ public class TranslationService {
 
     public User toEntity(UserCreateDto dto) {
         User user = new User();
-        user.setBlockedReview(dto.isBlockedReview());
+        user.setBlockedReview(dto.getBlockedReview());
         user.setPrincipal(this.toEntity(dto.getPrincipal()));
         user.setTrustLevel(dto.getTrustLevel());
 

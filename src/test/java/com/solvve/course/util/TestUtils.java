@@ -1,14 +1,13 @@
 package com.solvve.course.util;
 
-import com.solvve.course.domain.Actor;
+import com.solvve.course.domain.*;
 import com.solvve.course.domain.Character;
-import com.solvve.course.domain.Movie;
-import com.solvve.course.domain.Person;
 import com.solvve.course.domain.constant.Genre;
-import com.solvve.course.repository.ActorRepository;
-import com.solvve.course.repository.CharacterRepository;
-import com.solvve.course.repository.MovieRepository;
-import com.solvve.course.repository.PersonRepository;
+import com.solvve.course.domain.constant.Role;
+import com.solvve.course.dto.movie.MovieCreateDto;
+import com.solvve.course.dto.user.UserCreateDto;
+import com.solvve.course.repository.*;
+import com.solvve.course.service.TranslationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +27,12 @@ public class TestUtils {
     private PersonRepository personRepository;
     @Autowired
     private CharacterRepository characterRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PrincipalRepository principalRepository;
+    @Autowired
+    private TranslationService translationService;
 
     public Actor getActorFromDb() {
         Movie movieFromDb = this.getMovieFromDb();
@@ -62,5 +67,43 @@ public class TestUtils {
         character.setMovie(movieFromDb);
 
         return characterRepository.save(character);
+    }
+
+    public User getUserFromDb() {
+        User user = new User();
+        user.setTrustLevel(1);
+        user.setBlockedReview(true);
+        user.setPrincipal(this.getPrincipalFromDb());
+
+        return userRepository.save(user);
+    }
+
+    public Principal getPrincipalFromDb() {
+        Principal principal = new Principal();
+        principal.setName("Principal");
+        principal.setBlocked(false);
+        principal.setEmail("principal@mail.com");
+        principal.setRole(Role.USER);
+
+        return principalRepository.save(principal);
+    }
+
+
+    public MovieCreateDto createMovieCreateDto() {
+        MovieCreateDto movieCreateDto = new MovieCreateDto();
+        movieCreateDto.setName("Shattered island");
+        movieCreateDto.setDescription("cool film");
+        movieCreateDto.setGenres(new HashSet<>(Arrays.asList(Genre.DRAMA, Genre.ADVENTURE)));
+
+        return movieCreateDto;
+    }
+
+    public UserCreateDto createUserCreateDto() {
+        UserCreateDto userCreateDto = new UserCreateDto();
+        userCreateDto.setBlockedReview(true);
+        userCreateDto.setPrincipal(translationService.toReadDto(getPrincipalFromDb()));
+        userCreateDto.setTrustLevel(1);
+
+        return userCreateDto;
     }
 }

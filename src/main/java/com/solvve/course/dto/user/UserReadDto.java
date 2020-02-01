@@ -12,7 +12,7 @@ public class UserReadDto {
 
     private PrincipalReadDto principal;
 
-    private boolean blockedReview;
+    private Boolean blockedReview;
 
-    private int trustLevel;
+    private Integer trustLevel;
 }

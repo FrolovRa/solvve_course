@@ -52,13 +52,13 @@ public class ActorServiceTest {
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void testGetMovieByWrongId() {
+    public void testGetActorByWrongId() {
         actorService.getActor(UUID.randomUUID());
     }
 
     @Test
     @Transactional
-    public void testCreateActor() {
+    public void testAddActor() {
         ActorCreateDto actorCreateDto = new ActorCreateDto();
         actorCreateDto.setPerson(translationService.toReadDto(utils.getPersonFromDb()));
         actorCreateDto.setMovies(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
@@ -97,7 +97,7 @@ public class ActorServiceTest {
 
     @Test
     @Transactional
-    public void testEmptyPatchMovie() {
+    public void testEmptyPatchActor() {
         ActorPatchDto actorPatchDto = new ActorPatchDto();
 
         ActorCreateDto actorCreateDto = new ActorCreateDto();

@@ -63,8 +63,8 @@ public class MovieServiceTest {
 
     @Test
     @Transactional
-    public void testCreateMovie() {
-        MovieCreateDto movieCreateDto = createMovieCreateDto();
+    public void testAddMovie() {
+        MovieCreateDto movieCreateDto = utils.createMovieCreateDto();
 
         MovieReadDto movieReadDto = movieService.addMovie(movieCreateDto);
 
@@ -123,12 +123,4 @@ public class MovieServiceTest {
         movieService.deleteMovie(UUID.randomUUID());
     }
 
-    private MovieCreateDto createMovieCreateDto() {
-        MovieCreateDto movieCreateDto = new MovieCreateDto();
-        movieCreateDto.setName("Shattered island");
-        movieCreateDto.setDescription("cool film");
-        movieCreateDto.setGenres(new HashSet<>(Arrays.asList(Genre.DRAMA, Genre.ADVENTURE)));
-
-        return movieCreateDto;
-    }
 }
