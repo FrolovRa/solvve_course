@@ -41,6 +41,10 @@ public class MovieService {
             movieFromDb.setName(moviePatchDto.getName());
         }
 
+        if (nonNull(moviePatchDto.getRelease())) {
+            movieFromDb.setRelease(moviePatchDto.getRelease());
+        }
+
         if (nonNull(moviePatchDto.getCast())) {
             movieFromDb.setCast(moviePatchDto.getCast()
                     .stream()

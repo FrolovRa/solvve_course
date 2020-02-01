@@ -4,7 +4,7 @@ import com.solvve.course.domain.Actor;
 import com.solvve.course.domain.Person;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorPatchDto;
-import com.solvve.course.dto.actor.ActorReadDto;
+import com.solvve.course.dto.actor.ActorExtendedReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.ActorRepository;
 import com.solvve.course.util.TestUtils;
@@ -44,11 +44,11 @@ public class ActorServiceTest {
     @Transactional
     public void testGetActor() {
         Actor actor = utils.getActorFromDb();
-        ActorReadDto actualActor = translationService.toReadDto(actor);
+        ActorExtendedReadDto actualActor = translationService.toExtendedReadDto(actor);
 
-        ActorReadDto actorReadDto = actorService.getActor(actor.getId());
+        ActorExtendedReadDto actorExtendedReadDto = actorService.getActor(actor.getId());
 
-        assertThat(actualActor).isEqualToComparingFieldByField(actorReadDto);
+        assertThat(actualActor).isEqualToComparingFieldByField(actorExtendedReadDto);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -63,13 +63,13 @@ public class ActorServiceTest {
         actorCreateDto.setPerson(translationService.toReadDto(utils.getPersonFromDb()));
         actorCreateDto.setMovies(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
 
-        ActorReadDto actorReadDto = actorService.addActor(actorCreateDto);
+        ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
 
-        assertThat(actorCreateDto).isEqualToComparingFieldByField(actorReadDto);
-        assertNotNull(actorReadDto.getId());
+        assertThat(actorCreateDto).isEqualToComparingFieldByField(actorExtendedReadDto);
+        assertNotNull(actorExtendedReadDto.getId());
 
-        ActorReadDto actorFromDb = actorService.getActor(actorReadDto.getId());
-        assertThat(actorReadDto).isEqualToComparingFieldByField(actorFromDb);
+        ActorExtendedReadDto actorFromDb = actorService.getActor(actorExtendedReadDto.getId());
+        assertThat(actorExtendedReadDto).isEqualToComparingFieldByField(actorFromDb);
     }
 
     @Test
@@ -86,10 +86,10 @@ public class ActorServiceTest {
         ActorCreateDto actorCreateDto = new ActorCreateDto();
         actorCreateDto.setPerson(translationService.toReadDto(person));
 
-        ActorReadDto actorReadDto = actorService.addActor(actorCreateDto);
-        ActorReadDto patchedActor = actorService.patchActor(actorReadDto.getId(), actorPatchDto);
+        ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
+        ActorExtendedReadDto patchedActor = actorService.patchActor(actorExtendedReadDto.getId(), actorPatchDto);
 
-        assertEquals(actorReadDto.getPerson(), patchedActor.getPerson());
+        assertEquals(actorExtendedReadDto.getPerson(), patchedActor.getPerson());
         assertEquals(actorPatchDto.getMovies(), patchedActor.getMovies());
         assertEquals(actorPatchDto.getMoviesAsStar(), patchedActor.getMoviesAsStar());
         assertEquals(actorPatchDto.getCharacters(), patchedActor.getCharacters());
@@ -104,10 +104,10 @@ public class ActorServiceTest {
         actorCreateDto.setPerson(translationService.toReadDto(utils.getPersonFromDb()));
         actorCreateDto.setMovies(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
 
-        ActorReadDto actorReadDto = actorService.addActor(actorCreateDto);
-        ActorReadDto patchedActor = actorService.patchActor(actorReadDto.getId(), actorPatchDto);
+        ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
+        ActorExtendedReadDto patchedActor = actorService.patchActor(actorExtendedReadDto.getId(), actorPatchDto);
 
-        assertThat(actorReadDto).isEqualToIgnoringGivenFields(patchedActor);
+        assertThat(actorExtendedReadDto).isEqualToIgnoringGivenFields(patchedActor);
     }
 
     @Test

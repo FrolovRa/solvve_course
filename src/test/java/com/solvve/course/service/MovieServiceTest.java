@@ -17,6 +17,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -80,6 +81,7 @@ public class MovieServiceTest {
         MoviePatchDto moviePatchDto = new MoviePatchDto();
         moviePatchDto.setName("Epic");
         moviePatchDto.setDescription("test Description");
+        moviePatchDto.setRelease(LocalDate.now());
         moviePatchDto.setGenres(new HashSet<>(Arrays.asList(Genre.COMEDY, Genre.WESTERN)));
         moviePatchDto.setCast(Collections.singletonList(translationService.toReadDto(utils.getActorFromDb())));
         moviePatchDto.setStars(Collections.singletonList(translationService.toReadDto(utils.getActorFromDb())));
@@ -88,8 +90,7 @@ public class MovieServiceTest {
         Movie movieFromDb = utils.getMovieFromDb();
         MovieReadDto patchedMovie = movieService.patchMovie(movieFromDb.getId(), moviePatchDto);
 
-        assertThat(moviePatchDto).isEqualToIgnoringGivenFields(patchedMovie,
-                "characters", "cast", "stars");
+        assertThat(moviePatchDto).isEqualToComparingFieldByField(patchedMovie);
     }
 
     @Test

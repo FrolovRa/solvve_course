@@ -3,7 +3,7 @@ package com.solvve.course.service;
 import com.solvve.course.domain.Actor;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorPatchDto;
-import com.solvve.course.dto.actor.ActorReadDto;
+import com.solvve.course.dto.actor.ActorExtendedReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +22,18 @@ public class ActorService {
     @Autowired
     private TranslationService translationService;
 
-    public ActorReadDto getActor(UUID id) {
+    public ActorExtendedReadDto getActor(UUID id) {
         Actor actorFromDb = getActorRequired(id);
-        return translationService.toReadDto(actorFromDb);
+        return translationService.toExtendedReadDto(actorFromDb);
     }
 
-    public ActorReadDto addActor(ActorCreateDto actorCreateDto) {
+    public ActorExtendedReadDto addActor(ActorCreateDto actorCreateDto) {
         Actor actor = translationService.toEntity(actorCreateDto);
         actor = actorRepository.save(actor);
-        return translationService.toReadDto(actor);
+        return translationService.toExtendedReadDto(actor);
     }
 
-    public ActorReadDto patchActor(UUID id, ActorPatchDto actorPatchDto) {
+    public ActorExtendedReadDto patchActor(UUID id, ActorPatchDto actorPatchDto) {
         Actor actor = this.getActorRequired(id);
 
         if (nonNull(actorPatchDto.getPerson())) {
@@ -63,7 +63,7 @@ public class ActorService {
 
         Actor patchedActor = actorRepository.save(actor);
 
-        return translationService.toReadDto(patchedActor);
+        return translationService.toExtendedReadDto(patchedActor);
     }
 
     public void deleteActor(UUID id) {
