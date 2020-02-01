@@ -1,7 +1,6 @@
 package com.solvve.course.domain;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.Entity;

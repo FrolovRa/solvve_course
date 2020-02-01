@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
-
 @Service
 public class TranslationService {
 
