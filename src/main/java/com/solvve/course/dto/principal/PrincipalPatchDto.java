@@ -12,5 +12,5 @@ public class PrincipalPatchDto {
 
     private Role role;
 
-    private boolean blocked;
+    private Boolean blocked;
 }

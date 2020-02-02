@@ -216,7 +216,7 @@ public class TranslationService {
     public Principal toEntity(PrincipalReadDto dto) {
         Principal principal = new Principal();
         principal.setId(dto.getId());
-        principal.setBlocked(dto.isBlocked());
+        principal.setBlocked(dto.getBlocked());
         principal.setEmail(dto.getEmail());
         principal.setName(dto.getName());
         principal.setRole(dto.getRole());
@@ -292,7 +292,7 @@ public class TranslationService {
 
     public Principal toEntity(PrincipalCreateDto dto) {
         Principal principal = new Principal();
-        principal.setBlocked(dto.isBlocked());
+        principal.setBlocked(dto.getBlocked());
         principal.setEmail(dto.getEmail());
         principal.setName(dto.getName());
         principal.setRole(dto.getRole());

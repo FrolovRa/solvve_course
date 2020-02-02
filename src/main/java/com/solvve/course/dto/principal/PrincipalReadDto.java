@@ -16,5 +16,5 @@ public class PrincipalReadDto {
 
     private Role role;
 
-    private boolean blocked;
+    private Boolean blocked;
 }

@@ -8,7 +8,7 @@ import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.service.MovieService;
-import com.solvve.course.service.TranslationService;
+import com.solvve.course.util.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,10 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -36,16 +33,16 @@ public class MovieControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
     @Autowired
     private ObjectMapper objectMapper;
 
+    private TestUtils utils = new TestUtils();
     @MockBean
     private MovieService movieService;
 
     @Test
     public void testGetMovie() throws Exception {
-        MovieReadDto movieReadDto = createMovieReadDto();
+        MovieReadDto movieReadDto = utils.createMovieReadDto();
         when(movieService.getMovie(movieReadDto.getId())).thenReturn(movieReadDto);
 
         String resultJson = mvc.perform(get("/api/v1/movies/{id}", movieReadDto.getId()))
@@ -79,8 +76,8 @@ public class MovieControllerTest {
 
     @Test
     public void testAddMovie() throws Exception {
-        MovieCreateDto movieCreateDto = createMovieCreateDto();
-        MovieReadDto movieReadDto = createMovieReadDto();
+        MovieCreateDto movieCreateDto = utils.createMovieCreateDto();
+        MovieReadDto movieReadDto = utils.createMovieReadDto();
 
         when(movieService.addMovie(movieCreateDto)).thenReturn(movieReadDto);
 
@@ -101,7 +98,7 @@ public class MovieControllerTest {
         moviePatchDto.setDescription("test Description");
         moviePatchDto.setGenres(new HashSet<>(Arrays.asList(Genre.COMEDY, Genre.WESTERN)));
 
-        MovieReadDto movieReadDto = createMovieReadDto();
+        MovieReadDto movieReadDto = utils.createMovieReadDto();
 
         when(movieService.patchMovie(id, moviePatchDto)).thenReturn(movieReadDto);
 
@@ -123,22 +120,23 @@ public class MovieControllerTest {
         verify(movieService).deleteMovie(id);
     }
 
-    private MovieCreateDto createMovieCreateDto() {
-        MovieCreateDto movieCreateDto = new MovieCreateDto();
-        movieCreateDto.setName("Mr.Nobody");
-        movieCreateDto.setDescription("cool film");
-        movieCreateDto.setGenres(Collections.singleton(Genre.ACTION));
+    @Test
+    public void testGetMoviesByGenre() throws Exception {
+        MovieReadDto comedyMovie = utils.createMovieReadDto();
+        List<MovieReadDto> movies = Collections.singletonList(comedyMovie);
+        when(movieService.findMoviesByGenre(Genre.COMEDY)).thenReturn(movies);
 
-        return movieCreateDto;
+        String result = mvc.perform(get("/api/v1/movies/by-genre/" + Genre.COMEDY))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String actualList = objectMapper.writeValueAsString(movies);
+        assertEquals(actualList, result);
     }
 
-    private MovieReadDto createMovieReadDto() {
-        MovieReadDto movieReadDto = new MovieReadDto();
-        movieReadDto.setId(UUID.randomUUID());
-        movieReadDto.setName("Mr.Nobody");
-        movieReadDto.setDescription("cool film");
-        movieReadDto.setGenres(Collections.singleton(Genre.ACTION));
+    @Test
+    public void testGetMovieByGenreWithNotValidParam() throws Exception {
+        mvc.perform(get("/api/v1/movies/by-genre/{genre}", 42)).andExpect(status().isBadRequest());
 
-        return movieReadDto;
+        verifyNoInteractions(movieService);
     }
 }

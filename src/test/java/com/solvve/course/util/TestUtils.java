@@ -5,6 +5,8 @@ import com.solvve.course.domain.Character;
 import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.movie.MovieCreateDto;
+import com.solvve.course.dto.movie.MovieReadDto;
+import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.repository.*;
 import com.solvve.course.service.TranslationService;
@@ -15,6 +17,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.UUID;
 
 @Service
 public class TestUtils {
@@ -105,5 +108,25 @@ public class TestUtils {
         userCreateDto.setTrustLevel(1);
 
         return userCreateDto;
+    }
+
+    public PrincipalCreateDto createPrincipalCreateDto() {
+        PrincipalCreateDto principalCreateDto = new PrincipalCreateDto();
+        principalCreateDto.setName("Test");
+        principalCreateDto.setRole(Role.USER);
+        principalCreateDto.setBlocked(false);
+        principalCreateDto.setBlocked(false);
+
+        return principalCreateDto;
+    }
+
+    public MovieReadDto createMovieReadDto() {
+        MovieReadDto movieReadDto = new MovieReadDto();
+        movieReadDto.setId(UUID.randomUUID());
+        movieReadDto.setName("Mr.Nobody");
+        movieReadDto.setDescription("cool film");
+        movieReadDto.setGenres(Collections.singleton(Genre.COMEDY));
+
+        return movieReadDto;
     }
 }

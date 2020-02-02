@@ -14,5 +14,5 @@ public class PrincipalCreateDto {
 
     private Role role;
 
-    private boolean blocked;
+    private Boolean blocked;
 }
