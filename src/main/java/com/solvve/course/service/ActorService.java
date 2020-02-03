@@ -4,6 +4,7 @@ import com.solvve.course.domain.Actor;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
+import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,26 @@ public class ActorService {
 
     public void deleteActor(UUID id) {
         actorRepository.delete(getActorRequired(id));
+    }
+
+    public ActorExtendedReadDto putActor(UUID id, ActorPutDto actorPutDto) {
+        Actor actorFromDb = this.getActorRequired(id);
+        actorFromDb.setPerson(translationService.toEntity(actorPutDto.getPerson()));
+        actorFromDb.setMovies(actorPutDto.getMovies()
+                .stream()
+                .map(translationService::toEntity)
+                .collect(Collectors.toList()));
+        actorFromDb.setMoviesAsStar(actorPutDto.getMoviesAsStar()
+                .stream()
+                .map(translationService::toEntity)
+                .collect(Collectors.toList()));
+        actorFromDb.setCharacters(actorPutDto.getCharacters()
+                .stream()
+                .map(translationService::toEntity)
+                .collect(Collectors.toList()));
+        actorFromDb = actorRepository.save(actorFromDb);
+
+        return translationService.toExtendedReadDto(actorFromDb);
     }
 
     private Actor getActorRequired(UUID id) {

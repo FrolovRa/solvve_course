@@ -31,6 +31,7 @@ import static org.junit.Assert.assertNotNull;
         "delete from user",
         "delete from principal"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class PrincipalServiceTest {
+
     @Autowired
     private PrincipalRepository principalRepository;
     @Autowired

@@ -5,6 +5,7 @@ import com.solvve.course.domain.Person;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
+import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.ActorRepository;
 import com.solvve.course.util.TestUtils;
@@ -100,14 +101,27 @@ public class ActorServiceTest {
     public void testEmptyPatchActor() {
         ActorPatchDto actorPatchDto = new ActorPatchDto();
 
-        ActorCreateDto actorCreateDto = new ActorCreateDto();
-        actorCreateDto.setPerson(translationService.toReadDto(utils.getPersonFromDb()));
-        actorCreateDto.setMovies(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
+        ActorCreateDto actorCreateDto = utils.createActorCreateDto();
 
         ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
         ActorExtendedReadDto patchedActor = actorService.patchActor(actorExtendedReadDto.getId(), actorPatchDto);
 
         assertThat(actorExtendedReadDto).isEqualToIgnoringGivenFields(patchedActor);
+    }
+
+    @Test
+    @Transactional
+    public void testPutActor() {
+        ActorPutDto actorPutDto = new ActorPutDto();
+        actorPutDto.setPerson(translationService.toReadDto(utils.getPersonFromDb()));
+        actorPutDto.setMovies(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
+        actorPutDto.setMoviesAsStar(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
+
+        ActorCreateDto actorCreateDto = utils.createActorCreateDto();
+        ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
+        ActorExtendedReadDto updatedActor = actorService.putActor(actorExtendedReadDto.getId(), actorPutDto);
+
+        assertThat(actorPutDto).isEqualToIgnoringGivenFields(updatedActor);
     }
 
     @Test

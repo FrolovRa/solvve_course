@@ -35,10 +35,10 @@ public class MovieControllerTest {
     private MockMvc mvc;
     @Autowired
     private ObjectMapper objectMapper;
-
-    private TestUtils utils = new TestUtils();
     @MockBean
     private MovieService movieService;
+
+    private TestUtils utils = new TestUtils();
 
     @Test
     public void testGetMovie() throws Exception {

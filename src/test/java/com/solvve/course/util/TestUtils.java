@@ -4,6 +4,7 @@ import com.solvve.course.domain.*;
 import com.solvve.course.domain.Character;
 import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.domain.constant.Role;
+import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
@@ -128,5 +129,13 @@ public class TestUtils {
         movieReadDto.setGenres(Collections.singleton(Genre.COMEDY));
 
         return movieReadDto;
+    }
+
+    public ActorCreateDto createActorCreateDto() {
+        ActorCreateDto actorCreateDto = new ActorCreateDto();
+        actorCreateDto.setPerson(translationService.toReadDto(this.getPersonFromDb()));
+        actorCreateDto.setMovies(Collections.singletonList(translationService.toReadDto(this.getMovieFromDb())));
+
+        return actorCreateDto;
     }
 }
