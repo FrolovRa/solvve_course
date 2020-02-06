@@ -1,0 +1,110 @@
+package com.solvve.course.service;
+
+import com.solvve.course.domain.Character;
+import com.solvve.course.dto.character.CharacterCreateDto;
+import com.solvve.course.dto.character.CharacterPatchDto;
+import com.solvve.course.dto.character.CharacterReadDto;
+import com.solvve.course.exception.EntityNotFoundException;
+import com.solvve.course.repository.CharacterRepository;
+import com.solvve.course.util.TestUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.transaction.Transactional;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
+
+@ActiveProfiles("test")
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@Sql(statements = {"delete from character"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+public class CharacterServiceTest {
+
+    @Autowired
+    private CharacterRepository characterRepository;
+    @Autowired
+    private TestUtils utils;
+    @Autowired
+    private TranslationService translationService;
+    @Autowired
+    private CharacterService characterService;
+
+    @Test
+    @Transactional
+    public void testGetCharacter() {
+        Character person = utils.getCharacterFromDb();
+        CharacterReadDto actualPerson = translationService.toReadDto(person);
+
+        CharacterReadDto personReadDto = characterService.getCharacter(person.getId());
+
+        assertThat(actualPerson).isEqualToComparingFieldByField(personReadDto);
+    }
+
+    @Test
+    @Transactional
+    public void testAddCharacter() {
+        CharacterCreateDto createDto = utils.createCharacterCreateDto();
+
+        CharacterReadDto readDto = characterService.addCharacter(createDto);
+
+        assertThat(createDto).isEqualToComparingFieldByField(readDto);
+        assertNotNull(readDto.getId());
+
+        CharacterReadDto personFromDb = characterService.getCharacter(readDto.getId());
+        assertThat(readDto).isEqualToComparingFieldByField(personFromDb);
+    }
+
+    @Test
+    @Transactional
+    public void testPatchCharacter() {
+        CharacterPatchDto characterPatchDto = new CharacterPatchDto();
+        characterPatchDto.setName("Name");
+        characterPatchDto.setActor(translationService.toReadDto(utils.getActorFromDb()));
+        characterPatchDto.setMovie(translationService.toReadDto(utils.getMovieFromDb()));
+
+        Character person = utils.getCharacterFromDb();
+        CharacterReadDto patchedUser = characterService.patchPerson(person.getId(), characterPatchDto);
+
+        assertThat(characterPatchDto).isEqualToComparingFieldByField(patchedUser);
+    }
+
+    @Test
+    @Transactional
+    public void testEmptyPatchCharacter() {
+        CharacterPatchDto userPatchDto = new CharacterPatchDto();
+
+        Character person = utils.getCharacterFromDb();
+        CharacterReadDto patchedUser = characterService.patchPerson(person.getId(), userPatchDto);
+
+        assertThat(translationService.toReadDto(person)).isEqualToComparingFieldByField(patchedUser);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void testGetPersonByWrongId() {
+        characterService.getCharacter(UUID.randomUUID());
+    }
+
+    @Test
+    @Transactional
+    public void testDeleteCharacter() {
+        Character character = utils.getCharacterFromDb();
+
+        characterService.deleteCharacter(character.getId());
+
+        assertFalse(characterRepository.existsById(character.getId()));
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void testDeleteByWrongId() {
+        characterService.deleteCharacter(UUID.randomUUID());
+    }
+}

@@ -25,7 +25,7 @@ public class MovieService {
     private TranslationService translationService;
 
     public MovieReadDto getMovie(UUID id) {
-        Movie movieFromDb = getMovieRequired(id);
+        Movie movieFromDb = this.getMovieRequired(id);
         return translationService.toReadDto(movieFromDb);
     }
 
@@ -36,7 +36,7 @@ public class MovieService {
     }
 
     public MovieReadDto patchMovie(UUID id, MoviePatchDto moviePatchDto) {
-        Movie movieFromDb = getMovieRequired(id);
+        Movie movieFromDb = this.getMovieRequired(id);
 
         if (nonNull(moviePatchDto.getName())) {
             movieFromDb.setName(moviePatchDto.getName());
