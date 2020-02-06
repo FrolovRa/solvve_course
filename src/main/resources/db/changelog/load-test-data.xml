@@ -1,0 +1,53 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="load-principles" author="frolov">
+        <loadData tableName="principal" file="db/data/load-principal.csv" separator=";">
+            <column name="id" type="uuid"/>
+            <column name="name" type="string"/>
+            <column name="email" type="string"/>
+            <column name="blocked" type="boolean"/>
+            <column name="role" type="string"/>
+        </loadData>
+
+        <loadData tableName="user" file="db/data/load-user.csv" separator=";">
+            <column name="id" type="uuid"/>
+            <column name="principal_id" type="uuid"/>
+            <column name="blocked_review" type="boolean"/>
+            <column name="trust_level" type="numeric"/>
+        </loadData>
+
+        <loadData tableName="person" file="db/data/load-person.csv" separator=";">
+            <column name="id" type="uuid"/>
+            <column name="name" type="string"/>
+        </loadData>
+
+        <loadData tableName="director" file="db/data/load-director.csv" separator=";">
+            <column name="id" type="uuid"/>
+            <column name="person_id" type="uuid"/>
+        </loadData>
+
+        <loadData tableName="actor" file="db/data/load-actor.csv" separator=";">
+            <column name="id" type="uuid"/>
+            <column name="person_id" type="uuid"/>
+        </loadData>
+
+        <loadData tableName="movie" file="db/data/load-movie.csv" separator=";">
+            <column name="id" type="uuid"/>
+            <column name="name" type="string"/>
+            <column name="description" type="string"/>
+            <column name="release" type="Date"/>
+        </loadData>
+
+        <loadData tableName="character" file="db/data/load-character.csv" separator=";">
+            <column name="id" type="uuid"/>
+            <column name="name" type="string"/>
+            <column name="actor_id" type="uuid"/>
+            <column name="movie_id" type="uuid"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
