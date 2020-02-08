@@ -5,10 +5,14 @@ import com.solvve.course.domain.Character;
 import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.actor.ActorCreateDto;
+import com.solvve.course.dto.actor.ActorExtendedReadDto;
+import com.solvve.course.dto.actor.ActorPatchDto;
+import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.dto.person.PersonCreateDto;
+import com.solvve.course.dto.person.PersonReadDto;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.repository.*;
@@ -179,10 +183,44 @@ public class TestUtils {
         return movieReadDto;
     }
 
+    public PersonReadDto createPersonReadDto() {
+        PersonReadDto personReadDto = new PersonReadDto();
+        personReadDto.setId(UUID.randomUUID());
+        personReadDto.setName("Read Dto");
+
+        return personReadDto;
+    }
+
+    public ActorExtendedReadDto createActorExtendedReadDto() {
+        ActorExtendedReadDto actorExtendedReadDto = new ActorExtendedReadDto();
+        actorExtendedReadDto.setId(UUID.randomUUID());
+        actorExtendedReadDto.setMovies(Collections.singletonList(this.createMovieReadDto()));
+        actorExtendedReadDto.setPerson(this.createPersonReadDto());
+
+        return actorExtendedReadDto;
+    }
+
+    public ActorPatchDto createActorPatchDto() {
+        ActorPatchDto actorPatchDto = new ActorPatchDto();
+        actorPatchDto.setMovies(Collections.singletonList(this.createMovieReadDto()));
+        actorPatchDto.setPerson(this.createPersonReadDto());
+
+        return actorPatchDto;
+    }
+
+    public ActorPutDto createActorPutDto() {
+        ActorPutDto actorPutDto = new ActorPutDto();
+        actorPutDto.setPerson(this.createPersonReadDto());
+        actorPutDto.setMovies(Collections.singletonList(this.createMovieReadDto()));
+        actorPutDto.setMoviesAsStar(Collections.singletonList(this.createMovieReadDto()));
+
+        return actorPutDto;
+    }
+
     public ActorCreateDto createActorCreateDto() {
         ActorCreateDto actorCreateDto = new ActorCreateDto();
-        actorCreateDto.setPerson(translationService.toReadDto(this.getPersonFromDb()));
-        actorCreateDto.setMovies(Collections.singletonList(translationService.toReadDto(this.getMovieFromDb())));
+        actorCreateDto.setMovies(Collections.singletonList(this.createMovieReadDto()));
+        actorCreateDto.setPerson(this.createPersonReadDto());
 
         return actorCreateDto;
     }

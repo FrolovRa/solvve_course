@@ -102,6 +102,7 @@ public class ActorServiceTest {
         ActorPatchDto actorPatchDto = new ActorPatchDto();
 
         ActorCreateDto actorCreateDto = utils.createActorCreateDto();
+        actorCreateDto.setMovies(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
 
         ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
         ActorExtendedReadDto patchedActor = actorService.patchActor(actorExtendedReadDto.getId(), actorPatchDto);
