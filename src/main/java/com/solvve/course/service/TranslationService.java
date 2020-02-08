@@ -23,9 +23,6 @@ import java.util.stream.Collectors;
 @Service
 public class TranslationService {
 
-    @Autowired
-    private ActorService actorService;
-
     public MovieReadDto toReadDto(Movie movie) {
         MovieReadDto dto = new MovieReadDto();
         dto.setId(movie.getId());
@@ -190,9 +187,11 @@ public class TranslationService {
     }
 
     public Actor toEntity(ActorReadDto dto) {
-        ActorExtendedReadDto edto = actorService.getActor(dto.getId());
+        Actor actor = new Actor();
+        actor.setId(dto.getId());
+        actor.setPerson(this.toEntity(dto.getPerson()));
 
-        return this.toEntity(edto);
+        return actor;
     }
 
     public Person toEntity(PersonReadDto dto) {
