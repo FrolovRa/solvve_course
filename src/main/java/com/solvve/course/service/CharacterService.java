@@ -18,6 +18,7 @@ public class CharacterService {
 
     @Autowired
     private CharacterRepository characterRepository;
+
     @Autowired
     private TranslationService translationService;
 

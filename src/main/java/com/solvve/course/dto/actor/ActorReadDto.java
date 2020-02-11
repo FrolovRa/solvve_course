@@ -7,6 +7,7 @@ import java.util.UUID;
 
 @Data
 public class ActorReadDto {
+
     private UUID id;
 
     private PersonReadDto person;

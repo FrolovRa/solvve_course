@@ -20,6 +20,7 @@ public class ActorService {
 
     @Autowired
     private ActorRepository actorRepository;
+
     @Autowired
     private TranslationService translationService;
 

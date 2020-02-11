@@ -19,9 +19,11 @@ public class Character {
     private UUID id;
 
     private String name;
+
     @ToString.Exclude
     @ManyToOne
     private Actor actor;
+
     @ToString.Exclude
     @ManyToOne
     private Movie movie;

@@ -15,7 +15,7 @@ public class Actor {
     @GeneratedValue
     private UUID id;
 
-    @OneToOne(targetEntity = Person.class)
+    @OneToOne
     private Person person;
 
     @ManyToMany

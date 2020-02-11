@@ -14,13 +14,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
-
 @Service
 public class MovieService {
 
     @Autowired
     private MovieRepository movieRepository;
+
     @Autowired
     private TranslationService translationService;
 
@@ -38,40 +37,40 @@ public class MovieService {
     public MovieReadDto patchMovie(UUID id, MoviePatchDto moviePatchDto) {
         Movie movieFromDb = this.getMovieRequired(id);
 
-        if (nonNull(moviePatchDto.getName())) {
+        if (moviePatchDto.getName() != null) {
             movieFromDb.setName(moviePatchDto.getName());
         }
 
-        if (nonNull(moviePatchDto.getRelease())) {
+        if (moviePatchDto.getRelease() != null) {
             movieFromDb.setRelease(moviePatchDto.getRelease());
         }
 
-        if (nonNull(moviePatchDto.getCast())) {
+        if (moviePatchDto.getCast() != null) {
             movieFromDb.setCast(moviePatchDto.getCast()
                     .stream()
                     .map(translationService::toEntity)
                     .collect(Collectors.toList()));
         }
 
-        if (nonNull(moviePatchDto.getCharacters())) {
+        if (moviePatchDto.getCharacters() != null) {
             movieFromDb.setCharacters(moviePatchDto.getCharacters()
                     .stream()
                     .map(translationService::toEntity)
                     .collect(Collectors.toList()));
         }
 
-        if (nonNull(moviePatchDto.getGenres())) {
+        if (moviePatchDto.getGenres() != null) {
             movieFromDb.setGenres(moviePatchDto.getGenres());
         }
 
-        if (nonNull(moviePatchDto.getStars())) {
+        if (moviePatchDto.getStars() != null) {
             movieFromDb.setStars(moviePatchDto.getStars()
                     .stream()
                     .map(translationService::toEntity)
                     .collect(Collectors.toList()));
         }
 
-        if (nonNull(moviePatchDto.getDescription())) {
+        if (moviePatchDto.getDescription() != null) {
             movieFromDb.setDescription(moviePatchDto.getDescription());
         }
 
