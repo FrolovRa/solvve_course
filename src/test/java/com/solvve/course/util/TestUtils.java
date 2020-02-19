@@ -67,9 +67,7 @@ public class TestUtils {
     public static final UUID TEST_DIRECTOR_THREE = UUID.fromString("97875062-4567-45d9-80db-06f7cfb6d8ee");
 
     public Actor getActorFromDb() {
-        Movie movieFromDb = this.getMovieFromDb();
         Actor actor = new Actor();
-        actor.setMovies(Collections.singletonList(movieFromDb));
         actor.setPerson(this.getPersonFromDb());
 
         return actorRepository.save(actor);
@@ -79,7 +77,6 @@ public class TestUtils {
         Movie movie = new Movie();
         movie.setName("Test film");
         movie.setDescription("test description");
-        movie.setGenres(new HashSet<>(Arrays.asList(Genre.DRAMA, Genre.ADVENTURE)));
         movie.setRelease(LocalDate.now());
 
         return movieRepository.save(movie);
@@ -139,8 +136,8 @@ public class TestUtils {
     public CharacterCreateDto createCharacterCreateDto() {
         CharacterCreateDto characterCreateDto = new CharacterCreateDto();
         characterCreateDto.setName("iao");
-        characterCreateDto.setActor(translationService.toReadDto(this.getActorFromDb()));
-        characterCreateDto.setMovie(translationService.toReadDto(this.getMovieFromDb()));
+        characterCreateDto.setActorId(this.getActorFromDb().getId());
+        characterCreateDto.setMovieId(this.getMovieFromDb().getId());
 
         return characterCreateDto;
     }
@@ -149,7 +146,6 @@ public class TestUtils {
         MovieCreateDto movieCreateDto = new MovieCreateDto();
         movieCreateDto.setName("Shattered island");
         movieCreateDto.setDescription("cool film");
-        movieCreateDto.setGenres(new HashSet<>(Arrays.asList(Genre.DRAMA, Genre.ADVENTURE)));
 
         return movieCreateDto;
     }
@@ -157,7 +153,7 @@ public class TestUtils {
     public UserCreateDto createUserCreateDto() {
         UserCreateDto userCreateDto = new UserCreateDto();
         userCreateDto.setBlockedReview(true);
-        userCreateDto.setPrincipal(translationService.toReadDto(getPrincipalFromDb()));
+        userCreateDto.setPrincipalId(getPrincipalFromDb().getId());
         userCreateDto.setTrustLevel(1);
 
         return userCreateDto;
@@ -178,7 +174,6 @@ public class TestUtils {
         movieReadDto.setId(UUID.randomUUID());
         movieReadDto.setName("Mr.Nobody");
         movieReadDto.setDescription("cool film");
-        movieReadDto.setGenres(Collections.singleton(Genre.COMEDY));
 
         return movieReadDto;
     }
@@ -202,25 +197,21 @@ public class TestUtils {
 
     public ActorPatchDto createActorPatchDto() {
         ActorPatchDto actorPatchDto = new ActorPatchDto();
-        actorPatchDto.setMovies(Collections.singletonList(this.createMovieReadDto()));
-        actorPatchDto.setPerson(this.createPersonReadDto());
+        actorPatchDto.setPersonId(this.createPersonReadDto().getId());
 
         return actorPatchDto;
     }
 
     public ActorPutDto createActorPutDto() {
         ActorPutDto actorPutDto = new ActorPutDto();
-        actorPutDto.setPerson(this.createPersonReadDto());
-        actorPutDto.setMovies(Collections.singletonList(this.createMovieReadDto()));
-        actorPutDto.setMoviesAsStar(Collections.singletonList(this.createMovieReadDto()));
+        actorPutDto.setPersonId(this.createPersonReadDto().getId());
 
         return actorPutDto;
     }
 
     public ActorCreateDto createActorCreateDto() {
         ActorCreateDto actorCreateDto = new ActorCreateDto();
-        actorCreateDto.setMovies(Collections.singletonList(this.createMovieReadDto()));
-        actorCreateDto.setPerson(this.createPersonReadDto());
+        actorCreateDto.setPersonId(this.createPersonReadDto().getId());
 
         return actorCreateDto;
     }

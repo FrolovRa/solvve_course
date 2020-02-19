@@ -23,34 +23,31 @@ public class PrincipalService {
 
     public PrincipalReadDto getPrincipal(UUID id) {
         Principal principalFromDb = this.getPrincipalRequired(id);
+
         return translationService.toReadDto(principalFromDb);
     }
 
     public PrincipalReadDto addPrincipal(PrincipalCreateDto userCreateDto) {
         Principal principal = translationService.toEntity(userCreateDto);
         principal = principalRepository.save(principal);
+
         return translationService.toReadDto(principal);
     }
 
     public PrincipalReadDto patchPrincipal(UUID id, PrincipalPatchDto principalPatchDto) {
         Principal principal = this.getPrincipalRequired(id);
-
         if (nonNull(principalPatchDto.getName())) {
             principal.setName(principalPatchDto.getName());
         }
-
         if (nonNull(principalPatchDto.getRole())) {
             principal.setRole(principalPatchDto.getRole());
         }
-
         if (nonNull(principalPatchDto.getEmail())) {
             principal.setEmail(principalPatchDto.getEmail());
         }
-
         if (nonNull(principalPatchDto.getBlocked())) {
             principal.setBlocked(principalPatchDto.getBlocked());
         }
-
         Principal patchedPrincipal = principalRepository.save(principal);
 
         return translationService.toReadDto(patchedPrincipal);

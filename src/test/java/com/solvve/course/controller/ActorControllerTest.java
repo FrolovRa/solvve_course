@@ -97,7 +97,7 @@ public class ActorControllerTest {
         ActorPutDto actorPutDto = utils.createActorPutDto();
         ActorExtendedReadDto actorReadDto = utils.createActorExtendedReadDto();
 
-        when(actorService.putActor(id, actorPutDto)).thenReturn(actorReadDto);
+        when(actorService.updateActor(id, actorPutDto)).thenReturn(actorReadDto);
 
         String resultJson = mvc.perform(put("/api/v1/actors/" + id)
                 .content(objectMapper.writeValueAsString(actorPutDto))

@@ -1,12 +1,13 @@
 package com.solvve.course.dto.user;
 
-import com.solvve.course.dto.principal.PrincipalReadDto;
 import lombok.Data;
+
+import java.util.UUID;
 
 @Data
 public class UserPatchDto {
 
-    private PrincipalReadDto principal;
+    private UUID principalId;
 
     private Boolean blockedReview;
 

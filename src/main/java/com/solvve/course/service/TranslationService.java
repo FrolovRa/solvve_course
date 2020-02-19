@@ -15,43 +15,25 @@ import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserReadDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class TranslationService {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public MovieReadDto toReadDto(Movie movie) {
         MovieReadDto dto = new MovieReadDto();
         dto.setId(movie.getId());
         dto.setName(movie.getName());
         dto.setRelease(movie.getRelease());
-        dto.setCast(movie.getCast()
-                .stream()
-                .map(this::toReadDto)
-                .collect(Collectors.toList()));
-        dto.setCharacters(movie.getCharacters()
-                .stream()
-                .map(character -> {
-                    CharacterReadDto characterDto = new CharacterReadDto();
-                    characterDto.setId(character.getId());
-                    characterDto.setName(character.getName());
-                    ActorReadDto actorDto = new ActorReadDto();
-                    actorDto.setId(character.getActor().getId());
-                    actorDto.setPerson(this.toReadDto(character.getActor().getPerson()));
-                    characterDto.setActor(actorDto);
-
-                    return characterDto;
-                })
-                .collect(Collectors.toList()));
         dto.setDescription(movie.getDescription());
-        dto.setGenres(movie.getGenres());
-        dto.setStars(movie.getStars()
-                .stream()
-                .map(this::toReadDto)
-                .collect(Collectors.toList()));
 
         return dto;
     }
@@ -71,17 +53,7 @@ public class TranslationService {
         dto.setId(actor.getId());
         dto.setCharacters(actor.getCharacters()
                 .stream()
-                .map(character -> {
-                    CharacterReadDto characterDto = new CharacterReadDto();
-                    characterDto.setId(character.getId());
-                    characterDto.setName(character.getName());
-                    ActorReadDto actorDto = new ActorReadDto();
-                    actorDto.setId(character.getActor().getId());
-                    actorDto.setPerson(this.toReadDto(character.getActor().getPerson()));
-                    characterDto.setActor(actorDto);
-
-                    return characterDto;
-                })
+                .map(this::toReadDto)
                 .collect(Collectors.toList()));
         dto.setMovies(actor.getMovies()
                 .stream()
@@ -133,114 +105,11 @@ public class TranslationService {
         return dto;
     }
 
-    public Movie toEntity(MovieReadDto dto) {
-        Movie movie = new Movie();
-        movie.setId(dto.getId());
-        movie.setName(dto.getName());
-        movie.setRelease(dto.getRelease());
-        movie.setCast(dto.getCast()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
-        movie.setCharacters(dto.getCharacters()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
-        movie.setDescription(dto.getDescription());
-        movie.setGenres(dto.getGenres());
-        movie.setStars(dto.getStars()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
-
-        return movie;
-    }
-
-    public Character toEntity(CharacterReadDto dto) {
-        Character character = new Character();
-        character.setId(dto.getId());
-        character.setName(dto.getName());
-        character.setMovie(this.toEntity(dto.getMovie()));
-        character.setActor(this.toEntity(dto.getActor()));
-
-        return character;
-    }
-
-    public Actor toEntity(ActorExtendedReadDto dto) {
-        Actor actor = new Actor();
-        actor.setId(dto.getId());
-        actor.setCharacters(dto.getCharacters()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
-        actor.setMovies(dto.getMovies()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
-        actor.setMoviesAsStar(dto.getMoviesAsStar()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
-        actor.setPerson(this.toEntity(dto.getPerson()));
-
-        return actor;
-    }
-
-    public Actor toEntity(ActorReadDto dto) {
-        Actor actor = new Actor();
-        actor.setId(dto.getId());
-        actor.setPerson(this.toEntity(dto.getPerson()));
-
-        return actor;
-    }
-
-    public Person toEntity(PersonReadDto dto) {
-        Person person = new Person();
-        person.setId(dto.getId());
-        person.setName(dto.getName());
-
-        return person;
-    }
-
-    public User toEntity(UserReadDto dto) {
-        User user = new User();
-        user.setId(dto.getId());
-        user.setBlockedReview(dto.getBlockedReview());
-        user.setPrincipal(this.toEntity(dto.getPrincipal()));
-        user.setTrustLevel(dto.getTrustLevel());
-
-        return user;
-    }
-
-    public Principal toEntity(PrincipalReadDto dto) {
-        Principal principal = new Principal();
-        principal.setId(dto.getId());
-        principal.setBlocked(dto.getBlocked());
-        principal.setEmail(dto.getEmail());
-        principal.setName(dto.getName());
-        principal.setRole(dto.getRole());
-
-        return principal;
-    }
-
     public Movie toEntity(MovieCreateDto dto) {
         Movie movie = new Movie();
         movie.setName(dto.getName());
         movie.setRelease(dto.getRelease());
-        movie.setCast(dto.getCast()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
-        movie.setCharacters(dto.getCharacters()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
         movie.setDescription(dto.getDescription());
-        movie.setGenres(dto.getGenres());
-        movie.setStars(dto.getStars()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
 
         return movie;
     }
@@ -248,27 +117,15 @@ public class TranslationService {
     public Character toEntity(CharacterCreateDto dto) {
         Character character = new Character();
         character.setName(dto.getName());
-        character.setMovie(this.toEntity(dto.getMovie()));
-        character.setActor(this.toEntity(dto.getActor()));
+        character.setMovie(this.getReference(Movie.class, dto.getMovieId()));
+        character.setActor(this.getReference(Actor.class, dto.getActorId()));
 
         return character;
     }
 
     public Actor toEntity(ActorCreateDto dto) {
         Actor actor = new Actor();
-        actor.setCharacters(dto.getCharacters()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
-        actor.setMovies(dto.getMovies()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
-        actor.setMoviesAsStar(dto.getMoviesAsStar()
-                .stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList()));
-        actor.setPerson(this.toEntity(dto.getPerson()));
+        actor.setPerson(this.getReference(Person.class, dto.getPersonId()));
 
         return actor;
     }
@@ -283,7 +140,7 @@ public class TranslationService {
     public User toEntity(UserCreateDto dto) {
         User user = new User();
         user.setBlockedReview(dto.getBlockedReview());
-        user.setPrincipal(this.toEntity(dto.getPrincipal()));
+        user.setPrincipal(this.getReference(Principal.class, dto.getPrincipalId()));
         user.setTrustLevel(dto.getTrustLevel());
 
         return user;
@@ -297,5 +154,9 @@ public class TranslationService {
         principal.setRole(dto.getRole());
 
         return principal;
+    }
+
+    public <E> E getReference(Class<E> entityClass, UUID id) {
+        return entityManager.getReference(entityClass, id);
     }
 }

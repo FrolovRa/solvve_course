@@ -6,6 +6,7 @@ import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
 import com.solvve.course.dto.actor.ActorPutDto;
+import com.solvve.course.dto.person.PersonReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.ActorRepository;
 import com.solvve.course.util.TestUtils;
@@ -40,6 +41,8 @@ public class ActorServiceTest {
     private TranslationService translationService;
     @Autowired
     private ActorService actorService;
+    @Autowired
+    private PersonService personService;
 
     @Test
     @Transactional
@@ -61,12 +64,11 @@ public class ActorServiceTest {
     @Transactional
     public void testAddActor() {
         ActorCreateDto actorCreateDto = new ActorCreateDto();
-        actorCreateDto.setPerson(translationService.toReadDto(utils.getPersonFromDb()));
-        actorCreateDto.setMovies(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
+        actorCreateDto.setPersonId(utils.getPersonFromDb().getId());
 
         ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
 
-        assertThat(actorCreateDto).isEqualToComparingFieldByField(actorExtendedReadDto);
+        assertThat(actorCreateDto).isEqualToIgnoringGivenFields(actorExtendedReadDto, "personId");
         assertNotNull(actorExtendedReadDto.getId());
 
         ActorExtendedReadDto actorFromDb = actorService.getActor(actorExtendedReadDto.getId());
@@ -77,23 +79,16 @@ public class ActorServiceTest {
     @Transactional
     public void testPatchActor() {
         ActorPatchDto actorPatchDto = new ActorPatchDto();
-        actorPatchDto.setMovies(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
-        actorPatchDto.setMoviesAsStar(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
-        actorPatchDto.setCharacters(Collections.emptyList());
-
         Person person = utils.getPersonFromDb();
-        actorPatchDto.setPerson(translationService.toReadDto(person));
+        actorPatchDto.setPersonId(person.getId());
 
         ActorCreateDto actorCreateDto = new ActorCreateDto();
-        actorCreateDto.setPerson(translationService.toReadDto(person));
+        actorCreateDto.setPersonId(person.getId());
 
         ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
         ActorExtendedReadDto patchedActor = actorService.patchActor(actorExtendedReadDto.getId(), actorPatchDto);
 
         assertEquals(actorExtendedReadDto.getPerson(), patchedActor.getPerson());
-        assertEquals(actorPatchDto.getMovies(), patchedActor.getMovies());
-        assertEquals(actorPatchDto.getMoviesAsStar(), patchedActor.getMoviesAsStar());
-        assertEquals(actorPatchDto.getCharacters(), patchedActor.getCharacters());
     }
 
     @Test
@@ -101,8 +96,9 @@ public class ActorServiceTest {
     public void testEmptyPatchActor() {
         ActorPatchDto actorPatchDto = new ActorPatchDto();
 
+        PersonReadDto personReadDto = personService.addPerson(utils.createPersonCreateDto());
         ActorCreateDto actorCreateDto = utils.createActorCreateDto();
-        actorCreateDto.setMovies(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
+        actorCreateDto.setPersonId(personReadDto.getId());
 
         ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
         ActorExtendedReadDto patchedActor = actorService.patchActor(actorExtendedReadDto.getId(), actorPatchDto);
@@ -114,15 +110,16 @@ public class ActorServiceTest {
     @Transactional
     public void testPutActor() {
         ActorPutDto actorPutDto = new ActorPutDto();
-        actorPutDto.setPerson(translationService.toReadDto(utils.getPersonFromDb()));
-        actorPutDto.setMovies(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
-        actorPutDto.setMoviesAsStar(Collections.singletonList(translationService.toReadDto(utils.getMovieFromDb())));
+        PersonReadDto personReadDtoForPut = personService.addPerson(utils.createPersonCreateDto());
+        actorPutDto.setPersonId(personReadDtoForPut.getId());
 
+        PersonReadDto personReadDtoForCreate = personService.addPerson(utils.createPersonCreateDto());
         ActorCreateDto actorCreateDto = utils.createActorCreateDto();
+        actorCreateDto.setPersonId(personReadDtoForCreate.getId());
         ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
-        ActorExtendedReadDto updatedActor = actorService.putActor(actorExtendedReadDto.getId(), actorPutDto);
+        ActorExtendedReadDto updatedActor = actorService.updateActor(actorExtendedReadDto.getId(), actorPutDto);
 
-        assertThat(actorPutDto).isEqualToIgnoringGivenFields(updatedActor);
+        assertThat(actorPutDto).isEqualToIgnoringGivenFields(updatedActor, "personId");
     }
 
     @Test

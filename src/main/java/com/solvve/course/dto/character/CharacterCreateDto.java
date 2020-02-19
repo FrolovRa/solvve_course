@@ -1,16 +1,16 @@
 package com.solvve.course.dto.character;
 
-import com.solvve.course.dto.actor.ActorReadDto;
-import com.solvve.course.dto.movie.MovieReadDto;
 import lombok.Data;
+
+import java.util.UUID;
 
 @Data
 public class CharacterCreateDto {
 
     private String name;
 
-    private ActorReadDto actor;
+    private UUID actorId;
 
-    private MovieReadDto movie;
+    private UUID movieId;
 
 }

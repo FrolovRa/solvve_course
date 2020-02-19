@@ -58,7 +58,7 @@ public class UserServiceTest {
 
         UserReadDto readDto = userService.addUser(createDto);
 
-        assertThat(createDto).isEqualToComparingFieldByField(readDto);
+        assertThat(createDto).isEqualToIgnoringGivenFields(readDto, "principalId");
         assertNotNull(readDto.getId());
 
         UserReadDto userFromDb = userService.getUser(readDto.getId());
@@ -68,14 +68,14 @@ public class UserServiceTest {
     @Test
     public void testPatchUser() {
         UserPatchDto userPatchDto = new UserPatchDto();
-        userPatchDto.setPrincipal(translationService.toReadDto(utils.getPrincipalFromDb()));
+        userPatchDto.setPrincipalId(utils.getPrincipalFromDb().getId());
         userPatchDto.setBlockedReview(true);
         userPatchDto.setTrustLevel(2);
 
         User user = utils.getUserFromDb();
         UserReadDto patchedUser = userService.patchUser(user.getId(), userPatchDto);
 
-        assertThat(userPatchDto).isEqualToComparingFieldByField(patchedUser);
+        assertThat(userPatchDto).isEqualToIgnoringGivenFields(patchedUser, "principalId");
     }
 
     @Test

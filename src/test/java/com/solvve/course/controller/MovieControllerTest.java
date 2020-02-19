@@ -96,7 +96,6 @@ public class MovieControllerTest {
         MoviePatchDto moviePatchDto = new MoviePatchDto();
         moviePatchDto.setName("Epic");
         moviePatchDto.setDescription("test Description");
-        moviePatchDto.setGenres(new HashSet<>(Arrays.asList(Genre.COMEDY, Genre.WESTERN)));
 
         MovieReadDto movieReadDto = utils.createMovieReadDto();
 

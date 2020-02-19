@@ -23,22 +23,22 @@ public class PersonService {
 
     public PersonReadDto getPerson(UUID id) {
         Person personFromDb = getPersonRequired(id);
+
         return translationService.toReadDto(personFromDb);
     }
 
     public PersonReadDto addPerson(PersonCreateDto personCreateDto) {
         Person person = translationService.toEntity(personCreateDto);
         person = personRepository.save(person);
+
         return translationService.toReadDto(person);
     }
 
     public PersonReadDto patchPerson(UUID id, PersonPatchDto personPatchDto) {
         Person person = this.getPersonRequired(id);
-
         if (nonNull(personPatchDto.getName())) {
             person.setName(personPatchDto.getName());
         }
-
         Person patchedPerson = personRepository.save(person);
 
         return translationService.toReadDto(patchedPerson);

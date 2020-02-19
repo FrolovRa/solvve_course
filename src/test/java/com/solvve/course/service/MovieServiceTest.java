@@ -8,6 +8,7 @@ import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.MovieRepository;
 import com.solvve.course.util.TestUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,10 +79,6 @@ public class MovieServiceTest {
         moviePatchDto.setName("Epic");
         moviePatchDto.setDescription("test Description");
         moviePatchDto.setRelease(LocalDate.now());
-        moviePatchDto.setGenres(new HashSet<>(Arrays.asList(Genre.COMEDY, Genre.WESTERN)));
-        moviePatchDto.setCast(Collections.singletonList(translationService.toReadDto(utils.getActorFromDb())));
-        moviePatchDto.setStars(Collections.singletonList(translationService.toReadDto(utils.getActorFromDb())));
-        moviePatchDto.setCharacters(Collections.emptyList());
 
         Movie movieFromDb = utils.getMovieFromDb();
         MovieReadDto patchedMovie = movieService.patchMovie(movieFromDb.getId(), moviePatchDto);
@@ -99,7 +96,6 @@ public class MovieServiceTest {
         MovieReadDto movieAfterPatch = movieService.patchMovie(movieBeforePatch.getId(), moviePatchDto);
         assertNotNull(movieAfterPatch.getDescription());
         assertNotNull(movieAfterPatch.getName());
-        assertNotNull(movieAfterPatch.getGenres());
 
         assertThat(movieBeforePatch).isEqualToComparingFieldByField(movieAfterPatch);
     }
@@ -117,22 +113,5 @@ public class MovieServiceTest {
     @Test(expected = EntityNotFoundException.class)
     public void testDeleteByWrongId() {
         movieService.deleteMovie(UUID.randomUUID());
-    }
-
-    @Test
-    @Transactional
-    public void testFindMoviesByGenre() {
-        MovieCreateDto horrorMovie = new MovieCreateDto();
-        horrorMovie.setGenres(new HashSet<>(Collections.singletonList(Genre.HORROR)));
-        MovieReadDto horrorReadDto = movieService.addMovie(horrorMovie);
-
-        MovieCreateDto comedyMovie = new MovieCreateDto();
-        comedyMovie.setGenres(new HashSet<>(Collections.singletonList(Genre.COMEDY)));
-        MovieReadDto comedyReadDto = movieService.addMovie(comedyMovie);
-
-        List<MovieReadDto> result =  movieService
-                .findMoviesByGenre(Genre.HORROR);
-        assertEquals(1, result.size());
-        assertEquals(result.get(0), horrorReadDto);
     }
 }

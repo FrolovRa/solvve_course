@@ -56,7 +56,7 @@ public class CharacterServiceTest {
 
         CharacterReadDto readDto = characterService.addCharacter(createDto);
 
-        assertThat(createDto).isEqualToComparingFieldByField(readDto);
+        assertThat(createDto).isEqualToIgnoringGivenFields(readDto, "actorId", "movieId");
         assertNotNull(readDto.getId());
 
         CharacterReadDto personFromDb = characterService.getCharacter(readDto.getId());
@@ -68,13 +68,13 @@ public class CharacterServiceTest {
     public void testPatchCharacter() {
         CharacterPatchDto characterPatchDto = new CharacterPatchDto();
         characterPatchDto.setName("Name");
-        characterPatchDto.setActor(translationService.toReadDto(utils.getActorFromDb()));
-        characterPatchDto.setMovie(translationService.toReadDto(utils.getMovieFromDb()));
+        characterPatchDto.setActorId(utils.getActorFromDb().getId());
+        characterPatchDto.setMovieId(utils.getMovieFromDb().getId());
 
         Character person = utils.getCharacterFromDb();
         CharacterReadDto patchedUser = characterService.patchPerson(person.getId(), characterPatchDto);
 
-        assertThat(characterPatchDto).isEqualToComparingFieldByField(patchedUser);
+        assertThat(characterPatchDto).isEqualToIgnoringGivenFields(patchedUser, "movieId", "actorId");
     }
 
     @Test
