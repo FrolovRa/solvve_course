@@ -19,6 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -137,4 +138,19 @@ public class ActorServiceTest {
         actorService.deleteActor(UUID.randomUUID());
     }
 
+    @Test
+    public void testCreatedAtIsSet() {
+        Actor actor = new Actor();
+        actor.setPerson(utils.getPersonFromDb());
+
+        actor = actorRepository.save(actor);
+
+        Instant createdAtBeforeReload = actor.getCreatedAt();
+        assertNotNull(createdAtBeforeReload);
+        actor = actorRepository.findById(actor.getId()).get();
+
+        Instant createdAtAfterReload = actor.getCreatedAt();
+        assertNotNull(createdAtAfterReload);
+        assertEquals(createdAtBeforeReload, createdAtAfterReload);
+    }
 }

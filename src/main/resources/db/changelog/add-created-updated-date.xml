@@ -4,8 +4,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <include file="db/changelog/init.xml"/>
-    <include file="db/changelog/load-data.xml"/>
-    <include file="db/changelog/add-created-updated-date.xml"/>
+    <changeSet id="add-created_at-and-updated_at" author="frolov">
+        <addColumn tableName="actor">
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
