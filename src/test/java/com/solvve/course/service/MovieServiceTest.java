@@ -1,14 +1,12 @@
 package com.solvve.course.service;
 
 import com.solvve.course.domain.Movie;
-import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.MovieRepository;
 import com.solvve.course.util.TestUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -113,5 +112,43 @@ public class MovieServiceTest {
     @Test(expected = EntityNotFoundException.class)
     public void testDeleteByWrongId() {
         movieService.deleteMovie(UUID.randomUUID());
+    }
+
+    @Test
+    public void testCreatedAtIsSet() {
+        Movie movie = new Movie();
+        movie.setName("Time");
+
+        movie = movieRepository.save(movie);
+
+        Instant createdAtBeforeReload = movie.getCreatedAt();
+        assertNotNull(createdAtBeforeReload);
+        movie = movieRepository.findById(movie.getId()).get();
+
+        Instant createdAtAfterReload = movie.getCreatedAt();
+        assertNotNull(createdAtAfterReload);
+        assertEquals(createdAtBeforeReload, createdAtAfterReload);
+    }
+
+    @Test
+    public void testUpdatedAtIsSet() {
+        Movie movie = new Movie();
+        movie.setName("Time");
+
+        movie = movieRepository.save(movie);
+
+        Instant updatedAtBeforeReload = movie.getCreatedAt();
+        assertNotNull(updatedAtBeforeReload);
+        movie = movieRepository.findById(movie.getId()).get();
+
+        Instant updatedAtAfterReload = movie.getCreatedAt();
+        assertNotNull(updatedAtAfterReload);
+        assertEquals(updatedAtBeforeReload, updatedAtAfterReload);
+
+        movie.setName("Money");
+        movie = movieRepository.save(movie);
+        Instant updatedAtAfterUpdate = movie.getUpdatedAt();
+
+        assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
     }
 }

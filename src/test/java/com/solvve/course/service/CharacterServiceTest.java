@@ -16,11 +16,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 @ActiveProfiles("test")
@@ -106,5 +106,47 @@ public class CharacterServiceTest {
     @Test(expected = EntityNotFoundException.class)
     public void testDeleteByWrongId() {
         characterService.deleteCharacter(UUID.randomUUID());
+    }
+
+    @Test
+    public void testCreatedAtIsSet() {
+        Character character = new Character();
+        character.setName("Jack Sparrow");
+        character.setActor(utils.getActorFromDb());
+        character.setMovie(utils.getMovieFromDb());
+
+        character = characterRepository.save(character);
+
+        Instant createdAtBeforeReload = character.getCreatedAt();
+        assertNotNull(createdAtBeforeReload);
+        character = characterRepository.findById(character.getId()).get();
+
+        Instant createdAtAfterReload = character.getCreatedAt();
+        assertNotNull(createdAtAfterReload);
+        assertEquals(createdAtBeforeReload, createdAtAfterReload);
+    }
+
+    @Test
+    public void testUpdatedAtIsSet() {
+        Character character = new Character();
+        character.setName("Jack Sparrow");
+        character.setActor(utils.getActorFromDb());
+        character.setMovie(utils.getMovieFromDb());
+
+        character = characterRepository.save(character);
+
+        Instant updatedAtBeforeReload = character.getCreatedAt();
+        assertNotNull(updatedAtBeforeReload);
+        character = characterRepository.findById(character.getId()).get();
+
+        Instant updatedAtAfterReload = character.getCreatedAt();
+        assertNotNull(updatedAtAfterReload);
+        assertEquals(updatedAtBeforeReload, updatedAtAfterReload);
+
+        character.setName("Lilit");
+        character = characterRepository.save(character);
+        Instant updatedAtAfterUpdate = character.getUpdatedAt();
+
+        assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
     }
 }

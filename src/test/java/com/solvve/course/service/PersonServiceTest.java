@@ -16,11 +16,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 @ActiveProfiles("test")
@@ -101,5 +101,43 @@ public class PersonServiceTest {
     @Test(expected = EntityNotFoundException.class)
     public void testDeleteByWrongId() {
         personService.deletePerson(UUID.randomUUID());
+    }
+
+    @Test
+    public void testCreatedAtIsSet() {
+        Person person = new Person();
+        person.setName("Udjin");
+
+        person = personRepository.save(person);
+
+        Instant createdAtBeforeReload = person.getCreatedAt();
+        assertNotNull(createdAtBeforeReload);
+        person = personRepository.findById(person.getId()).get();
+
+        Instant createdAtAfterReload = person.getCreatedAt();
+        assertNotNull(createdAtAfterReload);
+        assertEquals(createdAtBeforeReload, createdAtAfterReload);
+    }
+
+    @Test
+    public void testUpdatedAtIsSet() {
+        Person person = new Person();
+        person.setName("Udjin");
+
+        person = personRepository.save(person);
+
+        Instant updatedAtBeforeReload = person.getCreatedAt();
+        assertNotNull(updatedAtBeforeReload);
+        person = personRepository.findById(person.getId()).get();
+
+        Instant updatedAtAfterReload = person.getCreatedAt();
+        assertNotNull(updatedAtAfterReload);
+        assertEquals(updatedAtBeforeReload, updatedAtAfterReload);
+
+        person.setName("Manny");
+        person = personRepository.save(person);
+        Instant updatedAtAfterUpdate = person.getUpdatedAt();
+
+        assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
     }
 }

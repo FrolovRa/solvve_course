@@ -2,6 +2,7 @@ package com.solvve.course.domain;
 
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -22,7 +23,10 @@ public class Actor {
     @CreatedDate
     private Instant createdAt;
 
-    @OneToOne(targetEntity = Person.class)
+    @LastModifiedDate
+    private Instant updatedAt;
+
+    @OneToOne
     private Person person;
 
     @ManyToMany

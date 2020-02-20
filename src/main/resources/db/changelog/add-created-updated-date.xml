@@ -6,6 +6,27 @@
 
     <changeSet id="add-created_at-and-updated_at" author="frolov">
         <addColumn tableName="actor">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="movie">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="person">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="principal">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="user">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="character">
+            <column name="updated_at" type="datetime"/>
             <column name="created_at" type="datetime"/>
         </addColumn>
     </changeSet>

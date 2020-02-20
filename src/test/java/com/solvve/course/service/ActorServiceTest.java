@@ -3,8 +3,8 @@ package com.solvve.course.service;
 import com.solvve.course.domain.Actor;
 import com.solvve.course.domain.Person;
 import com.solvve.course.dto.actor.ActorCreateDto;
-import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
+import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.dto.person.PersonReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.*;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -152,5 +152,27 @@ public class ActorServiceTest {
         Instant createdAtAfterReload = actor.getCreatedAt();
         assertNotNull(createdAtAfterReload);
         assertEquals(createdAtBeforeReload, createdAtAfterReload);
+    }
+
+    @Test
+    public void testUpdatedAtIsSet() {
+        Actor actor = new Actor();
+        actor.setPerson(utils.getPersonFromDb());
+
+        actor = actorRepository.save(actor);
+
+        Instant updatedAtBeforeReload = actor.getUpdatedAt();
+        assertNotNull(updatedAtBeforeReload);
+        actor = actorRepository.findById(actor.getId()).get();
+
+        Instant updatedAtAfterReload = actor.getUpdatedAt();
+        assertNotNull(updatedAtAfterReload);
+        assertEquals(updatedAtBeforeReload, updatedAtAfterReload);
+
+        actor.setPerson(utils.getPersonFromDb());
+        actor = actorRepository.save(actor);
+        Instant updatedAtAfterUpdate = actor.getUpdatedAt();
+
+        assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
     }
 }
