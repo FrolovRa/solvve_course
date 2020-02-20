@@ -16,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -33,15 +32,17 @@ public class PrincipalServiceTest {
 
     @Autowired
     private PrincipalRepository principalRepository;
+
     @Autowired
     private TestUtils utils;
+
     @Autowired
     private TranslationService translationService;
+
     @Autowired
     private PrincipalService principalService;
 
     @Test
-    @Transactional
     public void testGetPrincipal() {
         Principal user = utils.getPrincipalFromDb();
         PrincipalReadDto actualPrincipal = translationService.toReadDto(user);
@@ -90,7 +91,6 @@ public class PrincipalServiceTest {
     }
 
     @Test
-    @Transactional
     public void testDeletePrincipal() {
         Principal principal = utils.getPrincipalFromDb();
 

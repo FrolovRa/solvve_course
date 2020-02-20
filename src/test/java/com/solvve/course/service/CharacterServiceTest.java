@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -31,15 +31,20 @@ public class CharacterServiceTest {
 
     @Autowired
     private CharacterRepository characterRepository;
+
     @Autowired
     private TestUtils utils;
+
     @Autowired
     private TranslationService translationService;
+
     @Autowired
     private CharacterService characterService;
 
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
     @Test
-    @Transactional
     public void testGetCharacter() {
         Character person = utils.getCharacterFromDb();
         CharacterReadDto actualPerson = translationService.toReadDto(person);
@@ -50,21 +55,20 @@ public class CharacterServiceTest {
     }
 
     @Test
-    @Transactional
     public void testAddCharacter() {
         CharacterCreateDto createDto = utils.createCharacterCreateDto();
+        inTransaction(() -> {
+            CharacterReadDto readDto = characterService.addCharacter(createDto);
 
-        CharacterReadDto readDto = characterService.addCharacter(createDto);
+            assertThat(createDto).isEqualToIgnoringGivenFields(readDto, "actorId", "movieId");
+            assertNotNull(readDto.getId());
 
-        assertThat(createDto).isEqualToIgnoringGivenFields(readDto, "actorId", "movieId");
-        assertNotNull(readDto.getId());
-
-        CharacterReadDto personFromDb = characterService.getCharacter(readDto.getId());
-        assertThat(readDto).isEqualToComparingFieldByField(personFromDb);
+            CharacterReadDto personFromDb = characterService.getCharacter(readDto.getId());
+            assertThat(readDto).isEqualToComparingFieldByField(personFromDb);
+        });
     }
 
     @Test
-    @Transactional
     public void testPatchCharacter() {
         CharacterPatchDto characterPatchDto = new CharacterPatchDto();
         characterPatchDto.setName("Name");
@@ -78,7 +82,6 @@ public class CharacterServiceTest {
     }
 
     @Test
-    @Transactional
     public void testEmptyPatchCharacter() {
         CharacterPatchDto userPatchDto = new CharacterPatchDto();
 
@@ -94,7 +97,6 @@ public class CharacterServiceTest {
     }
 
     @Test
-    @Transactional
     public void testDeleteCharacter() {
         Character character = utils.getCharacterFromDb();
 
@@ -148,5 +150,11 @@ public class CharacterServiceTest {
         Instant updatedAtAfterUpdate = character.getUpdatedAt();
 
         assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
+    }
+
+    private void inTransaction(Runnable runnable) {
+        transactionTemplate.executeWithoutResult(status -> {
+            runnable.run();
+        });
     }
 }

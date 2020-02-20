@@ -27,7 +27,7 @@ public class User {
     @OneToOne
     private Principal principal;
 
-    private boolean blockedReview;
+    private Boolean blockedReview;
 
-    private int trustLevel;
+    private Integer trustLevel;
 }

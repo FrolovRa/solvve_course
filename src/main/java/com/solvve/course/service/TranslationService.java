@@ -1,7 +1,7 @@
 package com.solvve.course.service;
 
-import com.solvve.course.domain.*;
 import com.solvve.course.domain.Character;
+import com.solvve.course.domain.*;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
 import com.solvve.course.dto.actor.ActorReadDto;
@@ -87,7 +87,7 @@ public class TranslationService {
     public UserReadDto toReadDto(User user) {
         UserReadDto dto = new UserReadDto();
         dto.setId(user.getId());
-        dto.setBlockedReview(user.isBlockedReview());
+        dto.setBlockedReview(user.getBlockedReview());
         dto.setPrincipal(this.toReadDto(user.getPrincipal()));
         dto.setTrustLevel(user.getTrustLevel());
 
@@ -97,7 +97,7 @@ public class TranslationService {
     public PrincipalReadDto toReadDto(Principal principal) {
         PrincipalReadDto dto = new PrincipalReadDto();
         dto.setId(principal.getId());
-        dto.setBlocked(principal.isBlocked());
+        dto.setBlocked(principal.getBlocked());
         dto.setEmail(principal.getEmail());
         dto.setName(principal.getName());
         dto.setRole(principal.getRole());

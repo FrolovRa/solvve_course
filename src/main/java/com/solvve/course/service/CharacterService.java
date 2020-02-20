@@ -1,11 +1,11 @@
 package com.solvve.course.service;
 
 import com.solvve.course.domain.Actor;
+import com.solvve.course.domain.Character;
 import com.solvve.course.domain.Movie;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.character.CharacterPatchDto;
 import com.solvve.course.dto.character.CharacterReadDto;
-import com.solvve.course.domain.Character;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.CharacterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ public class CharacterService {
 
     @Autowired
     private CharacterRepository characterRepository;
+
     @Autowired
     private TranslationService translationService;
 

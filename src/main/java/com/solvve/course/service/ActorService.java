@@ -3,8 +3,8 @@ package com.solvve.course.service;
 import com.solvve.course.domain.Actor;
 import com.solvve.course.domain.Person;
 import com.solvve.course.dto.actor.ActorCreateDto;
-import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
+import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.ActorRepository;
@@ -21,6 +21,7 @@ public class ActorService {
 
     @Autowired
     private ActorRepository actorRepository;
+
     @Autowired
     private TranslationService translationService;
 

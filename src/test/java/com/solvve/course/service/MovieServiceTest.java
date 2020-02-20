@@ -15,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -34,15 +33,17 @@ public class MovieServiceTest {
 
     @Autowired
     private MovieRepository movieRepository;
+
     @Autowired
     private TestUtils utils;
+
     @Autowired
     private TranslationService translationService;
+
     @Autowired
     private MovieService movieService;
 
     @Test
-    @Transactional
     public void testGetMovie() {
         Movie movie = utils.getMovieFromDb();
 
@@ -58,7 +59,6 @@ public class MovieServiceTest {
     }
 
     @Test
-    @Transactional
     public void testAddMovie() {
         MovieCreateDto movieCreateDto = utils.createMovieCreateDto();
 
@@ -72,7 +72,6 @@ public class MovieServiceTest {
     }
 
     @Test
-    @Transactional
     public void testPatchMovie() {
         MoviePatchDto moviePatchDto = new MoviePatchDto();
         moviePatchDto.setName("Epic");
@@ -86,7 +85,6 @@ public class MovieServiceTest {
     }
 
     @Test
-    @Transactional
     public void testEmptyPatchMovie() {
         MoviePatchDto moviePatchDto = new MoviePatchDto();
 

@@ -17,8 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -36,24 +36,31 @@ public class ActorServiceTest {
 
     @Autowired
     private ActorRepository actorRepository;
+
     @Autowired
     private TestUtils utils;
+
     @Autowired
     private TranslationService translationService;
+
     @Autowired
     private ActorService actorService;
+
     @Autowired
     private PersonService personService;
 
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
     @Test
-    @Transactional
     public void testGetActor() {
         Actor actor = utils.getActorFromDb();
         ActorExtendedReadDto actualActor = translationService.toExtendedReadDto(actor);
+        inTransaction(() -> {
+            ActorExtendedReadDto actorExtendedReadDto = actorService.getActor(actor.getId());
 
-        ActorExtendedReadDto actorExtendedReadDto = actorService.getActor(actor.getId());
-
-        assertThat(actualActor).isEqualToComparingFieldByField(actorExtendedReadDto);
+            assertThat(actualActor).isEqualToComparingFieldByField(actorExtendedReadDto);
+        });
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -62,7 +69,6 @@ public class ActorServiceTest {
     }
 
     @Test
-    @Transactional
     public void testAddActor() {
         ActorCreateDto actorCreateDto = new ActorCreateDto();
         actorCreateDto.setPersonId(utils.getPersonFromDb().getId());
@@ -72,12 +78,13 @@ public class ActorServiceTest {
         assertThat(actorCreateDto).isEqualToIgnoringGivenFields(actorExtendedReadDto, "personId");
         assertNotNull(actorExtendedReadDto.getId());
 
-        ActorExtendedReadDto actorFromDb = actorService.getActor(actorExtendedReadDto.getId());
-        assertThat(actorExtendedReadDto).isEqualToComparingFieldByField(actorFromDb);
+        inTransaction(() -> {
+            ActorExtendedReadDto actorFromDb = actorService.getActor(actorExtendedReadDto.getId());
+            assertThat(actorExtendedReadDto).isEqualToComparingFieldByField(actorFromDb);
+        });
     }
 
     @Test
-    @Transactional
     public void testPatchActor() {
         ActorPatchDto actorPatchDto = new ActorPatchDto();
         Person person = utils.getPersonFromDb();
@@ -85,15 +92,15 @@ public class ActorServiceTest {
 
         ActorCreateDto actorCreateDto = new ActorCreateDto();
         actorCreateDto.setPersonId(person.getId());
+        inTransaction(() -> {
+            ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
+            ActorExtendedReadDto patchedActor = actorService.patchActor(actorExtendedReadDto.getId(), actorPatchDto);
 
-        ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
-        ActorExtendedReadDto patchedActor = actorService.patchActor(actorExtendedReadDto.getId(), actorPatchDto);
-
-        assertEquals(actorExtendedReadDto.getPerson(), patchedActor.getPerson());
+            assertEquals(actorExtendedReadDto.getPerson(), patchedActor.getPerson());
+        });
     }
 
     @Test
-    @Transactional
     public void testEmptyPatchActor() {
         ActorPatchDto actorPatchDto = new ActorPatchDto();
 
@@ -101,14 +108,15 @@ public class ActorServiceTest {
         ActorCreateDto actorCreateDto = utils.createActorCreateDto();
         actorCreateDto.setPersonId(personReadDto.getId());
 
-        ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
-        ActorExtendedReadDto patchedActor = actorService.patchActor(actorExtendedReadDto.getId(), actorPatchDto);
+        inTransaction(() -> {
+            ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
+            ActorExtendedReadDto patchedActor = actorService.patchActor(actorExtendedReadDto.getId(), actorPatchDto);
 
-        assertThat(actorExtendedReadDto).isEqualToIgnoringGivenFields(patchedActor);
+            assertThat(actorExtendedReadDto).isEqualToIgnoringGivenFields(patchedActor);
+        });
     }
 
     @Test
-    @Transactional
     public void testPutActor() {
         ActorPutDto actorPutDto = new ActorPutDto();
         PersonReadDto personReadDtoForPut = personService.addPerson(utils.createPersonCreateDto());
@@ -117,14 +125,15 @@ public class ActorServiceTest {
         PersonReadDto personReadDtoForCreate = personService.addPerson(utils.createPersonCreateDto());
         ActorCreateDto actorCreateDto = utils.createActorCreateDto();
         actorCreateDto.setPersonId(personReadDtoForCreate.getId());
-        ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
-        ActorExtendedReadDto updatedActor = actorService.updateActor(actorExtendedReadDto.getId(), actorPutDto);
+        inTransaction(() -> {
+            ActorExtendedReadDto actorExtendedReadDto = actorService.addActor(actorCreateDto);
+            ActorExtendedReadDto updatedActor = actorService.updateActor(actorExtendedReadDto.getId(), actorPutDto);
 
-        assertThat(actorPutDto).isEqualToIgnoringGivenFields(updatedActor, "personId");
+            assertThat(actorPutDto).isEqualToIgnoringGivenFields(updatedActor, "personId");
+        });
     }
 
     @Test
-    @Transactional
     public void testDeleteActor() {
         Actor actor = utils.getActorFromDb();
 
@@ -174,5 +183,11 @@ public class ActorServiceTest {
         Instant updatedAtAfterUpdate = actor.getUpdatedAt();
 
         assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
+    }
+
+    private void inTransaction(Runnable runnable) {
+        transactionTemplate.executeWithoutResult(status -> {
+            runnable.run();
+        });
     }
 }

@@ -32,5 +32,5 @@ public class Principal {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private boolean blocked;
+    private Boolean blocked;
 }

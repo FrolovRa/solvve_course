@@ -15,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -31,15 +30,17 @@ public class PersonServiceTest {
 
     @Autowired
     private PersonRepository personRepository;
+
     @Autowired
     private TestUtils utils;
+
     @Autowired
     private TranslationService translationService;
+
     @Autowired
     private PersonService personService;
 
     @Test
-    @Transactional
     public void testGetPerson() {
         Person person = utils.getPersonFromDb();
         PersonReadDto actualPerson = translationService.toReadDto(person);
@@ -89,7 +90,6 @@ public class PersonServiceTest {
     }
 
     @Test
-    @Transactional
     public void testDeletePerson() {
         Person person = utils.getPersonFromDb();
 
