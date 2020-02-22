@@ -1,7 +1,6 @@
 package com.solvve.course.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.solvve.course.domain.Actor;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
@@ -19,11 +18,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.*;
+import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,8 +33,10 @@ public class ActorControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
     @Autowired
     private ObjectMapper objectMapper;
+
     @MockBean
     private ActorService actorService;
 
@@ -87,8 +88,8 @@ public class ActorControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        ActorExtendedReadDto actualMovieReadDto = objectMapper.readValue(resultJson, ActorExtendedReadDto.class);
-        assertThat(actualMovieReadDto).isEqualToComparingFieldByField(actorReadDto);
+        ActorExtendedReadDto actualActorReadDto = objectMapper.readValue(resultJson, ActorExtendedReadDto.class);
+        assertThat(actualActorReadDto).isEqualToComparingFieldByField(actorReadDto);
     }
 
     @Test
@@ -104,8 +105,8 @@ public class ActorControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        ActorExtendedReadDto actualMovieReadDto = objectMapper.readValue(resultJson, ActorExtendedReadDto.class);
-        assertThat(actualMovieReadDto).isEqualToComparingFieldByField(actorReadDto);
+        ActorExtendedReadDto actualActorReadDto = objectMapper.readValue(resultJson, ActorExtendedReadDto.class);
+        assertThat(actualActorReadDto).isEqualToComparingFieldByField(actorReadDto);
     }
 
     @Test
@@ -122,8 +123,8 @@ public class ActorControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        ActorExtendedReadDto actualMovieReadDto = objectMapper.readValue(resultJson, ActorExtendedReadDto.class);
-        assertThat(actualMovieReadDto).isEqualToComparingFieldByField(actorReadDto);
+        ActorExtendedReadDto actualActorReadDto = objectMapper.readValue(resultJson, ActorExtendedReadDto.class);
+        assertThat(actualActorReadDto).isEqualToComparingFieldByField(actorReadDto);
     }
 
     @Test

@@ -12,5 +12,4 @@ public class CharacterCreateDto {
     private UUID actorId;
 
     private UUID movieId;
-
 }

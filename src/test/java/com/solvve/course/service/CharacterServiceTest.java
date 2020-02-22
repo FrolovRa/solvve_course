@@ -78,7 +78,8 @@ public class CharacterServiceTest {
         Character person = utils.getCharacterFromDb();
         CharacterReadDto patchedUser = characterService.patchPerson(person.getId(), characterPatchDto);
 
-        assertThat(characterPatchDto).isEqualToIgnoringGivenFields(patchedUser, "movieId", "actorId");
+        assertThat(characterPatchDto)
+                .isEqualToIgnoringGivenFields(patchedUser, "movieId", "actorId");
     }
 
     @Test
