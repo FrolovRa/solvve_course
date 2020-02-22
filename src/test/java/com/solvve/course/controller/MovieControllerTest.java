@@ -2,7 +2,6 @@ package com.solvve.course.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solvve.course.domain.Movie;
-import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
@@ -19,8 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -121,25 +118,5 @@ public class MovieControllerTest {
         mvc.perform(delete("/api/v1/movies/" + id)).andExpect(status().isOk());
 
         verify(movieService).deleteMovie(id);
-    }
-
-    @Test
-    public void testGetMoviesByGenre() throws Exception {
-        MovieReadDto comedyMovie = utils.createMovieReadDto();
-        List<MovieReadDto> movies = Collections.singletonList(comedyMovie);
-        when(movieService.findMoviesByGenre(Genre.COMEDY)).thenReturn(movies);
-
-        String result = mvc.perform(get("/api/v1/movies/by-genre/" + Genre.COMEDY))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        String actualList = objectMapper.writeValueAsString(movies);
-        assertEquals(actualList, result);
-    }
-
-    @Test
-    public void testGetMovieByGenreWithNotValidParam() throws Exception {
-        mvc.perform(get("/api/v1/movies/by-genre/{genre}", 42)).andExpect(status().isBadRequest());
-
-        verifyNoInteractions(movieService);
     }
 }

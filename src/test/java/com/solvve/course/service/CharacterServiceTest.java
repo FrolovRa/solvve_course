@@ -76,7 +76,7 @@ public class CharacterServiceTest {
         characterPatchDto.setMovieId(utils.getMovieFromDb().getId());
 
         Character person = utils.getCharacterFromDb();
-        CharacterReadDto patchedUser = characterService.patchPerson(person.getId(), characterPatchDto);
+        CharacterReadDto patchedUser = characterService.patchCharacter(person.getId(), characterPatchDto);
 
         assertThat(characterPatchDto)
                 .isEqualToIgnoringGivenFields(patchedUser, "movieId", "actorId");
@@ -87,7 +87,7 @@ public class CharacterServiceTest {
         CharacterPatchDto userPatchDto = new CharacterPatchDto();
 
         Character person = utils.getCharacterFromDb();
-        CharacterReadDto patchedUser = characterService.patchPerson(person.getId(), userPatchDto);
+        CharacterReadDto patchedUser = characterService.patchCharacter(person.getId(), userPatchDto);
 
         assertThat(translationService.toReadDto(person)).isEqualToComparingFieldByField(patchedUser);
     }

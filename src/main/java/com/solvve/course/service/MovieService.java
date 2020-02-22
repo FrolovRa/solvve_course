@@ -1,7 +1,6 @@
 package com.solvve.course.service;
 
 import com.solvve.course.domain.Movie;
-import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
@@ -10,9 +9,7 @@ import com.solvve.course.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -52,14 +49,6 @@ public class MovieService {
         Movie patchedMovie = movieRepository.save(movieFromDb);
 
         return translationService.toReadDto(patchedMovie);
-    }
-
-    public List<MovieReadDto> findMoviesByGenre(Genre genre) {
-        List<Movie> movies = movieRepository.findMoviesByGenres(genre);
-
-        return movies.stream()
-                .map(translationService::toReadDto)
-                .collect(Collectors.toList());
     }
 
     public void deleteMovie(UUID id) {

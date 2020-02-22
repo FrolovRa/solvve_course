@@ -37,7 +37,7 @@ public class CharacterService {
         return translationService.toReadDto(character);
     }
 
-    public CharacterReadDto patchPerson(UUID id, CharacterPatchDto characterPatchDto) {
+    public CharacterReadDto patchCharacter(UUID id, CharacterPatchDto characterPatchDto) {
         Character character = this.getCharacterRequired(id);
         if (nonNull(characterPatchDto.getName())) {
             character.setName(characterPatchDto.getName());

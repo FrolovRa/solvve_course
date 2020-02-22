@@ -8,6 +8,8 @@ import com.solvve.course.dto.actor.ActorExtendedReadDto;
 import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
+import com.solvve.course.dto.character.CharacterPatchDto;
+import com.solvve.course.dto.character.CharacterReadDto;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.dto.person.PersonCreateDto;
@@ -122,6 +124,21 @@ public class TestUtils {
         characterCreateDto.setMovieId(this.getMovieFromDb().getId());
 
         return characterCreateDto;
+    }
+
+    public CharacterPatchDto createCharacterPatchDto() {
+        CharacterPatchDto characterPatchDto = new CharacterPatchDto();
+        characterPatchDto.setName("Shattered island");
+
+        return characterPatchDto;
+    }
+
+    public CharacterReadDto createCharacterReadDto() {
+        CharacterReadDto characterReadDto = new CharacterReadDto();
+        characterReadDto.setName("Les");
+        characterReadDto.setId(UUID.randomUUID());
+
+        return characterReadDto;
     }
 
     public MovieCreateDto createMovieCreateDto() {

@@ -1,6 +1,5 @@
 package com.solvve.course.controller;
 
-import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
@@ -8,7 +7,6 @@ import com.solvve.course.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,11 +19,6 @@ public class MovieController {
     @GetMapping("/{id}")
     public MovieReadDto getMovie(@PathVariable UUID id) {
         return movieService.getMovie(id);
-    }
-
-    @GetMapping("/by-genre/{genre}")
-    public List<MovieReadDto> getMoviesByGenre(@PathVariable Genre genre) {
-        return movieService.findMoviesByGenre(genre);
     }
 
     @PostMapping
