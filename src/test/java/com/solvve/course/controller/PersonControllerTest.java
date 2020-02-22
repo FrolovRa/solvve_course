@@ -92,7 +92,7 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void testPatchActor() throws Exception {
+    public void testPatchPerson() throws Exception {
         UUID id = UUID.randomUUID();
         PersonPatchDto personPatchDto = utils.createPersonPatchDto();
 
@@ -110,7 +110,7 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void testDeleteActor() throws Exception {
+    public void testDeletePerson() throws Exception {
         UUID id = UUID.randomUUID();
 
         mvc.perform(delete("/api/v1/persons/" + id)).andExpect(status().isOk());

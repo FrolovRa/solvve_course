@@ -94,14 +94,14 @@ public class PrincipalServiceTest {
     public void testDeletePrincipal() {
         Principal principal = utils.getPrincipalFromDb();
 
-        principalService.deleteUser(principal.getId());
+        principalService.deletePrincipal(principal.getId());
 
         assertFalse(principalRepository.existsById(principal.getId()));
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void testDeleteByWrongId() {
-        principalService.deleteUser(UUID.randomUUID());
+        principalService.deletePrincipal(UUID.randomUUID());
     }
 
     @Test

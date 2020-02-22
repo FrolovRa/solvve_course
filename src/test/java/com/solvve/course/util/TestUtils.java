@@ -14,6 +14,8 @@ import com.solvve.course.dto.person.PersonCreateDto;
 import com.solvve.course.dto.person.PersonPatchDto;
 import com.solvve.course.dto.person.PersonReadDto;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
+import com.solvve.course.dto.principal.PrincipalPatchDto;
+import com.solvve.course.dto.principal.PrincipalReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,6 +147,24 @@ public class TestUtils {
         principalCreateDto.setBlocked(false);
 
         return principalCreateDto;
+    }
+
+    public PrincipalReadDto createPrincipalReadDto() {
+        PrincipalReadDto principalReadDto = new PrincipalReadDto();
+        principalReadDto.setId(UUID.randomUUID());
+        principalReadDto.setRole(Role.USER);
+        principalReadDto.setName("John");
+        principalReadDto.setBlocked(false);
+
+        return principalReadDto;
+    }
+
+    public PrincipalPatchDto createPrincipalPatchDto() {
+        PrincipalPatchDto principalPatchDto = new PrincipalPatchDto();
+        principalPatchDto.setRole(Role.CONTENT_MANAGER);
+        principalPatchDto.setEmail("nreEmail@");
+
+        return principalPatchDto;
     }
 
     public MovieReadDto createMovieReadDto() {

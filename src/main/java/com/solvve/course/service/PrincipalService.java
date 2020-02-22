@@ -54,7 +54,7 @@ public class PrincipalService {
         return translationService.toReadDto(patchedPrincipal);
     }
 
-    public void deleteUser(UUID id) {
+    public void deletePrincipal(UUID id) {
         principalRepository.delete(getPrincipalRequired(id));
     }
 
