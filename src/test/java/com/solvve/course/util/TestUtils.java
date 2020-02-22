@@ -17,6 +17,8 @@ import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
+import com.solvve.course.dto.user.UserPatchDto;
+import com.solvve.course.dto.user.UserReadDto;
 import com.solvve.course.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -137,6 +139,23 @@ public class TestUtils {
         userCreateDto.setTrustLevel(1);
 
         return userCreateDto;
+    }
+
+    public UserPatchDto createUserPatchDto() {
+        UserPatchDto userPatchDto = new UserPatchDto();
+        userPatchDto.setTrustLevel(4);
+        userPatchDto.setBlockedReview(true);
+
+        return userPatchDto;
+    }
+
+    public UserReadDto createUserReadDto() {
+        UserReadDto userReadDto = new UserReadDto();
+        userReadDto.setId(UUID.randomUUID());
+        userReadDto.setBlockedReview(false);
+        userReadDto.setTrustLevel(2);
+
+        return userReadDto;
     }
 
     public PrincipalCreateDto createPrincipalCreateDto() {
