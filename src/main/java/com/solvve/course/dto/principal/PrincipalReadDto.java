@@ -3,6 +3,7 @@ package com.solvve.course.dto.principal;
 import com.solvve.course.domain.constant.Role;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -17,4 +18,8 @@ public class PrincipalReadDto {
     private Role role;
 
     private Boolean blocked;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
 }

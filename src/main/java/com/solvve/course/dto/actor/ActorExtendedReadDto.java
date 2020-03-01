@@ -5,6 +5,7 @@ import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.dto.person.PersonReadDto;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,10 @@ public class ActorExtendedReadDto {
     private UUID id;
 
     private PersonReadDto person;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
 
     private List<MovieReadDto> movies = new ArrayList<>();
 

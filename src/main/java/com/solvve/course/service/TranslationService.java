@@ -34,6 +34,8 @@ public class TranslationService {
         dto.setName(movie.getName());
         dto.setRelease(movie.getRelease());
         dto.setDescription(movie.getDescription());
+        dto.setCreatedAt(movie.getCreatedAt());
+        dto.setUpdatedAt(movie.getUpdatedAt());
 
         return dto;
     }
@@ -44,6 +46,8 @@ public class TranslationService {
         dto.setName(character.getName());
         dto.setMovie(this.toReadDto(character.getMovie()));
         dto.setActor(this.toReadDto(character.getActor()));
+        dto.setCreatedAt(character.getCreatedAt());
+        dto.setUpdatedAt(character.getUpdatedAt());
 
         return dto;
     }
@@ -64,7 +68,8 @@ public class TranslationService {
                 .map(this::toReadDto)
                 .collect(Collectors.toList()));
         dto.setPerson(this.toReadDto(actor.getPerson()));
-
+        dto.setCreatedAt(actor.getCreatedAt());
+        dto.setUpdatedAt(actor.getUpdatedAt());
         return dto;
     }
 
@@ -80,6 +85,8 @@ public class TranslationService {
         PersonReadDto dto = new PersonReadDto();
         dto.setId(person.getId());
         dto.setName(person.getName());
+        dto.setCreatedAt(person.getCreatedAt());
+        dto.setUpdatedAt(person.getUpdatedAt());
 
         return dto;
     }
@@ -90,6 +97,8 @@ public class TranslationService {
         dto.setBlockedReview(user.getBlockedReview());
         dto.setPrincipal(this.toReadDto(user.getPrincipal()));
         dto.setTrustLevel(user.getTrustLevel());
+        dto.setCreatedAt(user.getCreatedAt());
+        dto.setUpdatedAt(user.getUpdatedAt());
 
         return dto;
     }
@@ -101,6 +110,8 @@ public class TranslationService {
         dto.setEmail(principal.getEmail());
         dto.setName(principal.getName());
         dto.setRole(principal.getRole());
+        dto.setCreatedAt(principal.getCreatedAt());
+        dto.setUpdatedAt(principal.getUpdatedAt());
 
         return dto;
     }
