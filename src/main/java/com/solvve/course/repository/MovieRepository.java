@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface MovieRepository extends CrudRepository<Movie, UUID> {
+public interface MovieRepository extends CrudRepository<Movie, UUID>, MovieRepositoryCustom {
 
     @Query(value = "SELECT m FROM Movie m WHERE m.release >= :from AND m.release < :to")
     List<Movie> findMovieByReleaseInInterval(LocalDate from, LocalDate to);

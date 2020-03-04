@@ -1,7 +1,9 @@
 package com.solvve.course.service;
 
 import com.solvve.course.domain.Movie;
+import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
+import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
@@ -18,6 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -148,5 +152,63 @@ public class MovieServiceTest {
         Instant updatedAtAfterUpdate = movie.getUpdatedAt();
 
         assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
+    }
+
+    @Test
+    public void testGetMoviesWithEmptyFilter() {
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.now());
+
+        Movie secondMovie = new Movie();
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+
+        MovieFilter filter = new MovieFilter();
+
+        assertThat(movieService.getMovies(filter)).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
+    }
+
+    @Test
+    public void testGetMoviesWithFilterWithName() {
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.now());
+
+        Movie secondMovie = new Movie();
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+
+        MovieFilter filter = new MovieFilter();
+        filter.setName("movie");
+
+        assertThat(movieService.getMovies(filter)).extracting("id")
+                .containsOnly(movie.getId())
+                .doesNotContain(secondMovie.getId());
+    }
+
+    @Test
+    public void testGetMoviesWithFilterWithGenres() {
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.now());
+
+        Movie secondMovie = new Movie();
+        secondMovie.setGenres(Stream.of(Genre.ADVENTURE).collect(Collectors.toSet()));
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+
+        MovieFilter filter = new MovieFilter();
+        filter.setGenres((Stream.of(Genre.ACTION, Genre.ADVENTURE).collect(Collectors.toSet())));
+
+        assertThat(movieService.getMovies(filter)).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
     }
 }
