@@ -1,8 +1,8 @@
 package com.solvve.course.service;
 
 import com.solvve.course.domain.Movie;
-import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
+import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 @Service
 public class MovieService {
@@ -25,65 +27,38 @@ public class MovieService {
 
     public MovieReadDto getMovie(UUID id) {
         Movie movieFromDb = this.getMovieRequired(id);
+
         return translationService.toReadDto(movieFromDb);
+    }
+
+    public List<MovieReadDto> getMovies(MovieFilter filter) {
+     List<Movie> movies = movieRepository.findByFilter(filter);
+     return movies.stream()
+             .map(translationService::toReadDto)
+             .collect(Collectors.toList());
     }
 
     public MovieReadDto addMovie(MovieCreateDto movieCreateDto) {
         Movie movie = translationService.toEntity(movieCreateDto);
         movie = movieRepository.save(movie);
+
         return translationService.toReadDto(movie);
     }
 
     public MovieReadDto patchMovie(UUID id, MoviePatchDto moviePatchDto) {
         Movie movieFromDb = this.getMovieRequired(id);
-
-        if (moviePatchDto.getName() != null) {
+        if (nonNull(moviePatchDto.getName())) {
             movieFromDb.setName(moviePatchDto.getName());
         }
-
-        if (moviePatchDto.getRelease() != null) {
+        if (nonNull(moviePatchDto.getRelease())) {
             movieFromDb.setRelease(moviePatchDto.getRelease());
         }
-
-        if (moviePatchDto.getCast() != null) {
-            movieFromDb.setCast(moviePatchDto.getCast()
-                    .stream()
-                    .map(translationService::toEntity)
-                    .collect(Collectors.toList()));
-        }
-
-        if (moviePatchDto.getCharacters() != null) {
-            movieFromDb.setCharacters(moviePatchDto.getCharacters()
-                    .stream()
-                    .map(translationService::toEntity)
-                    .collect(Collectors.toList()));
-        }
-
-        if (moviePatchDto.getGenres() != null) {
-            movieFromDb.setGenres(moviePatchDto.getGenres());
-        }
-
-        if (moviePatchDto.getStars() != null) {
-            movieFromDb.setStars(moviePatchDto.getStars()
-                    .stream()
-                    .map(translationService::toEntity)
-                    .collect(Collectors.toList()));
-        }
-
-        if (moviePatchDto.getDescription() != null) {
+        if (nonNull(moviePatchDto.getDescription())) {
             movieFromDb.setDescription(moviePatchDto.getDescription());
         }
-
         Movie patchedMovie = movieRepository.save(movieFromDb);
 
         return translationService.toReadDto(patchedMovie);
-    }
-
-    public List<MovieReadDto> findMoviesByGenre(Genre genre) {
-        List<Movie> movies = movieRepository.findMoviesByGenres(genre);
-        return movies.stream()
-                .map(translationService::toReadDto)
-                .collect(Collectors.toList());
     }
 
     public void deleteMovie(UUID id) {

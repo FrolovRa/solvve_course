@@ -3,6 +3,7 @@ package com.solvve.course.service;
 import com.solvve.course.domain.Movie;
 import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
+import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
@@ -16,9 +17,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -34,15 +37,17 @@ public class MovieServiceTest {
 
     @Autowired
     private MovieRepository movieRepository;
+
     @Autowired
     private TestUtils utils;
+
     @Autowired
     private TranslationService translationService;
+
     @Autowired
     private MovieService movieService;
 
     @Test
-    @Transactional
     public void testGetMovie() {
         Movie movie = utils.getMovieFromDb();
 
@@ -58,7 +63,6 @@ public class MovieServiceTest {
     }
 
     @Test
-    @Transactional
     public void testAddMovie() {
         MovieCreateDto movieCreateDto = utils.createMovieCreateDto();
 
@@ -72,16 +76,11 @@ public class MovieServiceTest {
     }
 
     @Test
-    @Transactional
     public void testPatchMovie() {
         MoviePatchDto moviePatchDto = new MoviePatchDto();
         moviePatchDto.setName("Epic");
         moviePatchDto.setDescription("test Description");
         moviePatchDto.setRelease(LocalDate.now());
-        moviePatchDto.setGenres(new HashSet<>(Arrays.asList(Genre.COMEDY, Genre.WESTERN)));
-        moviePatchDto.setCast(Collections.singletonList(translationService.toReadDto(utils.getActorFromDb())));
-        moviePatchDto.setStars(Collections.singletonList(translationService.toReadDto(utils.getActorFromDb())));
-        moviePatchDto.setCharacters(Collections.emptyList());
 
         Movie movieFromDb = utils.getMovieFromDb();
         MovieReadDto patchedMovie = movieService.patchMovie(movieFromDb.getId(), moviePatchDto);
@@ -90,7 +89,6 @@ public class MovieServiceTest {
     }
 
     @Test
-    @Transactional
     public void testEmptyPatchMovie() {
         MoviePatchDto moviePatchDto = new MoviePatchDto();
 
@@ -99,7 +97,6 @@ public class MovieServiceTest {
         MovieReadDto movieAfterPatch = movieService.patchMovie(movieBeforePatch.getId(), moviePatchDto);
         assertNotNull(movieAfterPatch.getDescription());
         assertNotNull(movieAfterPatch.getName());
-        assertNotNull(movieAfterPatch.getGenres());
 
         assertThat(movieBeforePatch).isEqualToComparingFieldByField(movieAfterPatch);
     }
@@ -120,19 +117,98 @@ public class MovieServiceTest {
     }
 
     @Test
-    @Transactional
-    public void testFindMoviesByGenre() {
-        MovieCreateDto horrorMovie = new MovieCreateDto();
-        horrorMovie.setGenres(new HashSet<>(Collections.singletonList(Genre.HORROR)));
-        MovieReadDto horrorReadDto = movieService.addMovie(horrorMovie);
+    public void testCreatedAtIsSet() {
+        Movie movie = new Movie();
+        movie.setName("Time");
 
-        MovieCreateDto comedyMovie = new MovieCreateDto();
-        comedyMovie.setGenres(new HashSet<>(Collections.singletonList(Genre.COMEDY)));
-        MovieReadDto comedyReadDto = movieService.addMovie(comedyMovie);
+        movie = movieRepository.save(movie);
 
-        List<MovieReadDto> result =  movieService
-                .findMoviesByGenre(Genre.HORROR);
-        assertEquals(1, result.size());
-        assertEquals(result.get(0), horrorReadDto);
+        Instant createdAtBeforeReload = movie.getCreatedAt();
+        assertNotNull(createdAtBeforeReload);
+        movie = movieRepository.findById(movie.getId()).get();
+
+        Instant createdAtAfterReload = movie.getCreatedAt();
+        assertNotNull(createdAtAfterReload);
+        assertEquals(createdAtBeforeReload, createdAtAfterReload);
+    }
+
+    @Test
+    public void testUpdatedAtIsSet() {
+        Movie movie = new Movie();
+        movie.setName("Time");
+
+        movie = movieRepository.save(movie);
+
+        Instant updatedAtBeforeReload = movie.getCreatedAt();
+        assertNotNull(updatedAtBeforeReload);
+        movie = movieRepository.findById(movie.getId()).get();
+
+        Instant updatedAtAfterReload = movie.getCreatedAt();
+        assertNotNull(updatedAtAfterReload);
+        assertEquals(updatedAtBeforeReload, updatedAtAfterReload);
+
+        movie.setName("Money");
+        movie = movieRepository.save(movie);
+        Instant updatedAtAfterUpdate = movie.getUpdatedAt();
+
+        assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
+    }
+
+    @Test
+    public void testGetMoviesWithEmptyFilter() {
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.now());
+
+        Movie secondMovie = new Movie();
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+
+        MovieFilter filter = new MovieFilter();
+
+        assertThat(movieService.getMovies(filter)).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
+    }
+
+    @Test
+    public void testGetMoviesWithFilterWithName() {
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.now());
+
+        Movie secondMovie = new Movie();
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+
+        MovieFilter filter = new MovieFilter();
+        filter.setName("movie");
+
+        assertThat(movieService.getMovies(filter)).extracting("id")
+                .containsOnly(movie.getId())
+                .doesNotContain(secondMovie.getId());
+    }
+
+    @Test
+    public void testGetMoviesWithFilterWithGenres() {
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.now());
+
+        Movie secondMovie = new Movie();
+        secondMovie.setGenres(Stream.of(Genre.ADVENTURE).collect(Collectors.toSet()));
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+
+        MovieFilter filter = new MovieFilter();
+        filter.setGenres((Stream.of(Genre.ACTION, Genre.ADVENTURE).collect(Collectors.toSet())));
+
+        assertThat(movieService.getMovies(filter)).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
     }
 }

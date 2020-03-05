@@ -1,0 +1,34 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="add-created_at-and-updated_at" author="frolov">
+        <addColumn tableName="actor">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="movie">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="person">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="principal">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="user">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="character">
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

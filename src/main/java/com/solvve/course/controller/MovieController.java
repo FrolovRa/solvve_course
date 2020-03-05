@@ -1,7 +1,7 @@
 package com.solvve.course.controller;
 
-import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
+import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.service.MovieService;
@@ -23,9 +23,9 @@ public class MovieController {
         return movieService.getMovie(id);
     }
 
-    @GetMapping("/by-genre/{genre}")
-    public List<MovieReadDto> getMoviesByGenre(@PathVariable Genre genre) {
-        return movieService.findMoviesByGenre(genre);
+    @GetMapping
+    public List<MovieReadDto> getMovies(MovieFilter filter) {
+        return movieService.getMovies(filter);
     }
 
     @PostMapping

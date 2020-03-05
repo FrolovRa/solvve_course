@@ -1,5 +1,6 @@
 package com.solvve.course.service;
 
+import com.solvve.course.domain.Principal;
 import com.solvve.course.domain.User;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserPatchDto;
@@ -9,6 +10,7 @@ import com.solvve.course.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;
@@ -24,30 +26,29 @@ public class UserService {
 
     public UserReadDto getUser(UUID id) {
         User userFromDb = getUserRequired(id);
+
         return translationService.toReadDto(userFromDb);
     }
 
+    @Transactional
     public UserReadDto addUser(UserCreateDto userCreateDto) {
         User user = translationService.toEntity(userCreateDto);
         user = userRepository.save(user);
+
         return translationService.toReadDto(user);
     }
 
     public UserReadDto patchUser(UUID id, UserPatchDto userPatchDto) {
         User user = this.getUserRequired(id);
-
-        if (nonNull(userPatchDto.getPrincipal())) {
-            user.setPrincipal(translationService.toEntity(userPatchDto.getPrincipal()));
+        if (nonNull(userPatchDto.getPrincipalId())) {
+            user.setPrincipal(translationService.getReference(Principal.class, userPatchDto.getPrincipalId()));
         }
-
         if (nonNull(userPatchDto.getTrustLevel())) {
             user.setTrustLevel(userPatchDto.getTrustLevel());
         }
-
         if (nonNull(userPatchDto.getBlockedReview())) {
             user.setBlockedReview(userPatchDto.getBlockedReview());
         }
-
         User patchedActor = userRepository.save(user);
 
         return translationService.toReadDto(patchedActor);

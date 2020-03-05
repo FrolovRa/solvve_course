@@ -2,7 +2,6 @@ package com.solvve.course.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solvve.course.domain.Movie;
-import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
@@ -19,7 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.*;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -33,8 +32,10 @@ public class MovieControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
     @Autowired
     private ObjectMapper objectMapper;
+
     @MockBean
     private MovieService movieService;
 
@@ -96,7 +97,6 @@ public class MovieControllerTest {
         MoviePatchDto moviePatchDto = new MoviePatchDto();
         moviePatchDto.setName("Epic");
         moviePatchDto.setDescription("test Description");
-        moviePatchDto.setGenres(new HashSet<>(Arrays.asList(Genre.COMEDY, Genre.WESTERN)));
 
         MovieReadDto movieReadDto = utils.createMovieReadDto();
 
@@ -118,25 +118,5 @@ public class MovieControllerTest {
         mvc.perform(delete("/api/v1/movies/" + id)).andExpect(status().isOk());
 
         verify(movieService).deleteMovie(id);
-    }
-
-    @Test
-    public void testGetMoviesByGenre() throws Exception {
-        MovieReadDto comedyMovie = utils.createMovieReadDto();
-        List<MovieReadDto> movies = Collections.singletonList(comedyMovie);
-        when(movieService.findMoviesByGenre(Genre.COMEDY)).thenReturn(movies);
-
-        String result = mvc.perform(get("/api/v1/movies/by-genre/" + Genre.COMEDY))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        String actualList = objectMapper.writeValueAsString(movies);
-        assertEquals(actualList, result);
-    }
-
-    @Test
-    public void testGetMovieByGenreWithNotValidParam() throws Exception {
-        mvc.perform(get("/api/v1/movies/by-genre/{genre}", 42)).andExpect(status().isBadRequest());
-
-        verifyNoInteractions(movieService);
     }
 }

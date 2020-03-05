@@ -15,13 +15,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.UUID;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 
 @ActiveProfiles("test")
@@ -34,15 +32,17 @@ public class UserServiceTest {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private TestUtils utils;
+
     @Autowired
     private TranslationService translationService;
+
     @Autowired
     private UserService userService;
 
     @Test
-    @Transactional
     public void testGetUser() {
         User user = utils.getUserFromDb();
         UserReadDto actualUser = translationService.toReadDto(user);
@@ -58,7 +58,7 @@ public class UserServiceTest {
 
         UserReadDto readDto = userService.addUser(createDto);
 
-        assertThat(createDto).isEqualToComparingFieldByField(readDto);
+        assertThat(createDto).isEqualToIgnoringGivenFields(readDto, "principalId");
         assertNotNull(readDto.getId());
 
         UserReadDto userFromDb = userService.getUser(readDto.getId());
@@ -68,14 +68,14 @@ public class UserServiceTest {
     @Test
     public void testPatchUser() {
         UserPatchDto userPatchDto = new UserPatchDto();
-        userPatchDto.setPrincipal(translationService.toReadDto(utils.getPrincipalFromDb()));
+        userPatchDto.setPrincipalId(utils.getPrincipalFromDb().getId());
         userPatchDto.setBlockedReview(true);
         userPatchDto.setTrustLevel(2);
 
         User user = utils.getUserFromDb();
         UserReadDto patchedUser = userService.patchUser(user.getId(), userPatchDto);
 
-        assertThat(userPatchDto).isEqualToComparingFieldByField(patchedUser);
+        assertThat(userPatchDto).isEqualToIgnoringGivenFields(patchedUser, "principalId");
     }
 
     @Test
@@ -94,7 +94,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @Transactional
     public void testDeleteUser() {
         User user = utils.getUserFromDb();
 
@@ -106,5 +105,43 @@ public class UserServiceTest {
     @Test(expected = EntityNotFoundException.class)
     public void testDeleteByWrongId() {
         userService.deleteUser(UUID.randomUUID());
+    }
+
+    @Test
+    public void testCreatedAtIsSet() {
+        User user = new User();
+        user.setPrincipal(utils.getPrincipalFromDb());
+
+        user = userRepository.save(user);
+
+        Instant createdAtBeforeReload = user.getCreatedAt();
+        assertNotNull(createdAtBeforeReload);
+        user = userRepository.findById(user.getId()).get();
+
+        Instant createdAtAfterReload = user.getCreatedAt();
+        assertNotNull(createdAtAfterReload);
+        assertEquals(createdAtBeforeReload, createdAtAfterReload);
+    }
+
+    @Test
+    public void testUpdatedAtIsSet() {
+        User user = new User();
+        user.setPrincipal(utils.getPrincipalFromDb());
+
+        user = userRepository.save(user);
+
+        Instant updatedAtBeforeReload = user.getCreatedAt();
+        assertNotNull(updatedAtBeforeReload);
+        user = userRepository.findById(user.getId()).get();
+
+        Instant updatedAtAfterReload = user.getCreatedAt();
+        assertNotNull(updatedAtAfterReload);
+        assertEquals(updatedAtBeforeReload, updatedAtAfterReload);
+
+        user.setTrustLevel(2);
+        user = userRepository.save(user);
+        Instant updatedAtAfterUpdate = user.getUpdatedAt();
+
+        assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
     }
 }

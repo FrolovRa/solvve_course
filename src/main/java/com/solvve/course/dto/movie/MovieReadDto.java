@@ -1,12 +1,10 @@
 package com.solvve.course.dto.movie;
 
-import com.solvve.course.domain.constant.Genre;
-import com.solvve.course.dto.actor.ActorReadDto;
-import com.solvve.course.dto.character.CharacterReadDto;
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.UUID;
 
 @Data
 public class MovieReadDto {
@@ -19,11 +17,7 @@ public class MovieReadDto {
 
     private LocalDate release;
 
-    private Set<Genre> genres = new HashSet<>();
+    private Instant createdAt;
 
-    private List<CharacterReadDto> characters = new ArrayList<>();
-
-    private List<ActorReadDto> cast = new ArrayList<>();
-
-    private List<ActorReadDto> stars = new ArrayList<>();
+    private Instant updatedAt;
 }

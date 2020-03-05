@@ -16,13 +16,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.UUID;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -34,15 +32,17 @@ public class PrincipalServiceTest {
 
     @Autowired
     private PrincipalRepository principalRepository;
+
     @Autowired
     private TestUtils utils;
+
     @Autowired
     private TranslationService translationService;
+
     @Autowired
     private PrincipalService principalService;
 
     @Test
-    @Transactional
     public void testGetPrincipal() {
         Principal user = utils.getPrincipalFromDb();
         PrincipalReadDto actualPrincipal = translationService.toReadDto(user);
@@ -91,17 +91,54 @@ public class PrincipalServiceTest {
     }
 
     @Test
-    @Transactional
     public void testDeletePrincipal() {
         Principal principal = utils.getPrincipalFromDb();
 
-        principalService.deleteUser(principal.getId());
+        principalService.deletePrincipal(principal.getId());
 
         assertFalse(principalRepository.existsById(principal.getId()));
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void testDeleteByWrongId() {
-        principalService.deleteUser(UUID.randomUUID());
+        principalService.deletePrincipal(UUID.randomUUID());
+    }
+
+    @Test
+    public void testCreatedAtIsSet() {
+        Principal principal = new Principal();
+        principal.setEmail("@");
+
+        principal = principalRepository.save(principal);
+
+        Instant createdAtBeforeReload = principal.getCreatedAt();
+        assertNotNull(createdAtBeforeReload);
+        principal = principalRepository.findById(principal.getId()).get();
+
+        Instant createdAtAfterReload = principal.getCreatedAt();
+        assertNotNull(createdAtAfterReload);
+        assertEquals(createdAtBeforeReload, createdAtAfterReload);
+    }
+
+    @Test
+    public void testUpdatedAtIsSet() {
+        Principal principal = new Principal();
+        principal.setEmail("@");
+
+        principal = principalRepository.save(principal);
+
+        Instant updatedAtBeforeReload = principal.getCreatedAt();
+        assertNotNull(updatedAtBeforeReload);
+        principal = principalRepository.findById(principal.getId()).get();
+
+        Instant updatedAtAfterReload = principal.getCreatedAt();
+        assertNotNull(updatedAtAfterReload);
+        assertEquals(updatedAtBeforeReload, updatedAtAfterReload);
+
+        principal.setEmail("@@");
+        principal = principalRepository.save(principal);
+        Instant updatedAtAfterUpdate = principal.getUpdatedAt();
+
+        assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
     }
 }
