@@ -16,24 +16,21 @@ public class MovieRepositoryCustomImpl implements MovieRepositoryCustom {
 
     @Override
     public List<Movie> findByFilter(MovieFilter filter) {
-        StringJoiner sj = new StringJoiner(" ");
+        StringJoiner sj = new StringJoiner(" and ");
         sj.add("select m from Movie m where 1=1");
         if (filter.getGenres() != null && !filter.getGenres().isEmpty()) {
-            sj.add("and");
             StringJoiner innerSj = new StringJoiner(" or ");
-            filter.getGenres().forEach(genre -> {
-                innerSj.add(":" + genre.name() + " in elements(m.genres)");
-            });
+            filter.getGenres().forEach(genre -> innerSj.add(":" + genre.name() + " in elements(m.genres)"));
             sj.add(innerSj.toString());
         }
         if (filter.getName() != null) {
-            sj.add("and m.name = :name");
+            sj.add("m.name = :name");
         }
         if (filter.getReleaseDateFrom() != null) {
-            sj.add("and m.release >= :releaseDateFrom");
+            sj.add("m.release >= :releaseDateFrom");
         }
         if (filter.getReleaseDateTo() != null) {
-            sj.add("and m.release < :releaseDateTo");
+            sj.add("m.release < :releaseDateTo");
         }
         TypedQuery<Movie> query = entityManager.createQuery(sj.toString(), Movie.class);
         if (filter.getGenres() != null && !filter.getGenres().isEmpty()) {
