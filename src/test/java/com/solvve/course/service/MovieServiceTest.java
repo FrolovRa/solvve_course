@@ -180,7 +180,6 @@ public class MovieServiceTest {
         Movie movie = new Movie();
         movie.setName("movie");
         movie.setDescription("description");
-        movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
         movie.setRelease(LocalDate.now());
 
         Movie secondMovie = new Movie();
@@ -210,6 +209,26 @@ public class MovieServiceTest {
 
         MovieFilter filter = new MovieFilter();
         filter.setGenres((Stream.of(Genre.ACTION, Genre.ADVENTURE).collect(Collectors.toSet())));
+
+        assertThat(movieService.getMovies(filter)).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
+    }
+
+    @Test
+    public void testGetMoviesWithFilterWithEmptyGenres() {
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.now());
+
+        Movie secondMovie = new Movie();
+        secondMovie.setGenres(Stream.of(Genre.ADVENTURE).collect(Collectors.toSet()));
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+
+        MovieFilter filter = new MovieFilter();
+        filter.setGenres(Collections.emptySet());
 
         assertThat(movieService.getMovies(filter)).extracting("id")
                 .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());

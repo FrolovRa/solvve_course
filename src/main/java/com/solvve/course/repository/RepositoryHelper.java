@@ -15,13 +15,16 @@ public class RepositoryHelper {
     private EntityManager entityManager;
 
     public <E> E getReferenceIfExist(Class<E> entityClass, UUID id) {
-        E entity;
-        try {
-            entity = entityManager.getReference(entityClass, id);
-        } catch (javax.persistence.EntityNotFoundException e) {
-            throw new EntityNotFoundException(entityClass, id);
-        }
-        return entity;
+        validateExist(entityClass, id);
+        return entityManager.getReference(entityClass, id);
+    }
+
+    private <E> void validateExist(Class<E> entityClass, UUID id) {
+        Number count = (Number) entityManager
+                .createQuery("SELECT count(e) FROM " + entityClass.getSimpleName() + " e WHERE e.id = :id")
+                .setParameter("id", id)
+                .getSingleResult();
+        if (count.intValue() < 1) throw new EntityNotFoundException(entityClass, id);
     }
 
     public <E> E getEntityRequired(Class<E> entityClass, UUID id) {
