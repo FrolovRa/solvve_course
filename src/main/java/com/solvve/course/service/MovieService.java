@@ -10,6 +10,7 @@ import com.solvve.course.repository.RepositoryHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -71,7 +72,7 @@ public class MovieService {
         movieRepository.delete(repositoryHelper.getEntityRequired(Movie.class, id));
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateAverageRatingOfMovie(UUID id) {
         Double avgRating = movieRepository.calcAverageRating(id);
         Movie movie = repositoryHelper.getEntityRequired(Movie.class, id);
