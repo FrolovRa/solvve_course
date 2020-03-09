@@ -24,7 +24,9 @@ public class RepositoryHelper {
                 .createQuery("SELECT count(e) FROM " + entityClass.getSimpleName() + " e WHERE e.id = :id")
                 .setParameter("id", id)
                 .getSingleResult();
-        if (count.intValue() < 1) throw new EntityNotFoundException(entityClass, id);
+        if (count.intValue() < 1) {
+            throw new EntityNotFoundException(entityClass, id);
+        }
     }
 
     public <E> E getEntityRequired(Class<E> entityClass, UUID id) {

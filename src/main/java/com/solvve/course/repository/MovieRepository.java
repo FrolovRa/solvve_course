@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Repository
 public interface MovieRepository extends CrudRepository<Movie, UUID>, MovieRepositoryCustom {
@@ -17,4 +18,7 @@ public interface MovieRepository extends CrudRepository<Movie, UUID>, MovieRepos
 
     @Query(value = "SELECT AVG(m.rating) FROM Rating m WHERE m.entityId = :movieId")
     Double calcAverageRating(UUID movieId);
+
+    @Query(value = "SELECT m.id FROM Movie m")
+    Stream<UUID> getIdsOfAllMovies();
 }

@@ -49,15 +49,6 @@ public class TranslationService {
         return dto;
     }
 
-    public ActorExtendedReadDto toExtendedReadDto(Actor actor) {
-        ActorExtendedReadDto dto = new ActorExtendedReadDto();
-        dto.setId(actor.getId());
-        dto.setPerson(this.toReadDto(actor.getPerson()));
-        dto.setCreatedAt(actor.getCreatedAt());
-        dto.setUpdatedAt(actor.getUpdatedAt());
-        return dto;
-    }
-
     public ActorReadDto toReadDto(Actor actor) {
         ActorReadDto dto = new ActorReadDto();
         dto.setId(actor.getId());
@@ -98,6 +89,15 @@ public class TranslationService {
         dto.setCreatedAt(principal.getCreatedAt());
         dto.setUpdatedAt(principal.getUpdatedAt());
 
+        return dto;
+    }
+
+    public ActorExtendedReadDto toExtendedReadDto(Actor actor) {
+        ActorExtendedReadDto dto = new ActorExtendedReadDto();
+        dto.setId(actor.getId());
+        dto.setPerson(this.toReadDto(actor.getPerson()));
+        dto.setCreatedAt(actor.getCreatedAt());
+        dto.setUpdatedAt(actor.getUpdatedAt());
         return dto;
     }
 
