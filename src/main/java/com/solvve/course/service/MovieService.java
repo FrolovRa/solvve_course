@@ -5,8 +5,8 @@ import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
-import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.MovieRepository;
+import com.solvve.course.repository.RepositoryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,17 +25,20 @@ public class MovieService {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private RepositoryHelper repositoryHelper;
+
     public MovieReadDto getMovie(UUID id) {
-        Movie movieFromDb = this.getMovieRequired(id);
+        Movie movieFromDb = repositoryHelper.getEntityRequired(Movie.class, id);
 
         return translationService.toReadDto(movieFromDb);
     }
 
     public List<MovieReadDto> getMovies(MovieFilter filter) {
-     List<Movie> movies = movieRepository.findByFilter(filter);
-     return movies.stream()
-             .map(translationService::toReadDto)
-             .collect(Collectors.toList());
+        List<Movie> movies = movieRepository.findByFilter(filter);
+        return movies.stream()
+                .map(translationService::toReadDto)
+                .collect(Collectors.toList());
     }
 
     public MovieReadDto addMovie(MovieCreateDto movieCreateDto) {
@@ -46,7 +49,7 @@ public class MovieService {
     }
 
     public MovieReadDto patchMovie(UUID id, MoviePatchDto moviePatchDto) {
-        Movie movieFromDb = this.getMovieRequired(id);
+        Movie movieFromDb = repositoryHelper.getEntityRequired(Movie.class, id);
         if (nonNull(moviePatchDto.getName())) {
             movieFromDb.setName(moviePatchDto.getName());
         }
@@ -62,12 +65,6 @@ public class MovieService {
     }
 
     public void deleteMovie(UUID id) {
-        movieRepository.delete(getMovieRequired(id));
-    }
-
-    private Movie getMovieRequired(UUID id) {
-        return movieRepository
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Movie.class, id));
+        movieRepository.delete(repositoryHelper.getEntityRequired(Movie.class, id));
     }
 }

@@ -24,6 +24,7 @@ import com.solvve.course.dto.user.UserReadDto;
 import com.solvve.course.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -49,6 +50,9 @@ public class TestUtils {
 
     @Autowired
     private PrincipalRepository principalRepository;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
 
     public Actor getActorFromDb() {
         Actor actor = new Actor();
@@ -255,5 +259,11 @@ public class TestUtils {
         actorCreateDto.setPersonId(this.createPersonReadDto().getId());
 
         return actorCreateDto;
+    }
+
+    public void inTransaction(Runnable runnable) {
+        transactionTemplate.executeWithoutResult(status -> {
+            runnable.run();
+        });
     }
 }

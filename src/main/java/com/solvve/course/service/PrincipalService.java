@@ -4,8 +4,8 @@ import com.solvve.course.domain.Principal;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
-import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.PrincipalRepository;
+import com.solvve.course.repository.RepositoryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +22,11 @@ public class PrincipalService {
     @Autowired
     private PrincipalRepository principalRepository;
 
+    @Autowired
+    private RepositoryHelper repositoryHelper;
+
     public PrincipalReadDto getPrincipal(UUID id) {
-        Principal principalFromDb = this.getPrincipalRequired(id);
+        Principal principalFromDb = repositoryHelper.getEntityRequired(Principal.class, id);
 
         return translationService.toReadDto(principalFromDb);
     }
@@ -36,7 +39,7 @@ public class PrincipalService {
     }
 
     public PrincipalReadDto patchPrincipal(UUID id, PrincipalPatchDto principalPatchDto) {
-        Principal principal = this.getPrincipalRequired(id);
+        Principal principal = repositoryHelper.getEntityRequired(Principal.class, id);
         if (nonNull(principalPatchDto.getName())) {
             principal.setName(principalPatchDto.getName());
         }
@@ -55,12 +58,6 @@ public class PrincipalService {
     }
 
     public void deletePrincipal(UUID id) {
-        principalRepository.delete(getPrincipalRequired(id));
-    }
-
-    private Principal getPrincipalRequired(UUID id) {
-        return principalRepository
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Principal.class, id));
+        principalRepository.delete(repositoryHelper.getEntityRequired(Principal.class, id));
     }
 }

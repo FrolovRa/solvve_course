@@ -1,5 +1,6 @@
 package com.solvve.course.service;
 
+import com.solvve.course.domain.Actor;
 import com.solvve.course.domain.Movie;
 import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,8 +32,9 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(statements = {
-        "delete from actor",
+        "delete from movie_cast",
         "delete from movie",
+        "delete from actor",
         "delete from person"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class MovieServiceTest {
 
@@ -210,5 +213,97 @@ public class MovieServiceTest {
 
         assertThat(movieService.getMovies(filter)).extracting("id")
                 .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
+    }
+
+    @Test
+    public void testGetMoviesWithFilterWithActor() {
+        Actor actor = utils.getActorFromDb();
+        Movie movie = new Movie();
+        movie.setCast(Collections.singletonList(actor));
+        movie.setName("movie");
+        movie.setDescription("description");
+
+        Movie secondMovie = new Movie();
+        secondMovie.setGenres(Stream.of(Genre.ADVENTURE).collect(Collectors.toSet()));
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+
+        MovieFilter filter = new MovieFilter();
+        filter.setActorId(actor.getId());
+
+        assertThat(movieService.getMovies(filter)).extracting("id")
+                .containsOnly(movie.getId())
+                .doesNotContain(secondMovie.getId());
+    }
+
+    @Test
+    public void testGetMoviesWithFilterWithReleaseDate() {
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setRelease(LocalDate.of(2000, 1, 10));
+
+        Movie secondMovie = new Movie();
+        secondMovie.setName("movie2");
+        secondMovie.setDescription("description2");
+        secondMovie.setRelease(LocalDate.of(2001, 2, 10));
+
+        Movie thirdMovie = new Movie();
+        thirdMovie.setName("movie3");
+        thirdMovie.setDescription("description3");
+        thirdMovie.setRelease(LocalDate.of(2002, 2, 10));
+
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+        thirdMovie = movieRepository.save(thirdMovie);
+
+        MovieFilter filter = new MovieFilter();
+        filter.setReleaseDateFrom(LocalDate.of(2000, 1, 10));
+        filter.setReleaseDateTo(LocalDate.of(2002, 2, 10));
+
+        assertThat(movieService.getMovies(filter)).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
+                .doesNotContain(thirdMovie.getId());
+    }
+
+    @Test
+    public void testGetMoviesWithFilterWithFullFilter() {
+        Actor actor = utils.getActorFromDb();
+
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setCast(Collections.singletonList(actor));
+        movie.setGenres(Stream.of(Genre.ADVENTURE, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.of(2000, 1, 10));
+
+        Movie secondMovie = new Movie();
+        secondMovie.setName("movie");
+        secondMovie.setDescription("description2");
+        secondMovie.setCast(Collections.singletonList(actor));
+        secondMovie.setGenres(Stream.of(Genre.COMEDY, Genre.SCIENCE_FICTION).collect(Collectors.toSet()));
+        secondMovie.setRelease(LocalDate.of(2001, 2, 10));
+
+        Movie thirdMovie = new Movie();
+        thirdMovie.setName("movie3");
+        thirdMovie.setDescription("description3");
+        thirdMovie.setCast(Collections.singletonList(actor));
+        thirdMovie.setGenres(Stream.of(Genre.HORROR).collect(Collectors.toSet()));
+        thirdMovie.setRelease(LocalDate.of(2002, 2, 10));
+
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+        thirdMovie = movieRepository.save(thirdMovie);
+
+        MovieFilter filter = new MovieFilter();
+        filter.setReleaseDateFrom(LocalDate.of(2000, 1, 10));
+        filter.setReleaseDateTo(LocalDate.of(2002, 2, 10));
+        filter.setName("movie");
+        filter.setGenres(Stream.of(Genre.COMEDY).collect(Collectors.toSet()));
+        filter.setActorId(actor.getId());
+
+        assertThat(movieService.getMovies(filter)).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
+                .doesNotContain(thirdMovie.getId());
     }
 }

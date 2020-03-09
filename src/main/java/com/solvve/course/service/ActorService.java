@@ -6,8 +6,8 @@ import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
 import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorPutDto;
-import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.ActorRepository;
+import com.solvve.course.repository.RepositoryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +25,11 @@ public class ActorService {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private RepositoryHelper repositoryHelper;
+
     public ActorExtendedReadDto getActor(UUID id) {
-        Actor actorFromDb = getActorRequired(id);
+        Actor actorFromDb = repositoryHelper.getEntityRequired(Actor.class, id);
 
         return translationService.toExtendedReadDto(actorFromDb);
     }
@@ -40,9 +43,9 @@ public class ActorService {
     }
 
     public ActorExtendedReadDto patchActor(UUID id, ActorPatchDto actorPatchDto) {
-        Actor actor = this.getActorRequired(id);
+        Actor actor = repositoryHelper.getEntityRequired(Actor.class, id);
         if (nonNull(actorPatchDto.getPersonId())) {
-            actor.setPerson(translationService.getReference(Person.class, actorPatchDto.getPersonId()));
+            actor.setPerson(repositoryHelper.getReferenceIfExist(Person.class, actorPatchDto.getPersonId()));
         }
         Actor patchedActor = actorRepository.save(actor);
 
@@ -50,19 +53,13 @@ public class ActorService {
     }
 
     public void deleteActor(UUID id) {
-        actorRepository.delete(getActorRequired(id));
+        actorRepository.delete(repositoryHelper.getEntityRequired(Actor.class, id));
     }
 
     public ActorExtendedReadDto updateActor(UUID id, ActorPutDto actorPutDto) {
-        Actor actorFromDb = this.getActorRequired(id);
-        actorFromDb.setPerson(translationService.getReference(Person.class, actorPutDto.getPersonId()));
+        Actor actorFromDb = repositoryHelper.getEntityRequired(Actor.class, id);
+        actorFromDb.setPerson(repositoryHelper.getReferenceIfExist(Person.class, actorPutDto.getPersonId()));
 
         return translationService.toExtendedReadDto(actorFromDb);
-    }
-
-    private Actor getActorRequired(UUID id) {
-        return actorRepository
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Actor.class, id));
     }
 }

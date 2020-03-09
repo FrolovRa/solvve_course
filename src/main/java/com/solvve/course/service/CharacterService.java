@@ -6,8 +6,8 @@ import com.solvve.course.domain.Movie;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.character.CharacterPatchDto;
 import com.solvve.course.dto.character.CharacterReadDto;
-import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.CharacterRepository;
+import com.solvve.course.repository.RepositoryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +24,11 @@ public class CharacterService {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private RepositoryHelper repositoryHelper;
+
     public CharacterReadDto getCharacter(UUID id) {
-        Character characterFromDb = this.getCharacterRequired(id);
+        Character characterFromDb = repositoryHelper.getEntityRequired(Character.class, id);
 
         return translationService.toReadDto(characterFromDb);
     }
@@ -38,15 +41,15 @@ public class CharacterService {
     }
 
     public CharacterReadDto patchCharacter(UUID id, CharacterPatchDto characterPatchDto) {
-        Character character = this.getCharacterRequired(id);
+        Character character = repositoryHelper.getEntityRequired(Character.class, id);
         if (nonNull(characterPatchDto.getName())) {
             character.setName(characterPatchDto.getName());
         }
         if (nonNull(characterPatchDto.getActorId())) {
-            character.setActor(translationService.getReference(Actor.class, characterPatchDto.getActorId()));
+            character.setActor(repositoryHelper.getReferenceIfExist(Actor.class, characterPatchDto.getActorId()));
         }
         if (nonNull(characterPatchDto.getMovieId())) {
-            character.setMovie(translationService.getReference(Movie.class, characterPatchDto.getMovieId()));
+            character.setMovie(repositoryHelper.getReferenceIfExist(Movie.class, characterPatchDto.getMovieId()));
         }
         Character patchedCharacter = characterRepository.save(character);
 
@@ -54,12 +57,6 @@ public class CharacterService {
     }
 
     public void deleteCharacter(UUID id) {
-        characterRepository.delete(this.getCharacterRequired(id));
-    }
-
-    private Character getCharacterRequired(UUID id) {
-        return characterRepository
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Character.class, id));
+        characterRepository.delete(repositoryHelper.getEntityRequired(Character.class, id));
     }
 }

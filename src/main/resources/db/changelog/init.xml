@@ -83,7 +83,7 @@
         </createTable>
 
         <!--create util tables for many-to-many relations in database-->
-        <createTable tableName="actor_movies">
+        <createTable tableName="movie_cast">
             <column name="cast_id" type="uuid">
                 <constraints referencedTableName="actor" referencedColumnNames="id"
                              foreignKeyName="fk__actor_movie__actor" nullable="false"/>
