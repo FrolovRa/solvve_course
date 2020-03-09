@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.UUID;
 
 @Service
@@ -234,7 +233,6 @@ public class TestUtils {
     public ActorExtendedReadDto createActorExtendedReadDto() {
         ActorExtendedReadDto actorExtendedReadDto = new ActorExtendedReadDto();
         actorExtendedReadDto.setId(UUID.randomUUID());
-        actorExtendedReadDto.setMovies(Collections.singletonList(this.createMovieReadDto()));
         actorExtendedReadDto.setPerson(this.createPersonReadDto());
 
         return actorExtendedReadDto;

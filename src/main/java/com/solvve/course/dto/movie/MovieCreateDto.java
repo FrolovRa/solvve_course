@@ -12,5 +12,4 @@ public class MovieCreateDto {
     private String description;
 
     private LocalDate release;
-
 }

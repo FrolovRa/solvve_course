@@ -19,8 +19,6 @@ import com.solvve.course.repository.RepositoryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-
 @Service
 public class TranslationService {
 
@@ -54,18 +52,6 @@ public class TranslationService {
     public ActorExtendedReadDto toExtendedReadDto(Actor actor) {
         ActorExtendedReadDto dto = new ActorExtendedReadDto();
         dto.setId(actor.getId());
-        dto.setCharacters(actor.getCharacters()
-                .stream()
-                .map(this::toReadDto)
-                .collect(Collectors.toList()));
-        dto.setMovies(actor.getMovies()
-                .stream()
-                .map(this::toReadDto)
-                .collect(Collectors.toList()));
-        dto.setMoviesAsStar(actor.getMoviesAsStar()
-                .stream()
-                .map(this::toReadDto)
-                .collect(Collectors.toList()));
         dto.setPerson(this.toReadDto(actor.getPerson()));
         dto.setCreatedAt(actor.getCreatedAt());
         dto.setUpdatedAt(actor.getUpdatedAt());
@@ -75,7 +61,7 @@ public class TranslationService {
     public ActorReadDto toReadDto(Actor actor) {
         ActorReadDto dto = new ActorReadDto();
         dto.setId(actor.getId());
-        dto.setPerson(this.toReadDto(actor.getPerson()));
+        dto.setPersonId(actor.getPerson().getId());
 
         return dto;
     }

@@ -1,6 +1,5 @@
 package com.solvve.course.dto.actor;
 
-import com.solvve.course.dto.person.PersonReadDto;
 import lombok.Data;
 
 import java.time.Instant;
@@ -11,7 +10,7 @@ public class ActorReadDto {
 
     private UUID id;
 
-    private PersonReadDto person;
+    private UUID personId;
 
     private Instant createdAt;
 
