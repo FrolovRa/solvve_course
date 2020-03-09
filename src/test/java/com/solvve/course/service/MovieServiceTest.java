@@ -355,7 +355,35 @@ public class MovieServiceTest {
         secondRating.setRating(0.5);
         ratingRepository.save(secondRating);
 
-        Double result = movieRepository.calcAverageRating(movie.getId());
-        Assert.assertEquals(Double.valueOf(1.95d), result);
+        Assert.assertEquals(1.95d, movieRepository.calcAverageRating(movie.getId()), Double.MIN_VALUE);
+    }
+
+    @Test
+    public void testUpdateAverageRatingOfMovie() {
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setGenres(Stream.of(Genre.ADVENTURE, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.of(2000, 1, 10));
+
+        movie = movieRepository.save(movie);
+        Double oldAvgRating = movie.getRating();
+        Assert.assertNull(oldAvgRating);
+
+        Rating rating = new Rating();
+        rating.setUser(utils.getUserFromDb());
+        rating.setEntityId(movie.getId());
+        rating.setRating(3.4);
+        ratingRepository.save(rating);
+
+        Rating secondRating = new Rating();
+        secondRating.setUser(utils.getUserFromDb());
+        secondRating.setEntityId(movie.getId());
+        secondRating.setRating(0.5);
+        ratingRepository.save(secondRating);
+
+        movieService.updateAverageRatingOfMovie(movie.getId());
+        movie = movieRepository.findById(movie.getId()).get();
+        Assert.assertEquals(1.95d, movie.getRating(), Double.MIN_VALUE);
     }
 }
