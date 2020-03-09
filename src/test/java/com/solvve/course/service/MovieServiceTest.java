@@ -2,6 +2,7 @@ package com.solvve.course.service;
 
 import com.solvve.course.domain.Actor;
 import com.solvve.course.domain.Movie;
+import com.solvve.course.domain.Rating;
 import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieFilter;
@@ -9,7 +10,9 @@ import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.MovieRepository;
+import com.solvve.course.repository.RatingRepository;
 import com.solvve.course.util.TestUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,7 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @Sql(statements = {
         "delete from movie_cast",
+        "delete from rating",
         "delete from movie",
         "delete from actor",
         "delete from person"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -49,6 +53,9 @@ public class MovieServiceTest {
 
     @Autowired
     private MovieService movieService;
+
+    @Autowired
+    private RatingRepository ratingRepository;
 
     @Test
     public void testGetMovie() {
@@ -324,5 +331,31 @@ public class MovieServiceTest {
         assertThat(movieService.getMovies(filter)).extracting("id")
                 .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
                 .doesNotContain(thirdMovie.getId());
+    }
+
+    @Test
+    public void testCalcRating() {
+        Movie movie = new Movie();
+        movie.setName("movie");
+        movie.setDescription("description");
+        movie.setGenres(Stream.of(Genre.ADVENTURE, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.of(2000, 1, 10));
+
+        movie = movieRepository.save(movie);
+
+        Rating rating = new Rating();
+        rating.setUser(utils.getUserFromDb());
+        rating.setEntityId(movie.getId());
+        rating.setRating(3.4);
+        ratingRepository.save(rating);
+
+        Rating secondRating = new Rating();
+        secondRating.setUser(utils.getUserFromDb());
+        secondRating.setEntityId(movie.getId());
+        secondRating.setRating(0.5);
+        ratingRepository.save(secondRating);
+
+        Double result = movieRepository.calcAverageRating(movie.getId());
+        Assert.assertEquals(Double.valueOf(1.95d), result);
     }
 }

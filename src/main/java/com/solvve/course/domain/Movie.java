@@ -30,6 +30,8 @@ public class Movie {
 
     private String description;
 
+    private Double rating;
+
     private LocalDate release;
 
     @ElementCollection(targetClass = Genre.class, fetch = FetchType.EAGER)
