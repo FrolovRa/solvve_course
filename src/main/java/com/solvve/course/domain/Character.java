@@ -35,5 +35,4 @@ public class Character {
     @ToString.Exclude
     @ManyToOne
     private Movie movie;
-
 }

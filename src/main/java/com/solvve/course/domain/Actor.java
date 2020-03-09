@@ -29,10 +29,10 @@ public class Actor {
     @OneToOne
     private Person person;
 
-    @ManyToMany(mappedBy = "cast", cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(mappedBy = "cast", cascade = CascadeType.PERSIST)
     private List<Movie> movies = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "stars", cascade = CascadeType.PERSIST)
     private List<Movie> moviesAsStar = new ArrayList<>();
 
     @OneToMany(mappedBy = "actor", cascade = CascadeType.PERSIST)

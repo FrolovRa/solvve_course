@@ -45,6 +45,6 @@ public class Movie {
     @ManyToMany
     private List<Actor> cast = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "moviesAsStar", cascade = CascadeType.PERSIST)
+    @ManyToMany
     private List<Actor> stars = new ArrayList<>();
 }

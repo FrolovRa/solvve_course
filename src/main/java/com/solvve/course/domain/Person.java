@@ -28,5 +28,4 @@ public class Person {
     private Instant updatedAt;
 
     private String name;
-
 }
