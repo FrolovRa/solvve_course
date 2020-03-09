@@ -8,5 +8,4 @@ import java.util.UUID;
 public class ActorPatchDto {
 
     private UUID personId;
-
 }

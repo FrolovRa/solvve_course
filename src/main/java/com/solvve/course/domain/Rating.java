@@ -1,7 +1,6 @@
 package com.solvve.course.domain;
 
 import lombok.Data;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -10,11 +9,10 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
-
-@Entity
 @Data
+@Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Character {
+public class Rating {
 
     @Id
     @GeneratedValue
@@ -26,13 +24,10 @@ public class Character {
     @LastModifiedDate
     private Instant updatedAt;
 
-    private String name;
-
-    @ToString.Exclude
     @ManyToOne
-    private Actor actor;
+    private User user;
 
-    @ToString.Exclude
-    @ManyToOne
-    private Movie movie;
+    private UUID entityId;
+
+    private Double rating;
 }

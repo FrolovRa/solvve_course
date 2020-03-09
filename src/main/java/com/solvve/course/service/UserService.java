@@ -5,7 +5,7 @@ import com.solvve.course.domain.User;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.dto.user.UserReadDto;
-import com.solvve.course.exception.EntityNotFoundException;
+import com.solvve.course.repository.RepositoryHelper;
 import com.solvve.course.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,11 @@ public class UserService {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private RepositoryHelper repositoryHelper;
+
     public UserReadDto getUser(UUID id) {
-        User userFromDb = getUserRequired(id);
+        User userFromDb = repositoryHelper.getEntityRequired(User.class, id);
 
         return translationService.toReadDto(userFromDb);
     }
@@ -39,9 +42,9 @@ public class UserService {
     }
 
     public UserReadDto patchUser(UUID id, UserPatchDto userPatchDto) {
-        User user = this.getUserRequired(id);
+        User user = repositoryHelper.getEntityRequired(User.class, id);
         if (nonNull(userPatchDto.getPrincipalId())) {
-            user.setPrincipal(translationService.getReference(Principal.class, userPatchDto.getPrincipalId()));
+            user.setPrincipal(repositoryHelper.getReferenceIfExist(Principal.class, userPatchDto.getPrincipalId()));
         }
         if (nonNull(userPatchDto.getTrustLevel())) {
             user.setTrustLevel(userPatchDto.getTrustLevel());
@@ -55,12 +58,6 @@ public class UserService {
     }
 
     public void deleteUser(UUID id) {
-        userRepository.delete(getUserRequired(id));
-    }
-
-    private User getUserRequired(UUID id) {
-        return userRepository
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(User.class, id));
+        userRepository.delete(repositoryHelper.getEntityRequired(User.class, id));
     }
 }

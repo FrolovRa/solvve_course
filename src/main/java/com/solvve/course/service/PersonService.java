@@ -4,8 +4,8 @@ import com.solvve.course.domain.Person;
 import com.solvve.course.dto.person.PersonCreateDto;
 import com.solvve.course.dto.person.PersonPatchDto;
 import com.solvve.course.dto.person.PersonReadDto;
-import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.PersonRepository;
+import com.solvve.course.repository.RepositoryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +22,11 @@ public class PersonService {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private RepositoryHelper repositoryHelper;
+
     public PersonReadDto getPerson(UUID id) {
-        Person personFromDb = getPersonRequired(id);
+        Person personFromDb = repositoryHelper.getEntityRequired(Person.class, id);
 
         return translationService.toReadDto(personFromDb);
     }
@@ -36,7 +39,7 @@ public class PersonService {
     }
 
     public PersonReadDto patchPerson(UUID id, PersonPatchDto personPatchDto) {
-        Person person = this.getPersonRequired(id);
+        Person person = repositoryHelper.getEntityRequired(Person.class, id);
         if (nonNull(personPatchDto.getName())) {
             person.setName(personPatchDto.getName());
         }
@@ -46,12 +49,6 @@ public class PersonService {
     }
 
     public void deletePerson(UUID id) {
-        personRepository.delete(getPersonRequired(id));
-    }
-
-    private Person getPersonRequired(UUID id) {
-        return personRepository
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Person.class, id));
+        personRepository.delete(repositoryHelper.getEntityRequired(Person.class, id));
     }
 }

@@ -1,0 +1,31 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="add-rating-score-for-the-entities" author="frolov">
+        <addColumn tableName="movie">
+            <column name="rating" type="double"/>
+        </addColumn>
+        <createTable tableName="rating">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created_at" type="datetime"/>
+            <column name="updated_at" type="datetime"/>
+            <column name="user_id" type="uuid">
+                <constraints referencedTableName="user" referencedColumnNames="id"
+                             foreignKeyName="fk__rating__user" nullable="false"
+                             deleteCascade="true"/>
+            </column>
+            <column name="entity_id" type="uuid">
+                <constraints nullable="false" deleteCascade="true"/>
+            </column>
+            <column name="rating" type="double">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

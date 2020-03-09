@@ -15,18 +15,15 @@ import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserReadDto;
+import com.solvve.course.repository.RepositoryHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class TranslationService {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private RepositoryHelper repositoryHelper;
 
     public MovieReadDto toReadDto(Movie movie) {
         MovieReadDto dto = new MovieReadDto();
@@ -55,18 +52,6 @@ public class TranslationService {
     public ActorExtendedReadDto toExtendedReadDto(Actor actor) {
         ActorExtendedReadDto dto = new ActorExtendedReadDto();
         dto.setId(actor.getId());
-        dto.setCharacters(actor.getCharacters()
-                .stream()
-                .map(this::toReadDto)
-                .collect(Collectors.toList()));
-        dto.setMovies(actor.getMovies()
-                .stream()
-                .map(this::toReadDto)
-                .collect(Collectors.toList()));
-        dto.setMoviesAsStar(actor.getMoviesAsStar()
-                .stream()
-                .map(this::toReadDto)
-                .collect(Collectors.toList()));
         dto.setPerson(this.toReadDto(actor.getPerson()));
         dto.setCreatedAt(actor.getCreatedAt());
         dto.setUpdatedAt(actor.getUpdatedAt());
@@ -76,7 +61,7 @@ public class TranslationService {
     public ActorReadDto toReadDto(Actor actor) {
         ActorReadDto dto = new ActorReadDto();
         dto.setId(actor.getId());
-        dto.setPerson(this.toReadDto(actor.getPerson()));
+        dto.setPersonId(actor.getPerson().getId());
 
         return dto;
     }
@@ -128,15 +113,15 @@ public class TranslationService {
     public Character toEntity(CharacterCreateDto dto) {
         Character character = new Character();
         character.setName(dto.getName());
-        character.setMovie(this.getReference(Movie.class, dto.getMovieId()));
-        character.setActor(this.getReference(Actor.class, dto.getActorId()));
+        character.setMovie(repositoryHelper.getReferenceIfExist(Movie.class, dto.getMovieId()));
+        character.setActor(repositoryHelper.getReferenceIfExist(Actor.class, dto.getActorId()));
 
         return character;
     }
 
     public Actor toEntity(ActorCreateDto dto) {
         Actor actor = new Actor();
-        actor.setPerson(this.getReference(Person.class, dto.getPersonId()));
+        actor.setPerson(repositoryHelper.getReferenceIfExist(Person.class, dto.getPersonId()));
 
         return actor;
     }
@@ -151,7 +136,7 @@ public class TranslationService {
     public User toEntity(UserCreateDto dto) {
         User user = new User();
         user.setBlockedReview(dto.getBlockedReview());
-        user.setPrincipal(this.getReference(Principal.class, dto.getPrincipalId()));
+        user.setPrincipal(repositoryHelper.getReferenceIfExist(Principal.class, dto.getPrincipalId()));
         user.setTrustLevel(dto.getTrustLevel());
 
         return user;
@@ -165,9 +150,5 @@ public class TranslationService {
         principal.setRole(dto.getRole());
 
         return principal;
-    }
-
-    public <E> E getReference(Class<E> entityClass, UUID id) {
-        return entityManager.getReference(entityClass, id);
     }
 }

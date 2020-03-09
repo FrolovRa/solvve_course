@@ -16,12 +16,15 @@ public class MovieRepositoryCustomImpl implements MovieRepositoryCustom {
 
     @Override
     public List<Movie> findByFilter(MovieFilter filter) {
-        StringJoiner sj = new StringJoiner(" and ");
-        sj.add("select m from Movie m where 1=1");
+        StringJoiner sj = new StringJoiner(" AND ");
+        sj.add("SELECT m FROM Movie m WHERE 1=1");
         if (filter.getGenres() != null && !filter.getGenres().isEmpty()) {
-            StringJoiner innerSj = new StringJoiner(" or ");
-            filter.getGenres().forEach(genre -> innerSj.add(":" + genre.name() + " in elements(m.genres)"));
+            StringJoiner innerSj = new StringJoiner(" OR ");
+            filter.getGenres().forEach(genre -> innerSj.add(":" + genre.name() + " IN ELEMENTS(m.genres)"));
             sj.add(innerSj.toString());
+        }
+        if (filter.getActorId() != null) {
+            sj.add("EXISTS (SELECT a.id FROM m.cast a WHERE a.id = :actorId)");
         }
         if (filter.getName() != null) {
             sj.add("m.name = :name");
@@ -35,6 +38,9 @@ public class MovieRepositoryCustomImpl implements MovieRepositoryCustom {
         TypedQuery<Movie> query = entityManager.createQuery(sj.toString(), Movie.class);
         if (filter.getGenres() != null && !filter.getGenres().isEmpty()) {
             filter.getGenres().forEach(genre -> query.setParameter(genre.name(), genre));
+        }
+        if (filter.getActorId() != null) {
+            query.setParameter("actorId", filter.getActorId());
         }
         if (filter.getName() != null) {
             query.setParameter("name", filter.getName());

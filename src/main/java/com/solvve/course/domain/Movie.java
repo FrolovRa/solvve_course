@@ -30,6 +30,8 @@ public class Movie {
 
     private String description;
 
+    private Double rating;
+
     private LocalDate release;
 
     @ElementCollection(targetClass = Genre.class, fetch = FetchType.EAGER)
@@ -42,9 +44,9 @@ public class Movie {
     @OneToMany(mappedBy = "movie", cascade = CascadeType.PERSIST)
     private List<Character> characters = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
+    @ManyToMany
     private List<Actor> cast = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "moviesAsStar", cascade = CascadeType.PERSIST)
+    @ManyToMany
     private List<Actor> stars = new ArrayList<>();
 }

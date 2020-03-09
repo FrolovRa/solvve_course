@@ -5,10 +5,12 @@ import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
-import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.MovieRepository;
+import com.solvve.course.repository.RepositoryHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
+@Slf4j
 @Service
 public class MovieService {
 
@@ -25,17 +28,20 @@ public class MovieService {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private RepositoryHelper repositoryHelper;
+
     public MovieReadDto getMovie(UUID id) {
-        Movie movieFromDb = this.getMovieRequired(id);
+        Movie movieFromDb = repositoryHelper.getEntityRequired(Movie.class, id);
 
         return translationService.toReadDto(movieFromDb);
     }
 
     public List<MovieReadDto> getMovies(MovieFilter filter) {
-     List<Movie> movies = movieRepository.findByFilter(filter);
-     return movies.stream()
-             .map(translationService::toReadDto)
-             .collect(Collectors.toList());
+        List<Movie> movies = movieRepository.findByFilter(filter);
+        return movies.stream()
+                .map(translationService::toReadDto)
+                .collect(Collectors.toList());
     }
 
     public MovieReadDto addMovie(MovieCreateDto movieCreateDto) {
@@ -46,7 +52,7 @@ public class MovieService {
     }
 
     public MovieReadDto patchMovie(UUID id, MoviePatchDto moviePatchDto) {
-        Movie movieFromDb = this.getMovieRequired(id);
+        Movie movieFromDb = repositoryHelper.getEntityRequired(Movie.class, id);
         if (nonNull(moviePatchDto.getName())) {
             movieFromDb.setName(moviePatchDto.getName());
         }
@@ -62,12 +68,16 @@ public class MovieService {
     }
 
     public void deleteMovie(UUID id) {
-        movieRepository.delete(getMovieRequired(id));
+        movieRepository.delete(repositoryHelper.getEntityRequired(Movie.class, id));
     }
 
-    private Movie getMovieRequired(UUID id) {
-        return movieRepository
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Movie.class, id));
+    @Transactional
+    public void updateAverageRatingOfMovie(UUID id) {
+        Double avgRating = movieRepository.calcAverageRating(id);
+        Movie movie = repositoryHelper.getEntityRequired(Movie.class, id);
+        log.info("Setting new average rating of movie: {}. Old value: {}, new value: {}",
+                id, movie.getRating(), avgRating);
+        movie.setRating(avgRating);
+        movieRepository.save(movie);
     }
 }

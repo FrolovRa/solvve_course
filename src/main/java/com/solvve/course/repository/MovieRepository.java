@@ -14,4 +14,7 @@ public interface MovieRepository extends CrudRepository<Movie, UUID>, MovieRepos
 
     @Query(value = "SELECT m FROM Movie m WHERE m.release >= :from AND m.release < :to")
     List<Movie> findMovieByReleaseInInterval(LocalDate from, LocalDate to);
+
+    @Query(value = "SELECT AVG(m.rating) FROM Rating m WHERE m.entityId = :movieId")
+    Double calcAverageRating(UUID movieId);
 }
