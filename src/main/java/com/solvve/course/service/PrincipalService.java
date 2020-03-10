@@ -1,6 +1,7 @@
 package com.solvve.course.service;
 
 import com.solvve.course.domain.Principal;
+import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
@@ -9,7 +10,9 @@ import com.solvve.course.repository.RepositoryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -29,6 +32,13 @@ public class PrincipalService {
         Principal principalFromDb = repositoryHelper.getEntityRequired(Principal.class, id);
 
         return translationService.toReadDto(principalFromDb);
+    }
+
+    public List<PrincipalReadDto> getPrincipalsByRole(Role role) {
+        return principalRepository.getAllByRole(role)
+                .stream()
+                .map(translationService::toReadDto)
+                .collect(Collectors.toList());
     }
 
     public PrincipalReadDto addPrincipal(PrincipalCreateDto userCreateDto) {

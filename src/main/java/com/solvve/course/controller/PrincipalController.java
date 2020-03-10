@@ -1,5 +1,6 @@
 package com.solvve.course.controller;
 
+import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
@@ -7,6 +8,7 @@ import com.solvve.course.service.PrincipalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,6 +21,11 @@ public class PrincipalController {
     @GetMapping("/{id}")
     public PrincipalReadDto getPrincipal(@PathVariable UUID id) {
         return principalService.getPrincipal(id);
+    }
+
+    @GetMapping("/by-role/{role}")
+    public List<PrincipalReadDto> getPrincipalsByRole(@PathVariable Role role) {
+        return principalService.getPrincipalsByRole(role);
     }
 
     @PostMapping

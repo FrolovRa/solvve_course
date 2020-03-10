@@ -141,4 +141,24 @@ public class PrincipalServiceTest {
 
         assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
     }
+
+    @Test
+    public void testGetPrincipalsByRole() {
+        Principal principalUser = new Principal();
+        principalUser.setRole(Role.USER);
+        principalUser = principalRepository.save(principalUser);
+
+        Principal principalCM = new Principal();
+        principalCM.setRole(Role.CONTENT_MANAGER);
+        principalCM = principalRepository.save(principalCM);
+
+        Principal secondPrincipalCM = new Principal();
+        secondPrincipalCM.setRole(Role.CONTENT_MANAGER);
+        secondPrincipalCM = principalRepository.save(secondPrincipalCM);
+
+        assertThat(principalService.getPrincipalsByRole(Role.CONTENT_MANAGER))
+                .extracting("id")
+                .containsExactlyInAnyOrder(principalCM.getId(), secondPrincipalCM.getId())
+                .doesNotContain(principalUser.getId());
+    }
 }
