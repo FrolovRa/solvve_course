@@ -2,6 +2,7 @@ package com.solvve.course.util;
 
 import com.solvve.course.domain.Character;
 import com.solvve.course.domain.*;
+import com.solvve.course.domain.constant.ComplaintReason;
 import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
@@ -10,6 +11,8 @@ import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.character.CharacterPatchDto;
 import com.solvve.course.dto.character.CharacterReadDto;
+import com.solvve.course.dto.complaint.ComplaintCreateDto;
+import com.solvve.course.dto.complaint.ComplaintReadDto;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.dto.person.PersonCreateDto;
@@ -56,6 +59,9 @@ public class TestUtils {
 
     @Autowired
     private PublicationRepository publicationRepository;
+
+    @Autowired
+    private ComplaintRepository complaintRepository;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -127,6 +133,15 @@ public class TestUtils {
         publication.setManager(this.getPrincipalFromDb());
 
         return publicationRepository.save(publication);
+    }
+
+    public Complaint getComplaintFromDb() {
+        Complaint complaint = new Complaint();
+        complaint.setUser(this.getUserFromDb());
+        complaint.setReason(ComplaintReason.TYPO);
+        complaint.setEntityId(UUID.randomUUID());
+
+        return complaintRepository.save(complaint);
     }
 
     public PersonCreateDto createPersonCreateDto() {
@@ -283,6 +298,14 @@ public class TestUtils {
         return publicationCreateDto;
     }
 
+    public ComplaintCreateDto createComplaintCreateDto() {
+        ComplaintCreateDto dto = new ComplaintCreateDto();
+        dto.setEntityId(UUID.randomUUID());
+        dto.setReason(ComplaintReason.TYPO);
+
+        return dto;
+    }
+
     public PublicationReadDto createPublicationReadDto() {
         PublicationReadDto dto = new PublicationReadDto();
         dto.setId(UUID.randomUUID());
@@ -304,6 +327,15 @@ public class TestUtils {
         return dto;
     }
 
+    public ComplaintReadDto createComplaintReadDto() {
+        ComplaintReadDto dto = new ComplaintReadDto();
+        dto.setId(UUID.randomUUID());
+        dto.setReason(ComplaintReason.TYPO);
+        dto.setEntityId(UUID.randomUUID());
+        dto.setUser(this.createUserReadDto());
+
+        return dto;
+    }
 
     public void inTransaction(Runnable runnable) {
         transactionTemplate.executeWithoutResult(status -> {

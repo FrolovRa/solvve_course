@@ -12,7 +12,7 @@
             <column name="created_at" type="datetime"/>
             <column name="updated_at" type="datetime"/>
             <column name="user_id" type="uuid">
-                <constraints referencedTableName="principal" referencedColumnNames="id"
+                <constraints referencedTableName="user" referencedColumnNames="id"
                              foreignKeyName="fk__complaint__user" nullable="false"/>
             </column>
             <column name="entity_id" type="uuid">

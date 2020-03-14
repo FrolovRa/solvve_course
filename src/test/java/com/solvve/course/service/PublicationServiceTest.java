@@ -26,8 +26,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(statements = {
-        "delete from user",
-        "delete from publication"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+        "delete from publication",
+        "delete from principal"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class PublicationServiceTest {
 
     @Autowired
