@@ -13,6 +13,8 @@ import com.solvve.course.dto.person.PersonCreateDto;
 import com.solvve.course.dto.person.PersonReadDto;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
+import com.solvve.course.dto.publication.PublicationCreateDto;
+import com.solvve.course.dto.publication.PublicationReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserReadDto;
 import com.solvve.course.repository.RepositoryHelper;
@@ -92,6 +94,18 @@ public class TranslationService {
         return dto;
     }
 
+    public PublicationReadDto toReadDto(Publication publication) {
+        PublicationReadDto dto = new PublicationReadDto();
+        dto.setId(publication.getId());
+        dto.setCreatedAt(publication.getCreatedAt());
+        dto.setUpdatedAt(publication.getUpdatedAt());
+        dto.setManager(this.toReadDto(publication.getManager()));
+        dto.setTitle(publication.getTitle());
+        dto.setContent(publication.getContent());
+
+        return dto;
+    }
+
     public ActorExtendedReadDto toExtendedReadDto(Actor actor) {
         ActorExtendedReadDto dto = new ActorExtendedReadDto();
         dto.setId(actor.getId());
@@ -150,5 +164,14 @@ public class TranslationService {
         principal.setRole(dto.getRole());
 
         return principal;
+    }
+
+    public Publication toEntity(PublicationCreateDto dto) {
+        Publication publication = new Publication();
+        publication.setManager(repositoryHelper.getReferenceIfExist(Principal.class, dto.getManagerId()));
+        publication.setTitle(dto.getTitle());
+        publication.setContent(dto.getContent());
+
+        return publication;
     }
 }

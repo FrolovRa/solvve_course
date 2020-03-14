@@ -41,8 +41,8 @@ public class PrincipalService {
                 .collect(Collectors.toList());
     }
 
-    public PrincipalReadDto addPrincipal(PrincipalCreateDto userCreateDto) {
-        Principal principal = translationService.toEntity(userCreateDto);
+    public PrincipalReadDto addPrincipal(PrincipalCreateDto principalCreateDto) {
+        Principal principal = translationService.toEntity(principalCreateDto);
         principal = principalRepository.save(principal);
 
         return translationService.toReadDto(principal);

@@ -18,6 +18,9 @@ import com.solvve.course.dto.person.PersonReadDto;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
+import com.solvve.course.dto.publication.PublicationCreateDto;
+import com.solvve.course.dto.publication.PublicationPatchDto;
+import com.solvve.course.dto.publication.PublicationReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.dto.user.UserReadDto;
@@ -26,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -49,6 +53,9 @@ public class TestUtils {
 
     @Autowired
     private PrincipalRepository principalRepository;
+
+    @Autowired
+    private PublicationRepository publicationRepository;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -111,6 +118,15 @@ public class TestUtils {
         principal.setRole(Role.USER);
 
         return principalRepository.save(principal);
+    }
+
+    public Publication getPublicationFromDb() {
+        Publication publication = new Publication();
+        publication.setTitle("title");
+        publication.setContent("content");
+        publication.setManager(this.getPrincipalFromDb());
+
+        return publicationRepository.save(publication);
     }
 
     public PersonCreateDto createPersonCreateDto() {
@@ -258,6 +274,36 @@ public class TestUtils {
 
         return actorCreateDto;
     }
+
+    public PublicationCreateDto createPublicationCreateDto() {
+        PublicationCreateDto publicationCreateDto = new PublicationCreateDto();
+        publicationCreateDto.setTitle("title new ");
+        publicationCreateDto.setContent("content new");
+
+        return publicationCreateDto;
+    }
+
+    public PublicationReadDto createPublicationReadDto() {
+        PublicationReadDto dto = new PublicationReadDto();
+        dto.setId(UUID.randomUUID());
+        dto.setTitle("title");
+        dto.setContent("content");
+        dto.setManager(this.createPrincipalReadDto());
+        dto.setCreatedAt(Instant.now());
+        dto.setUpdatedAt(Instant.now());
+
+        return dto;
+    }
+
+    public PublicationPatchDto createPublicationPatchDto() {
+        PublicationPatchDto dto = new PublicationPatchDto();
+        dto.setTitle("new title");
+        dto.setContent("new title");
+        dto.setManagerId(UUID.randomUUID());
+
+        return dto;
+    }
+
 
     public void inTransaction(Runnable runnable) {
         transactionTemplate.executeWithoutResult(status -> {
