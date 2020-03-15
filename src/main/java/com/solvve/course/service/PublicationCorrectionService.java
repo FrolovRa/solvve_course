@@ -78,6 +78,17 @@ public class PublicationCorrectionService {
                 correction.getProposedText());
         publication.setContent(fixedContent);
 
+        List<Correction> similarCorrections = correctionRepository.getSimilarCorrections(correctionId, publication,
+                correction.getSelectedText(), correction.getStartIndex());
+
+        Correction finalCorrection = correction;
+        similarCorrections.forEach(c -> {
+            c.setStatus(finalCorrection.getStatus());
+            c.setProposedText(finalCorrection.getSelectedText());
+
+            correctionRepository.save(c);
+        });
+
         return translationService.toReadDto(publicationRepository.save(publication));
     }
 
