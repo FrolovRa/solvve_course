@@ -2,6 +2,7 @@ package com.solvve.course.util;
 
 import com.solvve.course.domain.Character;
 import com.solvve.course.domain.*;
+import com.solvve.course.domain.constant.CorrectionStatus;
 import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
@@ -10,6 +11,8 @@ import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.character.CharacterPatchDto;
 import com.solvve.course.dto.character.CharacterReadDto;
+import com.solvve.course.dto.correction.CorrectionCreateDto;
+import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.dto.person.PersonCreateDto;
@@ -18,6 +21,9 @@ import com.solvve.course.dto.person.PersonReadDto;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
+import com.solvve.course.dto.publication.PublicationCreateDto;
+import com.solvve.course.dto.publication.PublicationPatchDto;
+import com.solvve.course.dto.publication.PublicationReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.dto.user.UserReadDto;
@@ -26,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -49,6 +56,12 @@ public class TestUtils {
 
     @Autowired
     private PrincipalRepository principalRepository;
+
+    @Autowired
+    private PublicationRepository publicationRepository;
+
+    @Autowired
+    private CorrectionRepository correctionRepository;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -111,6 +124,26 @@ public class TestUtils {
         principal.setRole(Role.USER);
 
         return principalRepository.save(principal);
+    }
+
+    public Publication getPublicationFromDb() {
+        Publication publication = new Publication();
+        publication.setContent("text content");
+        publication.setManager(this.getPrincipalFromDb());
+
+        return publicationRepository.save(publication);
+    }
+
+    public Correction getCorrectionFromDb() {
+        Correction correction = new Correction();
+        correction.setUser(this.getUserFromDb());
+        correction.setStatus(CorrectionStatus.NEW);
+        correction.setPublication(this.getPublicationFromDb());
+        correction.setStartIndex(0);
+        correction.setSelectedText("text");
+        correction.setProposedText("fixed text");
+
+        return correctionRepository.save(correction);
     }
 
     public PersonCreateDto createPersonCreateDto() {
@@ -257,6 +290,47 @@ public class TestUtils {
         actorCreateDto.setPersonId(this.createPersonReadDto().getId());
 
         return actorCreateDto;
+    }
+
+    public PublicationCreateDto createPublicationCreateDto() {
+        PublicationCreateDto publicationCreateDto = new PublicationCreateDto();
+        publicationCreateDto.setContent("content new");
+
+        return publicationCreateDto;
+    }
+
+    public CorrectionCreateDto createCorrectionCreateDto() {
+        CorrectionCreateDto dto = new CorrectionCreateDto();
+
+        return dto;
+    }
+
+    public PublicationReadDto createPublicationReadDto() {
+        PublicationReadDto dto = new PublicationReadDto();
+        dto.setId(UUID.randomUUID());
+        dto.setContent("content");
+        dto.setManager(this.createPrincipalReadDto());
+        dto.setCreatedAt(Instant.now());
+        dto.setUpdatedAt(Instant.now());
+
+        return dto;
+    }
+
+    public PublicationPatchDto createPublicationPatchDto() {
+        PublicationPatchDto dto = new PublicationPatchDto();
+        dto.setContent("new title");
+        dto.setManagerId(UUID.randomUUID());
+
+        return dto;
+    }
+
+    public CorrectionReadDto createCorrectionReadDto() {
+        CorrectionReadDto dto = new CorrectionReadDto();
+        dto.setId(UUID.randomUUID());
+        dto.setUser(this.createUserReadDto());
+        dto.setPublication(this.createPublicationReadDto());
+
+        return dto;
     }
 
     public void inTransaction(Runnable runnable) {

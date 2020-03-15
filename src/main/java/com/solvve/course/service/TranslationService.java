@@ -7,12 +7,16 @@ import com.solvve.course.dto.actor.ActorExtendedReadDto;
 import com.solvve.course.dto.actor.ActorReadDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.character.CharacterReadDto;
+import com.solvve.course.dto.correction.CorrectionCreateDto;
+import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.dto.person.PersonCreateDto;
 import com.solvve.course.dto.person.PersonReadDto;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
+import com.solvve.course.dto.publication.PublicationCreateDto;
+import com.solvve.course.dto.publication.PublicationReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserReadDto;
 import com.solvve.course.repository.RepositoryHelper;
@@ -92,6 +96,32 @@ public class TranslationService {
         return dto;
     }
 
+    public PublicationReadDto toReadDto(Publication publication) {
+        PublicationReadDto dto = new PublicationReadDto();
+        dto.setId(publication.getId());
+        dto.setCreatedAt(publication.getCreatedAt());
+        dto.setUpdatedAt(publication.getUpdatedAt());
+        dto.setManager(this.toReadDto(publication.getManager()));
+        dto.setContent(publication.getContent());
+
+        return dto;
+    }
+
+    public CorrectionReadDto toReadDto(Correction correction) {
+        CorrectionReadDto dto = new CorrectionReadDto();
+        dto.setId(correction.getId());
+        dto.setCreatedAt(correction.getCreatedAt());
+        dto.setUpdatedAt(correction.getUpdatedAt());
+        dto.setUser(this.toReadDto(correction.getUser()));
+        dto.setPublication(this.toReadDto(correction.getPublication()));
+        dto.setStatus(correction.getStatus());
+        dto.setStartIndex(correction.getStartIndex());
+        dto.setSelectedText(correction.getSelectedText());
+        dto.setProposedText(correction.getProposedText());
+
+        return dto;
+    }
+
     public ActorExtendedReadDto toExtendedReadDto(Actor actor) {
         ActorExtendedReadDto dto = new ActorExtendedReadDto();
         dto.setId(actor.getId());
@@ -150,5 +180,24 @@ public class TranslationService {
         principal.setRole(dto.getRole());
 
         return principal;
+    }
+
+    public Publication toEntity(PublicationCreateDto dto) {
+        Publication publication = new Publication();
+        publication.setManager(repositoryHelper.getReferenceIfExist(Principal.class, dto.getManagerId()));
+        publication.setContent(dto.getContent());
+
+        return publication;
+    }
+
+    public Correction toEntity(CorrectionCreateDto dto) {
+        Correction correction = new Correction();
+        correction.setUser(repositoryHelper.getReferenceIfExist(User.class, dto.getUserId()));
+        correction.setPublication(repositoryHelper.getReferenceIfExist(Publication.class, dto.getPublicationId()));
+        correction.setStartIndex(dto.getStartIndex());
+        correction.setSelectedText(dto.getSelectedText());
+        correction.setProposedText(dto.getProposedText());
+
+        return correction;
     }
 }

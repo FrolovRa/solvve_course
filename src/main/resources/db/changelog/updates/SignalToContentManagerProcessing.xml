@@ -1,0 +1,41 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="implement-handling-signal-to-manager" author="frolov">
+        <createTable tableName="publication">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created_at" type="datetime"/>
+            <column name="updated_at" type="datetime"/>
+            <column name="manager_id" type="uuid">
+                <constraints referencedTableName="principal" referencedColumnNames="id"
+                             foreignKeyName="fk__publication__principal" nullable="false"/>
+            </column>
+            <column name="content" type="varchar(2500)"/>
+        </createTable>
+        <createTable tableName="correction">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created_at" type="datetime"/>
+            <column name="updated_at" type="datetime"/>
+            <column name="user_id" type="uuid">
+                <constraints referencedTableName="user" referencedColumnNames="id"
+                             foreignKeyName="fk__correction__user" nullable="false"/>
+            </column>
+            <column name="publication_id" type="uuid">
+                <constraints referencedTableName="publication" referencedColumnNames="id"
+                             foreignKeyName="fk__correction__publication" nullable="false"/>
+            </column>
+            <column name="start_index" type="int"/>
+            <column name="selected_text" type="varchar(255)"/>
+            <column name="proposed_text" type="varchar(255)"/>
+            <column name="status" type="varchar(18)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
