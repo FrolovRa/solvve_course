@@ -45,9 +45,6 @@ public class PublicationService {
         if (publicationPatchDto.getManagerId() != null) {
             publication.setManager(repositoryHelper.getReferenceIfExist(Principal.class, publicationPatchDto.getManagerId()));
         }
-        if (publicationPatchDto.getTitle() != null) {
-            publication.setTitle(publicationPatchDto.getTitle());
-        }
         Publication patchedPublication = publicationRepository.save(publication);
 
         return translationService.toReadDto(patchedPublication);

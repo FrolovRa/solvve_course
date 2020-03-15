@@ -14,7 +14,5 @@ public class PublicationCreateDto {
 
     private UUID managerId;
 
-    private String title;
-
     private String content;
 }

@@ -1,11 +1,12 @@
 package com.solvve.course.dto.correction;
 
+import com.solvve.course.domain.constant.CorrectionStatus;
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
-public class CorrectionCreateDto {
+public class CorrectionPatchDto {
 
     private UUID userId;
 
@@ -16,4 +17,6 @@ public class CorrectionCreateDto {
     private String selectedText;
 
     private String proposedText;
+
+    private CorrectionStatus status;
 }

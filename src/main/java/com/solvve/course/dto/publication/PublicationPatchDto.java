@@ -14,7 +14,5 @@ public class PublicationPatchDto {
 
     private UUID managerId;
 
-    private String title;
-
     private String content;
 }

@@ -17,7 +17,5 @@ public class PublicationReadDto {
 
     private PrincipalReadDto manager;
 
-    private String title;
-
     private String content;
 }

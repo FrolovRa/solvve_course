@@ -102,7 +102,6 @@ public class TranslationService {
         dto.setCreatedAt(publication.getCreatedAt());
         dto.setUpdatedAt(publication.getUpdatedAt());
         dto.setManager(this.toReadDto(publication.getManager()));
-        dto.setTitle(publication.getTitle());
         dto.setContent(publication.getContent());
 
         return dto;
@@ -116,6 +115,9 @@ public class TranslationService {
         dto.setUser(this.toReadDto(correction.getUser()));
         dto.setPublication(this.toReadDto(correction.getPublication()));
         dto.setStatus(correction.getStatus());
+        dto.setStartIndex(correction.getStartIndex());
+        dto.setSelectedText(correction.getSelectedText());
+        dto.setProposedText(correction.getProposedText());
 
         return dto;
     }
@@ -183,7 +185,6 @@ public class TranslationService {
     public Publication toEntity(PublicationCreateDto dto) {
         Publication publication = new Publication();
         publication.setManager(repositoryHelper.getReferenceIfExist(Principal.class, dto.getManagerId()));
-        publication.setTitle(dto.getTitle());
         publication.setContent(dto.getContent());
 
         return publication;
@@ -193,6 +194,7 @@ public class TranslationService {
         Correction correction = new Correction();
         correction.setUser(repositoryHelper.getReferenceIfExist(User.class, dto.getUserId()));
         correction.setPublication(repositoryHelper.getReferenceIfExist(Publication.class, dto.getPublicationId()));
+        correction.setStartIndex(dto.getStartIndex());
         correction.setSelectedText(dto.getSelectedText());
         correction.setProposedText(dto.getProposedText());
 

@@ -21,6 +21,8 @@ public class CorrectionReadDto {
 
     private PublicationReadDto publication;
 
+    private Integer startIndex;
+
     private String selectedText;
 
     private String proposedText;

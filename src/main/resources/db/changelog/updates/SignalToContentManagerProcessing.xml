@@ -15,8 +15,7 @@
                 <constraints referencedTableName="principal" referencedColumnNames="id"
                              foreignKeyName="fk__publication__principal" nullable="false"/>
             </column>
-            <column name="title" type="varchar(100)"/>
-            <column name="content" type="varchar(1000)"/>
+            <column name="content" type="varchar(2500)"/>
         </createTable>
         <createTable tableName="correction">
             <column name="id" type="uuid">
@@ -32,6 +31,7 @@
                 <constraints referencedTableName="publication" referencedColumnNames="id"
                              foreignKeyName="fk__correction__publication" nullable="false"/>
             </column>
+            <column name="start_index" type="int"/>
             <column name="selected_text" type="varchar(255)"/>
             <column name="proposed_text" type="varchar(255)"/>
             <column name="status" type="varchar(18)"/>

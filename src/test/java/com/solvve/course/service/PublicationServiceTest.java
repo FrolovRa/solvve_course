@@ -78,7 +78,6 @@ public class PublicationServiceTest {
         Publication publication = utils.getPublicationFromDb();
 
         PublicationPatchDto publicationPatchDto = new PublicationPatchDto();
-        publicationPatchDto.setTitle("Test");
         publicationPatchDto.setContent("Test");
         publicationPatchDto.setManagerId(manager.getId());
 
@@ -118,7 +117,6 @@ public class PublicationServiceTest {
         Principal principal = utils.getPrincipalFromDb();
 
         Publication publication = new Publication();
-        publication.setTitle("title");
         publication.setManager(principal);
 
         publication = publicationRepository.save(publication);
@@ -137,8 +135,8 @@ public class PublicationServiceTest {
         Principal principal = utils.getPrincipalFromDb();
 
         Publication publication = new Publication();
-        publication.setTitle("title");
         publication.setManager(principal);
+        publication.setContent("test");
 
         publication = publicationRepository.save(publication);
 
@@ -150,7 +148,7 @@ public class PublicationServiceTest {
         assertNotNull(updatedAtAfterReload);
         assertEquals(updatedAtBeforeReload, updatedAtAfterReload);
 
-        publication.setTitle("title updated");
+        publication.setContent("test 2");
         publication = publicationRepository.save(publication);
         Instant updatedAtAfterUpdate = publication.getUpdatedAt();
 

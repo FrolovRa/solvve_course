@@ -28,8 +28,6 @@ public class Publication {
     @OneToOne
     private Principal manager;
 
-    private String title;
-
     private String content;
 
     @OneToMany(mappedBy = "publication")

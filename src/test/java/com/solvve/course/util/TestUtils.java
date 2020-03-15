@@ -128,8 +128,7 @@ public class TestUtils {
 
     public Publication getPublicationFromDb() {
         Publication publication = new Publication();
-        publication.setTitle("title");
-        publication.setContent("content");
+        publication.setContent("text content");
         publication.setManager(this.getPrincipalFromDb());
 
         return publicationRepository.save(publication);
@@ -140,6 +139,9 @@ public class TestUtils {
         correction.setUser(this.getUserFromDb());
         correction.setStatus(CorrectionStatus.NEW);
         correction.setPublication(this.getPublicationFromDb());
+        correction.setStartIndex(0);
+        correction.setSelectedText("text");
+        correction.setProposedText("fixed text");
 
         return correctionRepository.save(correction);
     }
@@ -292,7 +294,6 @@ public class TestUtils {
 
     public PublicationCreateDto createPublicationCreateDto() {
         PublicationCreateDto publicationCreateDto = new PublicationCreateDto();
-        publicationCreateDto.setTitle("title new ");
         publicationCreateDto.setContent("content new");
 
         return publicationCreateDto;
@@ -307,7 +308,6 @@ public class TestUtils {
     public PublicationReadDto createPublicationReadDto() {
         PublicationReadDto dto = new PublicationReadDto();
         dto.setId(UUID.randomUUID());
-        dto.setTitle("title");
         dto.setContent("content");
         dto.setManager(this.createPrincipalReadDto());
         dto.setCreatedAt(Instant.now());
@@ -318,7 +318,6 @@ public class TestUtils {
 
     public PublicationPatchDto createPublicationPatchDto() {
         PublicationPatchDto dto = new PublicationPatchDto();
-        dto.setTitle("new title");
         dto.setContent("new title");
         dto.setManagerId(UUID.randomUUID());
 

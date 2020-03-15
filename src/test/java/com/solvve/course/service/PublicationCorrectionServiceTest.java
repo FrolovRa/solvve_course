@@ -4,7 +4,10 @@ import com.solvve.course.domain.Correction;
 import com.solvve.course.domain.Publication;
 import com.solvve.course.domain.constant.CorrectionStatus;
 import com.solvve.course.dto.correction.CorrectionCreateDto;
+import com.solvve.course.dto.correction.CorrectionPatchDto;
 import com.solvve.course.dto.correction.CorrectionReadDto;
+import com.solvve.course.dto.publication.PublicationReadDto;
+import com.solvve.course.exception.BadCorrectionStatusException;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.repository.CorrectionRepository;
 import com.solvve.course.util.TestUtils;
@@ -132,5 +135,55 @@ public class PublicationCorrectionServiceTest {
         Instant updatedAtAfterUpdate = publicationCorrection.getUpdatedAt();
 
         assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
+    }
+
+    @Test
+    public void testAcceptPublicationCorrection() {
+        Correction publicationCorrection = utils.getCorrectionFromDb();
+        Publication publication = utils.getPublicationFromDb();
+        CorrectionPatchDto dto = new CorrectionPatchDto();
+
+        Correction publicationBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
+        utils.inTransaction(() -> {
+            PublicationReadDto publicationReadDto = publicationCorrectionService
+                    .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
+            assertEquals("fixed text content", publicationReadDto.getContent());
+
+            Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
+            assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
+            assertEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
+            assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED);
+        });
+    }
+
+    @Test
+    public void testAcceptPublicationCorrectionWithContentManagerFix() {
+        Correction publicationCorrection = utils.getCorrectionFromDb();
+        Publication publication = utils.getPublicationFromDb();
+        CorrectionPatchDto dto = new CorrectionPatchDto();
+        dto.setProposedText("content manager fix");
+
+        Correction publicationBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
+        utils.inTransaction(() -> {
+            PublicationReadDto publicationReadDto = publicationCorrectionService
+                    .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
+            assertEquals("content manager fix content", publicationReadDto.getContent());
+
+            Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
+            assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
+            assertNotEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
+            assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED_AFTER_FIX);
+        });
+    }
+
+    @Test(expected = BadCorrectionStatusException.class)
+    public void testAcceptPublicationCorrectionGetError() {
+        Correction correction = utils.getCorrectionFromDb();
+        correction.setStatus(CorrectionStatus.ACCEPTED);
+        correction = correctionRepository.save(correction);
+
+        publicationCorrectionService.acceptPublicationCorrection(correction.getId(),
+                correction.getPublication().getId(),
+                new CorrectionPatchDto());
     }
 }
