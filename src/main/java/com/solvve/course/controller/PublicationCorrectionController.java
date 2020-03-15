@@ -33,7 +33,8 @@ public class PublicationCorrectionController {
     public PublicationReadDto acceptPublicationCorrection(@PathVariable UUID publicationId,
                                                           @PathVariable UUID correctionId,
                                                           @RequestBody CorrectionPatchDto correctionPatchDto) {
-        return publicationCorrectionService.acceptPublicationCorrection(correctionId, publicationId, correctionPatchDto);
+        return publicationCorrectionService
+                .acceptPublicationCorrection(correctionId, publicationId, correctionPatchDto);
     }
 
     @DeleteMapping("/{correctionId}")

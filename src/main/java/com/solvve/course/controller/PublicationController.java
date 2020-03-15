@@ -27,7 +27,8 @@ public class PublicationController {
     }
 
     @PatchMapping("/{id}")
-    public PublicationReadDto patchPublication(@PathVariable UUID id, @RequestBody PublicationPatchDto publicationPatchDto) {
+    public PublicationReadDto patchPublication(@PathVariable UUID id,
+                                               @RequestBody PublicationPatchDto publicationPatchDto) {
         return publicationService.patchPublication(id, publicationPatchDto);
     }
 

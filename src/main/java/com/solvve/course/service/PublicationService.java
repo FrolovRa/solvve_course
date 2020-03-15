@@ -43,7 +43,8 @@ public class PublicationService {
             publication.setContent(publicationPatchDto.getContent());
         }
         if (publicationPatchDto.getManagerId() != null) {
-            publication.setManager(repositoryHelper.getReferenceIfExist(Principal.class, publicationPatchDto.getManagerId()));
+            publication.setManager(repositoryHelper.getReferenceIfExist(Principal.class,
+                    publicationPatchDto.getManagerId()));
         }
         Publication patchedPublication = publicationRepository.save(publication);
 
