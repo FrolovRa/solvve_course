@@ -19,7 +19,7 @@ public class RepositoryHelper {
         return entityManager.getReference(entityClass, id);
     }
 
-    private <E> void validateExist(Class<E> entityClass, UUID id) {
+    public <E> void validateExist(Class<E> entityClass, UUID id) {
         Number count = (Number) entityManager
                 .createQuery("SELECT count(e) FROM " + entityClass.getSimpleName() + " e WHERE e.id = :id")
                 .setParameter("id", id)

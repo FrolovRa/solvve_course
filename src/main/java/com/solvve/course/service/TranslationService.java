@@ -7,8 +7,8 @@ import com.solvve.course.dto.actor.ActorExtendedReadDto;
 import com.solvve.course.dto.actor.ActorReadDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.character.CharacterReadDto;
-import com.solvve.course.dto.complaint.ComplaintCreateDto;
-import com.solvve.course.dto.complaint.ComplaintReadDto;
+import com.solvve.course.dto.correction.CorrectionCreateDto;
+import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.dto.person.PersonCreateDto;
@@ -108,14 +108,14 @@ public class TranslationService {
         return dto;
     }
 
-    public ComplaintReadDto toReadDto(Complaint complaint) {
-        ComplaintReadDto dto = new ComplaintReadDto();
-        dto.setId(complaint.getId());
-        dto.setCreatedAt(complaint.getCreatedAt());
-        dto.setUpdatedAt(complaint.getUpdatedAt());
-        dto.setUser(this.toReadDto(complaint.getUser()));
-        dto.setEntityId(complaint.getEntityId());
-        dto.setReason(complaint.getReason());
+    public CorrectionReadDto toReadDto(Correction correction) {
+        CorrectionReadDto dto = new CorrectionReadDto();
+        dto.setId(correction.getId());
+        dto.setCreatedAt(correction.getCreatedAt());
+        dto.setUpdatedAt(correction.getUpdatedAt());
+        dto.setUser(this.toReadDto(correction.getUser()));
+        dto.setPublication(this.toReadDto(correction.getPublication()));
+        dto.setStatus(correction.getStatus());
 
         return dto;
     }
@@ -189,12 +189,13 @@ public class TranslationService {
         return publication;
     }
 
-    public Complaint toEntity(ComplaintCreateDto dto) {
-        Complaint complaint = new Complaint();
-        complaint.setUser(repositoryHelper.getReferenceIfExist(User.class, dto.getUserId()));
-        complaint.setEntityId(dto.getEntityId());
-        complaint.setReason(dto.getReason());
+    public Correction toEntity(CorrectionCreateDto dto) {
+        Correction correction = new Correction();
+        correction.setUser(repositoryHelper.getReferenceIfExist(User.class, dto.getUserId()));
+        correction.setPublication(repositoryHelper.getReferenceIfExist(Publication.class, dto.getPublicationId()));
+        correction.setSelectedText(dto.getSelectedText());
+        correction.setProposedText(dto.getProposedText());
 
-        return complaint;
+        return correction;
     }
 }

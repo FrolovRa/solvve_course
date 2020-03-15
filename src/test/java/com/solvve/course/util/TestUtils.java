@@ -2,7 +2,7 @@ package com.solvve.course.util;
 
 import com.solvve.course.domain.Character;
 import com.solvve.course.domain.*;
-import com.solvve.course.domain.constant.ComplaintReason;
+import com.solvve.course.domain.constant.CorrectionStatus;
 import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorExtendedReadDto;
@@ -11,8 +11,8 @@ import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.character.CharacterPatchDto;
 import com.solvve.course.dto.character.CharacterReadDto;
-import com.solvve.course.dto.complaint.ComplaintCreateDto;
-import com.solvve.course.dto.complaint.ComplaintReadDto;
+import com.solvve.course.dto.correction.CorrectionCreateDto;
+import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.dto.person.PersonCreateDto;
@@ -61,7 +61,7 @@ public class TestUtils {
     private PublicationRepository publicationRepository;
 
     @Autowired
-    private ComplaintRepository complaintRepository;
+    private CorrectionRepository correctionRepository;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -135,13 +135,13 @@ public class TestUtils {
         return publicationRepository.save(publication);
     }
 
-    public Complaint getComplaintFromDb() {
-        Complaint complaint = new Complaint();
-        complaint.setUser(this.getUserFromDb());
-        complaint.setReason(ComplaintReason.TYPO);
-        complaint.setEntityId(UUID.randomUUID());
+    public Correction getCorrectionFromDb() {
+        Correction correction = new Correction();
+        correction.setUser(this.getUserFromDb());
+        correction.setStatus(CorrectionStatus.NEW);
+        correction.setPublication(this.getPublicationFromDb());
 
-        return complaintRepository.save(complaint);
+        return correctionRepository.save(correction);
     }
 
     public PersonCreateDto createPersonCreateDto() {
@@ -298,10 +298,8 @@ public class TestUtils {
         return publicationCreateDto;
     }
 
-    public ComplaintCreateDto createComplaintCreateDto() {
-        ComplaintCreateDto dto = new ComplaintCreateDto();
-        dto.setEntityId(UUID.randomUUID());
-        dto.setReason(ComplaintReason.TYPO);
+    public CorrectionCreateDto createCorrectionCreateDto() {
+        CorrectionCreateDto dto = new CorrectionCreateDto();
 
         return dto;
     }
@@ -327,12 +325,11 @@ public class TestUtils {
         return dto;
     }
 
-    public ComplaintReadDto createComplaintReadDto() {
-        ComplaintReadDto dto = new ComplaintReadDto();
+    public CorrectionReadDto createCorrectionReadDto() {
+        CorrectionReadDto dto = new CorrectionReadDto();
         dto.setId(UUID.randomUUID());
-        dto.setReason(ComplaintReason.TYPO);
-        dto.setEntityId(UUID.randomUUID());
         dto.setUser(this.createUserReadDto());
+        dto.setPublication(this.createPublicationReadDto());
 
         return dto;
     }

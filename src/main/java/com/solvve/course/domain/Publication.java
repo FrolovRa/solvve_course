@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -30,4 +31,7 @@ public class Publication {
     private String title;
 
     private String content;
+
+    @OneToMany(mappedBy = "publication")
+    private List<Correction> corrections;
 }

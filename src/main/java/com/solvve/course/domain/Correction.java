@@ -1,6 +1,6 @@
 package com.solvve.course.domain;
 
-import com.solvve.course.domain.constant.ComplaintReason;
+import com.solvve.course.domain.constant.CorrectionStatus;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Data
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Complaint {
+public class Correction {
 
     @Id
     @GeneratedValue
@@ -28,8 +28,13 @@ public class Complaint {
     @ManyToOne
     private User user;
 
-    private UUID entityId;
+    @ManyToOne
+    private Publication publication;
+
+    private String selectedText;
+
+    private String proposedText;
 
     @Enumerated(EnumType.STRING)
-    private ComplaintReason reason;
+    private CorrectionStatus status;
 }
