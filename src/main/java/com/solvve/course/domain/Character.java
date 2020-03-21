@@ -1,7 +1,6 @@
 package com.solvve.course.domain;
 
 import lombok.Data;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -28,11 +27,9 @@ public class Character {
 
     private String name;
 
-    @ToString.Exclude
     @ManyToOne
     private Actor actor;
 
-    @ToString.Exclude
     @ManyToOne
     private Movie movie;
 }

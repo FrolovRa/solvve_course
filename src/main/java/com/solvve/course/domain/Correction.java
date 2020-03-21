@@ -2,7 +2,6 @@ package com.solvve.course.domain;
 
 import com.solvve.course.domain.constant.CorrectionStatus;
 import lombok.Data;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -29,7 +28,6 @@ public class Correction {
     @ManyToOne
     private User user;
 
-    @ToString.Exclude
     @ManyToOne
     private Publication publication;
 

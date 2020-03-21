@@ -30,9 +30,7 @@ public class CorrectionService {
     }
 
     public List<CorrectionReadDto> getAllCorrections() {
-        long a = correctionRepository.count();
-        List<Correction> r = correctionRepository.getAll();
-        return r.stream()
+        return correctionRepository.getAll().stream()
                 .map(translationService::toReadDto)
                 .collect(Collectors.toList());
     }
