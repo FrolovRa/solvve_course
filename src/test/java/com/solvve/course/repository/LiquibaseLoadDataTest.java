@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertTrue;
@@ -14,6 +15,20 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @TestPropertySource(properties = "spring.liquibase.change-log=classpath:db/changelog/db.changelog-master.xml")
+@Sql(statements = {
+        "delete from movie_cast",
+        "delete from movie_stars",
+        "delete from movie_genres",
+        "delete from correction",
+        "delete from rating",
+        "delete from user",
+        "delete from publication",
+        "delete from principal",
+        "delete from character",
+        "delete from actor",
+        "delete from person",
+        "delete from movie",
+}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class LiquibaseLoadDataTest {
 
     @Autowired
@@ -40,6 +55,9 @@ public class LiquibaseLoadDataTest {
     @Autowired
     private PublicationRepository publicationRepository;
 
+    @Autowired
+    private RatingRepository ratingRepository;
+
     @Test
     public void testDataLoaded() {
         assertTrue(movieRepository.count() > 0);
@@ -50,5 +68,6 @@ public class LiquibaseLoadDataTest {
         assertTrue(userRepository.count() > 0);
         assertTrue(publicationRepository.count() > 0);
         assertTrue(correctionRepository.count() > 0);
+        assertTrue(ratingRepository.count() > 0);
     }
 }

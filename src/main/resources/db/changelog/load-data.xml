@@ -64,6 +64,13 @@
             <column name="proposed_text" type="string"/>
             <column name="status" type="string"/>
         </loadData>
+
+        <loadData tableName="rating" file="db/data/load-rating.csv" separator=";">
+            <column name="id" type="uuid"/>
+            <column name="user_id" type="uuid"/>
+            <column name="entity_id" type="uuid"/>
+            <column name="rating" type="numeric"/>
+        </loadData>
     </changeSet>
 
 </databaseChangeLog>

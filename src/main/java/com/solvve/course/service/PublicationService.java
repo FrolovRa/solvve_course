@@ -9,6 +9,7 @@ import com.solvve.course.repository.PublicationRepository;
 import com.solvve.course.repository.RepositoryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class PublicationService {
         return translationService.toReadDto(publicationFromDb);
     }
 
+    @Transactional
     public PublicationReadDto addPublication(PublicationCreateDto userCreateDto) {
         Publication publication = translationService.toEntity(userCreateDto);
         publication = publicationRepository.save(publication);

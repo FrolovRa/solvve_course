@@ -59,18 +59,15 @@ public class PublicationServiceTest {
         PublicationCreateDto createDto = utils.createPublicationCreateDto();
         createDto.setManagerId(manager.getId());
 
-        utils.inTransaction(() -> {
-            PublicationReadDto readDto = publicationService.addPublication(createDto);
+        PublicationReadDto readDto = publicationService.addPublication(createDto);
+        assertThat(createDto).isEqualToIgnoringGivenFields(readDto,
+                "managerId", "updatedAt", "createdAt");
+        assertNotNull(readDto.getId());
+        assertEquals(readDto.getManager().getId(), createDto.getManagerId());
 
-            assertThat(createDto).isEqualToIgnoringGivenFields(readDto,
-                    "managerId", "updatedAt", "createdAt");
-            assertNotNull(readDto.getId());
-            assertEquals(readDto.getManager().getId(), createDto.getManagerId());
-
-            PublicationReadDto userFromDb = publicationService.getPublication(readDto.getId());
-            assertThat(readDto).isEqualToIgnoringGivenFields(userFromDb, "managerId");
-            assertEquals(readDto.getManager(), userFromDb.getManager());
-        });
+        PublicationReadDto publicationFromDb = publicationService.getPublication(readDto.getId());
+        assertThat(readDto).isEqualToIgnoringGivenFields(publicationFromDb, "managerId");
+        assertEquals(readDto.getManager(), publicationFromDb.getManager());
     }
 
     @Test
