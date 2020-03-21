@@ -34,6 +34,12 @@ public class LiquibaseLoadDataTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CorrectionRepository correctionRepository;
+
+    @Autowired
+    private PublicationRepository publicationRepository;
+
     @Test
     public void testDataLoaded() {
         assertTrue(movieRepository.count() > 0);
@@ -42,5 +48,7 @@ public class LiquibaseLoadDataTest {
         assertTrue(characterRepository.count() > 0);
         assertTrue(principalRepository.count() > 0);
         assertTrue(userRepository.count() > 0);
+        assertTrue(publicationRepository.count() > 0);
+        assertTrue(correctionRepository.count() > 0);
     }
 }

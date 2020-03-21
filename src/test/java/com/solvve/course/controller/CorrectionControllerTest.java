@@ -43,16 +43,16 @@ public class CorrectionControllerTest {
 
     @Test
     public void testGetAllCorrections() throws Exception {
-        List<CorrectionReadDto> expectedList = Collections.singletonList(utils.createCorrectionReadDto());
-        when(correctionService.getAllCorrections()).thenReturn(expectedList);
+        List<CorrectionReadDto> expected = Collections.singletonList(utils.createCorrectionReadDto());
+        when(correctionService.getAllCorrections()).thenReturn(expected);
 
         String resultJson = mvc.perform(get("/api/v1/corrections"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        List<CorrectionReadDto> actualList = objectMapper.readValue(resultJson, new TypeReference<>() {
+        List<CorrectionReadDto> actual = objectMapper.readValue(resultJson, new TypeReference<>() {
         });
 
-        assertEquals(expectedList, actualList);
+        assertEquals(expected, actual);
     }
 
     @Test

@@ -48,6 +48,22 @@
             <column name="actor_id" type="uuid"/>
             <column name="movie_id" type="uuid"/>
         </loadData>
+
+        <loadData tableName="publication" file="db/data/load-publication.csv" separator=";">
+            <column name="id" type="uuid"/>
+            <column name="manager_id" type="uuid"/>
+            <column name="content" type="string"/>
+        </loadData>
+
+        <loadData tableName="correction" file="db/data/load-correction.csv" separator=";">
+            <column name="id" type="uuid"/>
+            <column name="user_id" type="uuid"/>
+            <column name="publication_id" type="uuid"/>
+            <column name="start_index" type="numeric"/>
+            <column name="selected_text" type="string"/>
+            <column name="proposed_text" type="string"/>
+            <column name="status" type="string"/>
+        </loadData>
     </changeSet>
 
 </databaseChangeLog>

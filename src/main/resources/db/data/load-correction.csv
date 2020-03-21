@@ -1,0 +1,4 @@
+id;user_id;publication_id;start_index;selected_text;proposed_text;status
+91cbc086-38fe-4028-b703-eb64efcdd81b;49f801c7-de7e-42bb-9725-7944cf567fcf;49f801c7-de7e-42bb-9725-7977cf567fcf;1;ab;aa;new
+3f69c3fd-2e6a-4a9c-ab87-49698fb61a5e;8dfe62f9-e0f5-4abf-b1e8-d4cb02124d67;49f801c7-de7e-42bb-9725-7977cf567fcf;2;bc;bb;new
+23f6686f-24d7-457f-9fef-876dc1f34c53;49f801c7-de7e-42bb-9725-7944cf567fcf;8dfe62f9-e0f5-4abf-b1e8-d4cb02434d67;3;cd;cc;new
