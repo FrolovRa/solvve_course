@@ -244,6 +244,7 @@ public class TestUtils {
         movieReadDto.setId(UUID.randomUUID());
         movieReadDto.setName("Mr.Nobody");
         movieReadDto.setDescription("cool film");
+        movieReadDto.setRelease(LocalDate.now());
 
         return movieReadDto;
     }

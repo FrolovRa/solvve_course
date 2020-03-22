@@ -2,6 +2,7 @@ package com.solvve.course.dto.movie;
 
 import com.solvve.course.domain.constant.Genre;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -16,7 +17,9 @@ public class MovieFilter {
 
     private Set<Genre> genres;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDateFrom;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDateTo;
 }

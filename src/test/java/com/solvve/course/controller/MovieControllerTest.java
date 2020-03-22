@@ -2,7 +2,9 @@ package com.solvve.course.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solvve.course.domain.Movie;
+import com.solvve.course.domain.constant.Genre;
 import com.solvve.course.dto.movie.MovieCreateDto;
+import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
@@ -18,7 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -52,6 +55,32 @@ public class MovieControllerTest {
         MovieReadDto actualMovie = objectMapper.readValue(resultJson, MovieReadDto.class);
 
         assertEquals(actualMovie, movieReadDto);
+    }
+
+    @Test
+    public void testGetMoviesByFilter() throws Exception {
+        MovieFilter filter = new MovieFilter();
+        filter.setActorId(UUID.randomUUID());
+        filter.setGenres(Set.of(Genre.ADVENTURE, Genre.CRIME));
+        filter.setName("star wars");
+        filter.setReleaseDateFrom(LocalDate.now());
+        filter.setReleaseDateTo(LocalDate.now());
+
+        MovieReadDto movie = utils.createMovieReadDto();
+        List<MovieReadDto> expected = Collections.singletonList(movie);
+        when(movieService.getMovies(filter)).thenReturn(expected);
+
+        String resultJson = mvc.perform(get("/api/v1/movies")
+                .param("name", filter.getName())
+                .param("actorId", filter.getActorId().toString())
+                .param("genres", "ADVENTURE, CRIME")
+                .param("releaseDateFrom", filter.getReleaseDateFrom().toString())
+                .param("releaseDateTo", filter.getReleaseDateTo().toString()))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        List<MovieReadDto> actual = Arrays.asList(objectMapper.readValue(resultJson, MovieReadDto[].class));
+        assertEquals(expected, actual);
     }
 
     @Test
