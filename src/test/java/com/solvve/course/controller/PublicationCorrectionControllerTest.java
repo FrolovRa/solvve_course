@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solvve.course.domain.Publication;
 import com.solvve.course.dto.correction.CorrectionCreateDto;
+import com.solvve.course.dto.correction.CorrectionPatchDto;
 import com.solvve.course.dto.correction.CorrectionReadDto;
+import com.solvve.course.dto.publication.PublicationReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.service.PublicationCorrectionService;
 import com.solvve.course.util.TestUtils;
@@ -98,6 +100,29 @@ public class PublicationCorrectionControllerTest {
                 .andReturn().getResponse().getContentAsString();
         CorrectionReadDto actualCorrectionReadDto = objectMapper.readValue(resultJson, CorrectionReadDto.class);
         assertThat(actualCorrectionReadDto).isEqualToComparingFieldByField(correctionReadDto);
+    }
+
+    @Test
+    public void testAcceptCorrection() throws Exception {
+        final UUID correctionId = UUID.randomUUID();
+        PublicationReadDto publication = utils.createPublicationReadDto();
+
+        CorrectionPatchDto patchDto = new CorrectionPatchDto();
+        patchDto.setProposedText("text");
+
+        when(publicationCorrectionService.acceptPublicationCorrection(correctionId, publication.getId(), patchDto))
+                .thenReturn(publication);
+
+        String resultJson =
+                mvc.perform(patch("/api/v1/publications/{publicationId}/corrections/{correctionId}/accept",
+                        publication.getId(), correctionId)
+                        .content(objectMapper.writeValueAsString(patchDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString();
+
+        PublicationReadDto actual = objectMapper.readValue(resultJson, PublicationReadDto.class);
+        assertThat(actual).isEqualToComparingFieldByField(publication);
     }
 
     @Test
