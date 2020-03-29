@@ -1,7 +1,7 @@
 package com.solvve.course.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solvve.course.BaseControllerTest;
 import com.solvve.course.domain.Publication;
 import com.solvve.course.dto.correction.CorrectionCreateDto;
 import com.solvve.course.dto.correction.CorrectionPatchDto;
@@ -9,15 +9,10 @@ import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.publication.PublicationReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.service.PublicationCorrectionService;
-import com.solvve.course.util.TestUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,20 +25,11 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = PublicationCorrectionController.class)
-public class PublicationCorrectionControllerTest {
-
-    @Autowired
-    private MockMvc mvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+public class PublicationCorrectionControllerTest extends BaseControllerTest {
 
     @MockBean
     private PublicationCorrectionService publicationCorrectionService;
-
-    private TestUtils utils = new TestUtils();
 
     @Test
     public void testGetPublicationCorrections() throws Exception {

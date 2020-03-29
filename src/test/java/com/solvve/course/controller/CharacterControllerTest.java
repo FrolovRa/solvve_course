@@ -1,21 +1,16 @@
 package com.solvve.course.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solvve.course.BaseControllerTest;
 import com.solvve.course.domain.Character;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.character.CharacterPatchDto;
 import com.solvve.course.dto.character.CharacterReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.service.CharacterService;
-import com.solvve.course.util.TestUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
@@ -26,20 +21,11 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = CharacterController.class)
-public class CharacterControllerTest {
-
-    @Autowired
-    private MockMvc mvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+public class CharacterControllerTest extends BaseControllerTest {
 
     @MockBean
     private CharacterService characterService;
-
-    private TestUtils utils = new TestUtils();
 
     @Test
     public void testGetCharacter() throws Exception {
