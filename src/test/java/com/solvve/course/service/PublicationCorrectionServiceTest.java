@@ -25,13 +25,13 @@ public class PublicationCorrectionServiceTest extends BaseTest {
     @Test
     public void testGetPublicationCorrections() {
         Correction publicationCorrection = utils.getCorrectionFromDb();
-        List<CorrectionReadDto> actualList = Collections
+        List<CorrectionReadDto> actual = Collections
                 .singletonList(translationService.translate(publicationCorrection, CorrectionReadDto.class));
 
-        List<CorrectionReadDto> resultList = publicationCorrectionService
+        List<CorrectionReadDto> result = publicationCorrectionService
                 .getPublicationCorrections(publicationCorrection.getPublication().getId());
 
-        assertThat(actualList).isEqualTo(resultList);
+        assertThat(actual).isEqualTo(result);
     }
 
     @Test
@@ -41,19 +41,16 @@ public class PublicationCorrectionServiceTest extends BaseTest {
         createDto.setUserId(utils.getUserFromDb().getId());
         createDto.setPublicationId(publication.getId());
 
-        utils.inTransaction(() -> {
-            CorrectionReadDto readDto = publicationCorrectionService.addPublicationCorrection(publication.getId(), createDto);
+        CorrectionReadDto readDto = publicationCorrectionService.addPublicationCorrection(publication.getId(), createDto);
+        assertThat(createDto).isEqualToIgnoringGivenFields(readDto,
+                "userId", "publicationId", "updatedAt", "createdAt");
+        assertNotNull(readDto.getId());
+        assertEquals(readDto.getUser().getId(), createDto.getUserId());
+        assertEquals(readDto.getPublication().getId(), createDto.getPublicationId());
 
-            assertThat(createDto).isEqualToIgnoringGivenFields(readDto,
-                    "userId", "publicationId", "updatedAt", "createdAt");
-            assertNotNull(readDto.getId());
-            assertEquals(readDto.getUser().getId(), createDto.getUserId());
-            assertEquals(readDto.getPublication().getId(), createDto.getPublicationId());
-
-            List<CorrectionReadDto> corrections = publicationCorrectionService.getPublicationCorrections(publication.getId());
-            assertThat(corrections.size()).isEqualTo(1);
-            assertThat(corrections.get(0)).isEqualTo(readDto);
-        });
+        List<CorrectionReadDto> corrections = publicationCorrectionService.getPublicationCorrections(publication.getId());
+        assertThat(corrections.size()).isEqualTo(1);
+        assertThat(corrections.get(0)).isEqualTo(readDto);
     }
 
     @Test
@@ -118,16 +115,14 @@ public class PublicationCorrectionServiceTest extends BaseTest {
         CorrectionPatchDto dto = new CorrectionPatchDto();
 
         Correction publicationBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
-        utils.inTransaction(() -> {
-            PublicationReadDto publicationReadDto = publicationCorrectionService
-                    .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
-            assertEquals("fixed text content", publicationReadDto.getContent());
+        PublicationReadDto publicationReadDto = publicationCorrectionService
+                .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
+        assertEquals("fixed text content", publicationReadDto.getContent());
 
-            Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
-            assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
-            assertEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
-            assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED);
-        });
+        Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
+        assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
+        assertEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
+        assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED);
     }
 
     @Test
@@ -138,16 +133,14 @@ public class PublicationCorrectionServiceTest extends BaseTest {
         dto.setProposedText("content manager fix");
 
         Correction publicationBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
-        utils.inTransaction(() -> {
-            PublicationReadDto publicationReadDto = publicationCorrectionService
-                    .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
-            assertEquals("content manager fix content", publicationReadDto.getContent());
+        PublicationReadDto publicationReadDto = publicationCorrectionService
+                .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
+        assertEquals("content manager fix content", publicationReadDto.getContent());
 
-            Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
-            assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
-            assertNotEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
-            assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED_AFTER_FIX);
-        });
+        Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
+        assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
+        assertNotEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
+        assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED_AFTER_FIX);
     }
 
     @Test
@@ -162,20 +155,18 @@ public class PublicationCorrectionServiceTest extends BaseTest {
         similarCorrection = correctionRepository.save(similarCorrection);
         secondSimilarCorrection = correctionRepository.save(secondSimilarCorrection);
 
+        Correction publicationBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
+
         CorrectionPatchDto dto = new CorrectionPatchDto();
         dto.setProposedText("content manager fix");
+        PublicationReadDto publicationReadDto = publicationCorrectionService
+                .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
+        assertEquals("content manager fix content", publicationReadDto.getContent());
 
-        Correction publicationBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
-        utils.inTransaction(() -> {
-            PublicationReadDto publicationReadDto = publicationCorrectionService
-                    .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
-            assertEquals("content manager fix content", publicationReadDto.getContent());
-
-            Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
-            assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
-            assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED_AFTER_FIX);
-            assertNotEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
-        });
+        Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
+        assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
+        assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED_AFTER_FIX);
+        assertNotEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
         assertNotEquals(similarCorrection, correctionRepository.findById(similarCorrection.getId()));
         assertNotEquals(secondSimilarCorrection, correctionRepository.findById(secondSimilarCorrection.getId()));
     }

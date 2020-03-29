@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
-
 @Service
 public class PrincipalService {
 
@@ -50,18 +48,8 @@ public class PrincipalService {
 
     public PrincipalReadDto patchPrincipal(UUID id, PrincipalPatchDto principalPatchDto) {
         Principal principal = repositoryHelper.getEntityRequired(Principal.class, id);
-        if (nonNull(principalPatchDto.getName())) {
-            principal.setName(principalPatchDto.getName());
-        }
-        if (nonNull(principalPatchDto.getRole())) {
-            principal.setRole(principalPatchDto.getRole());
-        }
-        if (nonNull(principalPatchDto.getEmail())) {
-            principal.setEmail(principalPatchDto.getEmail());
-        }
-        if (nonNull(principalPatchDto.getBlocked())) {
-            principal.setBlocked(principalPatchDto.getBlocked());
-        }
+
+        translationService.patchEntity(principalPatchDto, principal);
         Principal patchedPrincipal = principalRepository.save(principal);
 
         return translationService.translate(patchedPrincipal, PrincipalReadDto.class);

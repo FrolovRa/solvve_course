@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static java.util.Objects.nonNull;
-
 @Service
 public class PersonService {
 
@@ -40,9 +38,8 @@ public class PersonService {
 
     public PersonReadDto patchPerson(UUID id, PersonPatchDto personPatchDto) {
         Person person = repositoryHelper.getEntityRequired(Person.class, id);
-        if (nonNull(personPatchDto.getName())) {
-            person.setName(personPatchDto.getName());
-        }
+
+        translationService.patchEntity(personPatchDto, person);
         Person patchedPerson = personRepository.save(person);
 
         return translationService.translate(patchedPerson, PersonReadDto.class);

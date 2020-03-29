@@ -1,6 +1,5 @@
 package com.solvve.course.service;
 
-import com.solvve.course.domain.Principal;
 import com.solvve.course.domain.Publication;
 import com.solvve.course.dto.publication.PublicationCreateDto;
 import com.solvve.course.dto.publication.PublicationPatchDto;
@@ -39,15 +38,11 @@ public class PublicationService {
         return translationService.translate(publication, PublicationReadDto.class);
     }
 
+    @Transactional
     public PublicationReadDto patchPublication(UUID id, PublicationPatchDto publicationPatchDto) {
         Publication publication = repositoryHelper.getEntityRequired(Publication.class, id);
-        if (publicationPatchDto.getContent() != null) {
-            publication.setContent(publicationPatchDto.getContent());
-        }
-        if (publicationPatchDto.getManagerId() != null) {
-            publication.setManager(repositoryHelper.getReferenceIfExist(Principal.class,
-                    publicationPatchDto.getManagerId()));
-        }
+
+        translationService.patchEntity(publicationPatchDto, publication);
         Publication patchedPublication = publicationRepository.save(publication);
 
         return translationService.translate(patchedPublication, PublicationReadDto.class);

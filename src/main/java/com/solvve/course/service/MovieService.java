@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
-
 @Slf4j
 @Service
 public class MovieService {
@@ -54,15 +52,8 @@ public class MovieService {
 
     public MovieReadDto patchMovie(UUID id, MoviePatchDto moviePatchDto) {
         Movie movieFromDb = repositoryHelper.getEntityRequired(Movie.class, id);
-        if (nonNull(moviePatchDto.getName())) {
-            movieFromDb.setName(moviePatchDto.getName());
-        }
-        if (nonNull(moviePatchDto.getRelease())) {
-            movieFromDb.setRelease(moviePatchDto.getRelease());
-        }
-        if (nonNull(moviePatchDto.getDescription())) {
-            movieFromDb.setDescription(moviePatchDto.getDescription());
-        }
+
+        translationService.patchEntity(moviePatchDto, movieFromDb);
         Movie patchedMovie = movieRepository.save(movieFromDb);
 
         return translationService.translate(patchedMovie, MovieReadDto.class);

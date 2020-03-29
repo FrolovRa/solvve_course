@@ -1,6 +1,5 @@
 package com.solvve.course.service;
 
-import com.solvve.course.domain.Principal;
 import com.solvve.course.domain.User;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserPatchDto;
@@ -9,11 +8,9 @@ import com.solvve.course.repository.RepositoryHelper;
 import com.solvve.course.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.UUID;
-
-import static java.util.Objects.nonNull;
 
 @Service
 public class UserService {
@@ -41,17 +38,11 @@ public class UserService {
         return translationService.translate(user, UserReadDto.class);
     }
 
+    @Transactional
     public UserReadDto patchUser(UUID id, UserPatchDto userPatchDto) {
         User user = repositoryHelper.getEntityRequired(User.class, id);
-        if (nonNull(userPatchDto.getPrincipalId())) {
-            user.setPrincipal(repositoryHelper.getReferenceIfExist(Principal.class, userPatchDto.getPrincipalId()));
-        }
-        if (nonNull(userPatchDto.getTrustLevel())) {
-            user.setTrustLevel(userPatchDto.getTrustLevel());
-        }
-        if (nonNull(userPatchDto.getBlockedReview())) {
-            user.setBlockedReview(userPatchDto.getBlockedReview());
-        }
+
+        translationService.patchEntity(userPatchDto, user);
         User patchedActor = userRepository.save(user);
 
         return translationService.translate(patchedActor, UserReadDto.class);

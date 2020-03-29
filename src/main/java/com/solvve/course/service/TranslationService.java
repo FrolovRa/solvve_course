@@ -3,10 +3,19 @@ package com.solvve.course.service;
 import com.solvve.course.domain.Character;
 import com.solvve.course.domain.*;
 import com.solvve.course.dto.actor.ActorCreateDto;
+import com.solvve.course.dto.actor.ActorPatchDto;
+import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
+import com.solvve.course.dto.character.CharacterPatchDto;
 import com.solvve.course.dto.correction.CorrectionCreateDto;
+import com.solvve.course.dto.correction.CorrectionPatchDto;
+import com.solvve.course.dto.movie.MoviePatchDto;
+import com.solvve.course.dto.person.PersonPatchDto;
+import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.publication.PublicationCreateDto;
+import com.solvve.course.dto.publication.PublicationPatchDto;
 import com.solvve.course.dto.user.UserCreateDto;
+import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.repository.RepositoryHelper;
 import org.bitbucket.brunneng.ot.Configuration;
 import org.bitbucket.brunneng.ot.ObjectTranslator;
@@ -31,6 +40,10 @@ public class TranslationService {
         return objectTranslator.translate(srcObject, targetClass);
     }
 
+    public void patchEntity(Object patchDto, Object entity) {
+        objectTranslator.mapBean(patchDto, entity);
+    }
+
     private Configuration createConfiguration() {
         Configuration configuration = new Configuration();
         configureForUser(configuration);
@@ -39,6 +52,9 @@ public class TranslationService {
         configureForCharacter(configuration);
         configureForCorrection(configuration);
         configureForActor(configuration);
+        configureForPrincipal(configuration);
+        configureForPerson(configuration);
+        configureForMovie(configuration);
 
         return configuration;
     }
@@ -52,27 +68,63 @@ public class TranslationService {
     private void configureForUser(Configuration c) {
         Configuration.Translation t = c.beanOfClass(UserCreateDto.class).translationTo(User.class);
         t.srcProperty("principalId").translatesTo("principal.id");
+        t = c.beanOfClass(UserPatchDto.class).translationTo(User.class);
+        t.srcProperty("principalId").translatesTo("principal.id");
+
+        c.beanOfClass(UserPatchDto.class).translationTo(User.class).mapOnlyNotNullProperties();
     }
 
     private void configureForPublication(Configuration c) {
         Configuration.Translation t = c.beanOfClass(PublicationCreateDto.class).translationTo(Publication.class);
         t.srcProperty("managerId").translatesTo("manager.id");
+        t = c.beanOfClass(PublicationPatchDto.class).translationTo(Publication.class);
+        t.srcProperty("managerId").translatesTo("manager.id");
+
+        c.beanOfClass(PublicationPatchDto.class).translationTo(Publication.class).mapOnlyNotNullProperties();
     }
 
     private void configureForCharacter(Configuration c) {
         Configuration.Translation t = c.beanOfClass(CharacterCreateDto.class).translationTo(Character.class);
         t.srcProperty("movieId").translatesTo("movie.id");
         t.srcProperty("actorId").translatesTo("actor.id");
+        t = c.beanOfClass(CharacterPatchDto.class).translationTo(Character.class);
+        t.srcProperty("movieId").translatesTo("movie.id");
+        t.srcProperty("actorId").translatesTo("actor.id");
+
+        c.beanOfClass(CharacterPatchDto.class).translationTo(Character.class).mapOnlyNotNullProperties();
     }
 
     private void configureForActor(Configuration c) {
         Configuration.Translation t = c.beanOfClass(ActorCreateDto.class).translationTo(Actor.class);
         t.srcProperty("personId").translatesTo("person.id");
+        t = c.beanOfClass(ActorPatchDto.class).translationTo(Actor.class);
+        t.srcProperty("personId").translatesTo("person.id");
+        t = c.beanOfClass(ActorPutDto.class).translationTo(Actor.class);
+        t.srcProperty("personId").translatesTo("person.id");
+
+        c.beanOfClass(ActorPatchDto.class).translationTo(Actor.class).mapOnlyNotNullProperties();
     }
 
     private void configureForCorrection(Configuration c) {
         Configuration.Translation t = c.beanOfClass(CorrectionCreateDto.class).translationTo(Correction.class);
         t.srcProperty("userId").translatesTo("user.id");
         t.srcProperty("publicationId").translatesTo("publication.id");
+        t = c.beanOfClass(CorrectionPatchDto.class).translationTo(Correction.class);
+        t.srcProperty("userId").translatesTo("user.id");
+        t.srcProperty("publicationId").translatesTo("publication.id");
+
+        c.beanOfClass(CorrectionPatchDto.class).translationTo(Correction.class).mapOnlyNotNullProperties();
+    }
+
+    private void configureForPrincipal(Configuration c) {
+        c.beanOfClass(PrincipalPatchDto.class).translationTo(Principal.class).mapOnlyNotNullProperties();
+    }
+
+    private void configureForPerson(Configuration c) {
+        c.beanOfClass(PersonPatchDto.class).translationTo(Person.class).mapOnlyNotNullProperties();
+    }
+
+    private void configureForMovie(Configuration c) {
+        c.beanOfClass(MoviePatchDto.class).translationTo(Movie.class).mapOnlyNotNullProperties();
     }
 }

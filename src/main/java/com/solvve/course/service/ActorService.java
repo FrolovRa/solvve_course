@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
-import static java.util.Objects.nonNull;
-
 @Service
 public class ActorService {
 
@@ -44,9 +42,8 @@ public class ActorService {
 
     public ActorExtendedReadDto patchActor(UUID id, ActorPatchDto actorPatchDto) {
         Actor actor = repositoryHelper.getEntityRequired(Actor.class, id);
-        if (nonNull(actorPatchDto.getPersonId())) {
-            actor.setPerson(repositoryHelper.getReferenceIfExist(Person.class, actorPatchDto.getPersonId()));
-        }
+
+        translationService.patchEntity(actorPatchDto, actor);
         Actor patchedActor = actorRepository.save(actor);
 
         return translationService.translate(patchedActor, ActorExtendedReadDto.class);
