@@ -28,7 +28,7 @@ public class PublicationService {
     public PublicationReadDto getPublication(UUID id) {
         Publication publicationFromDb = repositoryHelper.getEntityRequired(Publication.class, id);
 
-        return translationService.toReadDto(publicationFromDb);
+        return translationService.translate(publicationFromDb, PublicationReadDto.class);
     }
 
     @Transactional
@@ -36,7 +36,7 @@ public class PublicationService {
         Publication publication = translationService.toEntity(userCreateDto);
         publication = publicationRepository.save(publication);
 
-        return translationService.toReadDto(publication);
+        return translationService.translate(publication, PublicationReadDto.class);
     }
 
     public PublicationReadDto patchPublication(UUID id, PublicationPatchDto publicationPatchDto) {
@@ -50,7 +50,7 @@ public class PublicationService {
         }
         Publication patchedPublication = publicationRepository.save(publication);
 
-        return translationService.toReadDto(patchedPublication);
+        return translationService.translate(patchedPublication, PublicationReadDto.class);
     }
 
     public void deletePublication(UUID id) {

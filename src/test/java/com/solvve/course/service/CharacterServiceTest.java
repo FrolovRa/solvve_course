@@ -47,7 +47,7 @@ public class CharacterServiceTest {
     @Test
     public void testGetCharacter() {
         Character person = utils.getCharacterFromDb();
-        CharacterReadDto actualPerson = translationService.toReadDto(person);
+        CharacterReadDto actualPerson = translationService.translate(person, CharacterReadDto.class);
 
         CharacterReadDto personReadDto = characterService.getCharacter(person.getId());
 
@@ -86,10 +86,10 @@ public class CharacterServiceTest {
     public void testEmptyPatchCharacter() {
         CharacterPatchDto userPatchDto = new CharacterPatchDto();
 
-        Character person = utils.getCharacterFromDb();
-        CharacterReadDto patchedUser = characterService.patchCharacter(person.getId(), userPatchDto);
+        Character character = utils.getCharacterFromDb();
+        CharacterReadDto patchedCharacter = characterService.patchCharacter(character.getId(), userPatchDto);
 
-        assertThat(translationService.toReadDto(person)).isEqualToComparingFieldByField(patchedUser);
+        assertThat(patchedCharacter).isEqualToComparingFieldByField(patchedCharacter);
     }
 
     @Test(expected = EntityNotFoundException.class)

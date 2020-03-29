@@ -28,14 +28,14 @@ public class PersonService {
     public PersonReadDto getPerson(UUID id) {
         Person personFromDb = repositoryHelper.getEntityRequired(Person.class, id);
 
-        return translationService.toReadDto(personFromDb);
+        return translationService.translate(personFromDb, PersonReadDto.class);
     }
 
     public PersonReadDto addPerson(PersonCreateDto personCreateDto) {
         Person person = translationService.toEntity(personCreateDto);
         person = personRepository.save(person);
 
-        return translationService.toReadDto(person);
+        return translationService.translate(person, PersonReadDto.class);
     }
 
     public PersonReadDto patchPerson(UUID id, PersonPatchDto personPatchDto) {
@@ -45,7 +45,7 @@ public class PersonService {
         }
         Person patchedPerson = personRepository.save(person);
 
-        return translationService.toReadDto(patchedPerson);
+        return translationService.translate(patchedPerson, PersonReadDto.class);
     }
 
     public void deletePerson(UUID id) {

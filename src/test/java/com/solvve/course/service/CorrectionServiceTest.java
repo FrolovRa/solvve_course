@@ -44,7 +44,7 @@ public class CorrectionServiceTest {
     @Test
     public void testGetCorrection() {
         Correction correction = utils.getCorrectionFromDb();
-        CorrectionReadDto actualCorrection = translationService.toReadDto(correction);
+        CorrectionReadDto actualCorrection = translationService.translate(correction, CorrectionReadDto.class);
 
         CorrectionReadDto correctionReadDto = correctionService.getCorrection(correction.getId());
 

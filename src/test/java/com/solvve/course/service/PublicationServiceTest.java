@@ -26,9 +26,9 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(statements = {
-        "delete from publication",
-        "delete from user",
-        "delete from principal"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    "delete from publication",
+    "delete from user",
+    "delete from principal"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class PublicationServiceTest {
 
     @Autowired
@@ -46,7 +46,7 @@ public class PublicationServiceTest {
     @Test
     public void testGetPublication() {
         Publication user = utils.getPublicationFromDb();
-        PublicationReadDto actualPublication = translationService.toReadDto(user);
+        PublicationReadDto actualPublication = translationService.translate(user, PublicationReadDto.class);
 
         PublicationReadDto publicationReadDto = publicationService.getPublication(user.getId());
 
@@ -61,7 +61,7 @@ public class PublicationServiceTest {
 
         PublicationReadDto readDto = publicationService.addPublication(createDto);
         assertThat(createDto).isEqualToIgnoringGivenFields(readDto,
-                "managerId", "updatedAt", "createdAt");
+            "managerId", "updatedAt", "createdAt");
         assertNotNull(readDto.getId());
         assertEquals(readDto.getManager().getId(), createDto.getManagerId());
 
@@ -82,7 +82,7 @@ public class PublicationServiceTest {
         PublicationReadDto patchedPublication = publicationService.patchPublication(publication.getId(), publicationPatchDto);
 
         assertThat(publicationPatchDto).isEqualToIgnoringGivenFields(patchedPublication,
-                "managerId", "updatedAt", "createdAt");
+            "managerId", "updatedAt", "createdAt");
         assertEquals(patchedPublication.getManager().getId(), publicationPatchDto.getManagerId());
     }
 
@@ -93,7 +93,8 @@ public class PublicationServiceTest {
 
         PublicationReadDto patchedPublication = publicationService.patchPublication(publication.getId(), publicationPatchDto);
 
-        assertThat(translationService.toReadDto(publication)).isEqualToComparingFieldByField(patchedPublication);
+        assertThat(patchedPublication).isEqualToIgnoringGivenFields(publication, "manager");
+        assertThat(patchedPublication.getManager()).isEqualToComparingFieldByField(publication.getManager());
     }
 
     @Test

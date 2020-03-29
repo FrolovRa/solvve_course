@@ -30,14 +30,14 @@ public class CharacterService {
     public CharacterReadDto getCharacter(UUID id) {
         Character characterFromDb = repositoryHelper.getEntityRequired(Character.class, id);
 
-        return translationService.toReadDto(characterFromDb);
+        return translationService.translate(characterFromDb, CharacterReadDto.class);
     }
 
     public CharacterReadDto addCharacter(CharacterCreateDto movieCreateDto) {
         Character character = translationService.toEntity(movieCreateDto);
         character = characterRepository.save(character);
 
-        return translationService.toReadDto(character);
+        return translationService.translate(character, CharacterReadDto.class);
     }
 
     public CharacterReadDto patchCharacter(UUID id, CharacterPatchDto characterPatchDto) {
@@ -53,7 +53,7 @@ public class CharacterService {
         }
         Character patchedCharacter = characterRepository.save(character);
 
-        return translationService.toReadDto(patchedCharacter);
+        return translationService.translate(patchedCharacter, CharacterReadDto.class);
     }
 
     public void deleteCharacter(UUID id) {

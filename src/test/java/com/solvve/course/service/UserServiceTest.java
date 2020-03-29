@@ -26,8 +26,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(statements = {
-        "delete from user",
-        "delete from principal"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    "delete from user",
+    "delete from principal"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class UserServiceTest {
 
     @Autowired
@@ -45,7 +45,7 @@ public class UserServiceTest {
     @Test
     public void testGetUser() {
         User user = utils.getUserFromDb();
-        UserReadDto actualUser = translationService.toReadDto(user);
+        UserReadDto actualUser = translationService.translate(user, UserReadDto.class);
 
         UserReadDto userReadDto = userService.getUser(user.getId());
 
@@ -85,7 +85,8 @@ public class UserServiceTest {
         User user = utils.getUserFromDb();
         UserReadDto patchedUser = userService.patchUser(user.getId(), userPatchDto);
 
-        assertThat(translationService.toReadDto(user)).isEqualToComparingFieldByField(patchedUser);
+        assertThat(patchedUser).isEqualToIgnoringGivenFields(user, "principal");
+        assertThat(patchedUser.getPrincipal()).isEqualToComparingFieldByField(patchedUser.getPrincipal());
     }
 
     @Test(expected = EntityNotFoundException.class)

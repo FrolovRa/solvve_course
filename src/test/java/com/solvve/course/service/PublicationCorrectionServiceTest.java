@@ -52,7 +52,7 @@ public class PublicationCorrectionServiceTest {
     public void testGetPublicationCorrections() {
         Correction publicationCorrection = utils.getCorrectionFromDb();
         List<CorrectionReadDto> actualList = Collections
-                .singletonList(translationService.toReadDto(publicationCorrection));
+                .singletonList(translationService.translate(publicationCorrection, CorrectionReadDto.class));
 
         List<CorrectionReadDto> resultList = publicationCorrectionService
                 .getPublicationCorrections(publicationCorrection.getPublication().getId());

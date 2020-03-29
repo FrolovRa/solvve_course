@@ -38,8 +38,8 @@ public class PublicationCorrectionService {
         repositoryHelper.validateExist(Publication.class, publicationId);
 
         return correctionRepository.getAllByPublicationId(publicationId).stream()
-                .map(translationService::toReadDto)
-                .collect(Collectors.toList());
+            .map(correction -> translationService.translate(correction, CorrectionReadDto.class))
+            .collect(Collectors.toList());
     }
 
     @Transactional
@@ -49,7 +49,7 @@ public class PublicationCorrectionService {
         correction.setPublication(publication);
         correction.setStatus(CorrectionStatus.NEW);
 
-        return translationService.toReadDto(correctionRepository.save(correction));
+        return translationService.translate(correctionRepository.save(correction), CorrectionReadDto.class);
     }
 
     public void deletePublicationCorrection(UUID id) {
@@ -73,13 +73,13 @@ public class PublicationCorrectionService {
 
         Publication publication = repositoryHelper.getEntityRequired(Publication.class, publicationId);
         String fixedContent = this.getContentWithAcceptedCorrection(publication.getContent(),
-                correction.getStartIndex(),
-                correction.getSelectedText(),
-                correction.getProposedText());
+            correction.getStartIndex(),
+            correction.getSelectedText(),
+            correction.getProposedText());
         publication.setContent(fixedContent);
 
         List<Correction> similarCorrections = correctionRepository.getSimilarCorrections(correctionId, publication,
-                correction.getSelectedText(), correction.getStartIndex());
+            correction.getSelectedText(), correction.getStartIndex());
 
         Correction finalCorrection = correction;
         similarCorrections.forEach(c -> {
@@ -89,7 +89,7 @@ public class PublicationCorrectionService {
             correctionRepository.save(c);
         });
 
-        return translationService.toReadDto(publicationRepository.save(publication));
+        return translationService.translate(publicationRepository.save(publication), PublicationReadDto.class);
     }
 
     private void validateCorrectionForAccepting(UUID correctionId, CorrectionStatus status) {
@@ -103,8 +103,8 @@ public class PublicationCorrectionService {
         StringBuilder sb = new StringBuilder();
         final char[] buff = oldContent.toCharArray();
         sb.append(buff, 0, startIndex)
-                .append(proposedText)
-                .append(buff, startIndex + selectedText.length(), buff.length - selectedText.length());
+            .append(proposedText)
+            .append(buff, startIndex + selectedText.length(), buff.length - selectedText.length());
         return sb.toString();
     }
 }

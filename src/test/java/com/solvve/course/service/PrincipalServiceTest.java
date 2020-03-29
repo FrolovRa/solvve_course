@@ -45,7 +45,7 @@ public class PrincipalServiceTest {
     @Test
     public void testGetPrincipal() {
         Principal user = utils.getPrincipalFromDb();
-        PrincipalReadDto actualPrincipal = translationService.toReadDto(user);
+        PrincipalReadDto actualPrincipal = translationService.translate(user, PrincipalReadDto.class);
 
         PrincipalReadDto principalReadDto = principalService.getPrincipal(user.getId());
 
@@ -87,7 +87,7 @@ public class PrincipalServiceTest {
 
         PrincipalReadDto patchedPrincipal = principalService.patchPrincipal(principal.getId(), principalPatchDto);
 
-        assertThat(translationService.toReadDto(principal)).isEqualToComparingFieldByField(patchedPrincipal);
+        assertThat(principal).isEqualToComparingFieldByField(patchedPrincipal);
     }
 
     @Test

@@ -26,13 +26,13 @@ public class CorrectionService {
     public CorrectionReadDto getCorrection(UUID id) {
         Correction correctionFromDb = repositoryHelper.getEntityRequired(Correction.class, id);
 
-        return translationService.toReadDto(correctionFromDb);
+        return translationService.translate(correctionFromDb, CorrectionReadDto.class);
     }
 
     public List<CorrectionReadDto> getAllCorrections() {
         return correctionRepository.getAll().stream()
-                .map(translationService::toReadDto)
-                .collect(Collectors.toList());
+            .map(correction -> translationService.translate(correction, CorrectionReadDto.class))
+            .collect(Collectors.toList());
     }
 
     public void deleteCorrection(UUID id) {

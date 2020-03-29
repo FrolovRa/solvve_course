@@ -30,7 +30,7 @@ public class UserService {
     public UserReadDto getUser(UUID id) {
         User userFromDb = repositoryHelper.getEntityRequired(User.class, id);
 
-        return translationService.toReadDto(userFromDb);
+        return translationService.translate(userFromDb, UserReadDto.class);
     }
 
     @Transactional
@@ -38,7 +38,7 @@ public class UserService {
         User user = translationService.toEntity(userCreateDto);
         user = userRepository.save(user);
 
-        return translationService.toReadDto(user);
+        return translationService.translate(user, UserReadDto.class);
     }
 
     public UserReadDto patchUser(UUID id, UserPatchDto userPatchDto) {
@@ -54,7 +54,7 @@ public class UserService {
         }
         User patchedActor = userRepository.save(user);
 
-        return translationService.toReadDto(patchedActor);
+        return translationService.translate(patchedActor, UserReadDto.class);
     }
 
     public void deleteUser(UUID id) {

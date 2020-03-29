@@ -102,7 +102,7 @@ public class MovieServiceTest {
     public void testEmptyPatchMovie() {
         MoviePatchDto moviePatchDto = new MoviePatchDto();
 
-        MovieReadDto movieBeforePatch = translationService.toReadDto(utils.getMovieFromDb());
+        MovieReadDto movieBeforePatch = translationService.translate(utils.getMovieFromDb(), MovieReadDto.class);
 
         MovieReadDto movieAfterPatch = movieService.patchMovie(movieBeforePatch.getId(), moviePatchDto);
         assertNotNull(movieAfterPatch.getDescription());
@@ -113,7 +113,7 @@ public class MovieServiceTest {
 
     @Test
     public void testDeleteMovie() {
-        MovieReadDto movieReadDto = translationService.toReadDto(utils.getMovieFromDb());
+        MovieReadDto movieReadDto = translationService.translate(utils.getMovieFromDb(), MovieReadDto.class);
         assertNotNull(movieReadDto.getId());
 
         movieService.deleteMovie(movieReadDto.getId());

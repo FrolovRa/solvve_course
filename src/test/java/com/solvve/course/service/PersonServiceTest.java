@@ -43,7 +43,7 @@ public class PersonServiceTest {
     @Test
     public void testGetPerson() {
         Person person = utils.getPersonFromDb();
-        PersonReadDto actualPerson = translationService.toReadDto(person);
+        PersonReadDto actualPerson = translationService.translate(person, PersonReadDto.class);
 
         PersonReadDto personReadDto = personService.getPerson(person.getId());
 
@@ -81,7 +81,7 @@ public class PersonServiceTest {
         Person person = utils.getPersonFromDb();
         PersonReadDto patchedUser = personService.patchPerson(person.getId(), userPatchDto);
 
-        assertThat(translationService.toReadDto(person)).isEqualToComparingFieldByField(patchedUser);
+        assertThat(person).isEqualToComparingFieldByField(patchedUser);
     }
 
     @Test(expected = EntityNotFoundException.class)

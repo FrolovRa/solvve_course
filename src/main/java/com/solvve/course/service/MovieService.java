@@ -35,13 +35,13 @@ public class MovieService {
     public MovieReadDto getMovie(UUID id) {
         Movie movieFromDb = repositoryHelper.getEntityRequired(Movie.class, id);
 
-        return translationService.toReadDto(movieFromDb);
+        return translationService.translate(movieFromDb, MovieReadDto.class);
     }
 
     public List<MovieReadDto> getMovies(MovieFilter filter) {
         List<Movie> movies = movieRepository.findByFilter(filter);
         return movies.stream()
-                .map(translationService::toReadDto)
+                .map(movie -> translationService.translate(movie, MovieReadDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -49,7 +49,7 @@ public class MovieService {
         Movie movie = translationService.toEntity(movieCreateDto);
         movie = movieRepository.save(movie);
 
-        return translationService.toReadDto(movie);
+        return translationService.translate(movie, MovieReadDto.class);
     }
 
     public MovieReadDto patchMovie(UUID id, MoviePatchDto moviePatchDto) {
@@ -65,7 +65,7 @@ public class MovieService {
         }
         Movie patchedMovie = movieRepository.save(movieFromDb);
 
-        return translationService.toReadDto(patchedMovie);
+        return translationService.translate(patchedMovie, MovieReadDto.class);
     }
 
     public void deleteMovie(UUID id) {
@@ -79,6 +79,7 @@ public class MovieService {
         log.info("Setting new average rating of movie: {}. Old value: {}, new value: {}",
                 id, movie.getRating(), avgRating);
         movie.setRating(avgRating);
+
         movieRepository.save(movie);
     }
 }

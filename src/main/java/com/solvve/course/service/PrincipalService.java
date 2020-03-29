@@ -31,13 +31,13 @@ public class PrincipalService {
     public PrincipalReadDto getPrincipal(UUID id) {
         Principal principalFromDb = repositoryHelper.getEntityRequired(Principal.class, id);
 
-        return translationService.toReadDto(principalFromDb);
+        return translationService.translate(principalFromDb, PrincipalReadDto.class);
     }
 
     public List<PrincipalReadDto> getPrincipalsByRole(Role role) {
         return principalRepository.getAllByRole(role)
                 .stream()
-                .map(translationService::toReadDto)
+                .map(principal -> translationService.translate(principal, PrincipalReadDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -45,7 +45,7 @@ public class PrincipalService {
         Principal principal = translationService.toEntity(principalCreateDto);
         principal = principalRepository.save(principal);
 
-        return translationService.toReadDto(principal);
+        return translationService.translate(principal, PrincipalReadDto.class);
     }
 
     public PrincipalReadDto patchPrincipal(UUID id, PrincipalPatchDto principalPatchDto) {
@@ -64,7 +64,7 @@ public class PrincipalService {
         }
         Principal patchedPrincipal = principalRepository.save(principal);
 
-        return translationService.toReadDto(patchedPrincipal);
+        return translationService.translate(patchedPrincipal, PrincipalReadDto.class);
     }
 
     public void deletePrincipal(UUID id) {
