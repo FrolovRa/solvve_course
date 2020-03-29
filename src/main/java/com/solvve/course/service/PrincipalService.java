@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
-
 @Service
 public class PrincipalService {
 
@@ -31,40 +29,30 @@ public class PrincipalService {
     public PrincipalReadDto getPrincipal(UUID id) {
         Principal principalFromDb = repositoryHelper.getEntityRequired(Principal.class, id);
 
-        return translationService.toReadDto(principalFromDb);
+        return translationService.translate(principalFromDb, PrincipalReadDto.class);
     }
 
     public List<PrincipalReadDto> getPrincipalsByRole(Role role) {
         return principalRepository.getAllByRole(role)
                 .stream()
-                .map(translationService::toReadDto)
+                .map(principal -> translationService.translate(principal, PrincipalReadDto.class))
                 .collect(Collectors.toList());
     }
 
     public PrincipalReadDto addPrincipal(PrincipalCreateDto principalCreateDto) {
-        Principal principal = translationService.toEntity(principalCreateDto);
+        Principal principal = translationService.translate(principalCreateDto, Principal.class);
         principal = principalRepository.save(principal);
 
-        return translationService.toReadDto(principal);
+        return translationService.translate(principal, PrincipalReadDto.class);
     }
 
     public PrincipalReadDto patchPrincipal(UUID id, PrincipalPatchDto principalPatchDto) {
         Principal principal = repositoryHelper.getEntityRequired(Principal.class, id);
-        if (nonNull(principalPatchDto.getName())) {
-            principal.setName(principalPatchDto.getName());
-        }
-        if (nonNull(principalPatchDto.getRole())) {
-            principal.setRole(principalPatchDto.getRole());
-        }
-        if (nonNull(principalPatchDto.getEmail())) {
-            principal.setEmail(principalPatchDto.getEmail());
-        }
-        if (nonNull(principalPatchDto.getBlocked())) {
-            principal.setBlocked(principalPatchDto.getBlocked());
-        }
+
+        translationService.patchEntity(principalPatchDto, principal);
         Principal patchedPrincipal = principalRepository.save(principal);
 
-        return translationService.toReadDto(patchedPrincipal);
+        return translationService.translate(patchedPrincipal, PrincipalReadDto.class);
     }
 
     public void deletePrincipal(UUID id) {

@@ -1,22 +1,21 @@
 package com.solvve.course.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solvve.course.BaseControllerTest;
 import com.solvve.course.domain.Principal;
+import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.service.PrincipalService;
-import com.solvve.course.util.TestUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,20 +25,11 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = PrincipalController.class)
-public class PrincipalControllerTest {
-
-    @Autowired
-    private MockMvc mvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+public class PrincipalControllerTest extends BaseControllerTest {
 
     @MockBean
     private PrincipalService principalService;
-
-    private TestUtils utils = new TestUtils();
 
     @Test
     public void testGetPrincipal() throws Exception {
@@ -66,6 +56,28 @@ public class PrincipalControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         assertTrue(resultJson.contains(exception.getMessage()));
+    }
+
+    @Test
+    public void testGetPrincipalsByRole() throws Exception {
+        List<PrincipalReadDto> expected = Collections.singletonList(utils.createPrincipalReadDto());
+
+        when(principalService.getPrincipalsByRole(Role.USER)).thenReturn(expected);
+
+        String resultJson = mvc.perform(get("/api/v1/principals/by-role/{role}", Role.USER))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        List<PrincipalReadDto> actual = Arrays.asList(objectMapper.readValue(resultJson, PrincipalReadDto[].class));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetPrincipalByRoleWithNotValidRole() throws Exception {
+        mvc.perform(get("/api/v1/principals/by-role/{role}", "bad"))
+                .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(principalService);
     }
 
     @Test

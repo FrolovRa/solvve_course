@@ -1,20 +1,12 @@
 package com.solvve.course.service;
 
+import com.solvve.course.BaseTest;
 import com.solvve.course.domain.Character;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.character.CharacterPatchDto;
 import com.solvve.course.dto.character.CharacterReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
-import com.solvve.course.repository.CharacterRepository;
-import com.solvve.course.util.TestUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -22,32 +14,12 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
-
-@ActiveProfiles("test")
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Sql(statements = {"delete from character"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class CharacterServiceTest {
-
-    @Autowired
-    private CharacterRepository characterRepository;
-
-    @Autowired
-    private TestUtils utils;
-
-    @Autowired
-    private TranslationService translationService;
-
-    @Autowired
-    private CharacterService characterService;
-
-    @Autowired
-    private TransactionTemplate transactionTemplate;
+public class CharacterServiceTest extends BaseTest {
 
     @Test
     public void testGetCharacter() {
         Character person = utils.getCharacterFromDb();
-        CharacterReadDto actualPerson = translationService.toReadDto(person);
+        CharacterReadDto actualPerson = translationService.translate(person, CharacterReadDto.class);
 
         CharacterReadDto personReadDto = characterService.getCharacter(person.getId());
 
@@ -57,7 +29,7 @@ public class CharacterServiceTest {
     @Test
     public void testAddCharacter() {
         CharacterCreateDto createDto = utils.createCharacterCreateDto();
-        inTransaction(() -> {
+        utils.inTransaction(() -> {
             CharacterReadDto readDto = characterService.addCharacter(createDto);
 
             assertThat(createDto).isEqualToIgnoringGivenFields(readDto, "actorId", "movieId");
@@ -86,10 +58,10 @@ public class CharacterServiceTest {
     public void testEmptyPatchCharacter() {
         CharacterPatchDto userPatchDto = new CharacterPatchDto();
 
-        Character person = utils.getCharacterFromDb();
-        CharacterReadDto patchedUser = characterService.patchCharacter(person.getId(), userPatchDto);
+        Character character = utils.getCharacterFromDb();
+        CharacterReadDto patchedCharacter = characterService.patchCharacter(character.getId(), userPatchDto);
 
-        assertThat(translationService.toReadDto(person)).isEqualToComparingFieldByField(patchedUser);
+        assertThat(patchedCharacter).isEqualToComparingFieldByField(patchedCharacter);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -151,11 +123,5 @@ public class CharacterServiceTest {
         Instant updatedAtAfterUpdate = character.getUpdatedAt();
 
         assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
-    }
-
-    private void inTransaction(Runnable runnable) {
-        transactionTemplate.executeWithoutResult(status -> {
-            runnable.run();
-        });
     }
 }

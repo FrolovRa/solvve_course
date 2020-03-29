@@ -1,30 +1,18 @@
 package com.solvve.course.domain;
 
-import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-@Data
-@EntityListeners(AuditingEntityListener.class)
-public class Actor {
-
-    @Id
-    @GeneratedValue
-    private UUID id;
-
-    @CreatedDate
-    private Instant createdAt;
-
-    @LastModifiedDate
-    private Instant updatedAt;
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+public class Actor extends AbstractEntity {
 
     @OneToOne
     private Person person;

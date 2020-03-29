@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
-
 @Slf4j
 @Service
 public class MovieService {
@@ -35,37 +33,30 @@ public class MovieService {
     public MovieReadDto getMovie(UUID id) {
         Movie movieFromDb = repositoryHelper.getEntityRequired(Movie.class, id);
 
-        return translationService.toReadDto(movieFromDb);
+        return translationService.translate(movieFromDb, MovieReadDto.class);
     }
 
     public List<MovieReadDto> getMovies(MovieFilter filter) {
         List<Movie> movies = movieRepository.findByFilter(filter);
         return movies.stream()
-                .map(translationService::toReadDto)
+                .map(movie -> translationService.translate(movie, MovieReadDto.class))
                 .collect(Collectors.toList());
     }
 
     public MovieReadDto addMovie(MovieCreateDto movieCreateDto) {
-        Movie movie = translationService.toEntity(movieCreateDto);
+        Movie movie = translationService.translate(movieCreateDto, Movie.class);
         movie = movieRepository.save(movie);
 
-        return translationService.toReadDto(movie);
+        return translationService.translate(movie, MovieReadDto.class);
     }
 
     public MovieReadDto patchMovie(UUID id, MoviePatchDto moviePatchDto) {
         Movie movieFromDb = repositoryHelper.getEntityRequired(Movie.class, id);
-        if (nonNull(moviePatchDto.getName())) {
-            movieFromDb.setName(moviePatchDto.getName());
-        }
-        if (nonNull(moviePatchDto.getRelease())) {
-            movieFromDb.setRelease(moviePatchDto.getRelease());
-        }
-        if (nonNull(moviePatchDto.getDescription())) {
-            movieFromDb.setDescription(moviePatchDto.getDescription());
-        }
+
+        translationService.patchEntity(moviePatchDto, movieFromDb);
         Movie patchedMovie = movieRepository.save(movieFromDb);
 
-        return translationService.toReadDto(patchedMovie);
+        return translationService.translate(patchedMovie, MovieReadDto.class);
     }
 
     public void deleteMovie(UUID id) {
@@ -79,6 +70,7 @@ public class MovieService {
         log.info("Setting new average rating of movie: {}. Old value: {}, new value: {}",
                 id, movie.getRating(), avgRating);
         movie.setRating(avgRating);
+
         movieRepository.save(movie);
     }
 }

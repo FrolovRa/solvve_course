@@ -38,18 +38,18 @@ public class PublicationCorrectionService {
         repositoryHelper.validateExist(Publication.class, publicationId);
 
         return correctionRepository.getAllByPublicationId(publicationId).stream()
-                .map(translationService::toReadDto)
+                .map(correction -> translationService.translate(correction, CorrectionReadDto.class))
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public CorrectionReadDto addPublicationCorrection(UUID publicationId, CorrectionCreateDto correctionCreateDto) {
         Publication publication = repositoryHelper.getReferenceIfExist(Publication.class, publicationId);
-        Correction correction = translationService.toEntity(correctionCreateDto);
+        Correction correction = translationService.translate(correctionCreateDto, Correction.class);
         correction.setPublication(publication);
         correction.setStatus(CorrectionStatus.NEW);
 
-        return translationService.toReadDto(correctionRepository.save(correction));
+        return translationService.translate(correctionRepository.save(correction), CorrectionReadDto.class);
     }
 
     public void deletePublicationCorrection(UUID id) {
@@ -89,7 +89,7 @@ public class PublicationCorrectionService {
             correctionRepository.save(c);
         });
 
-        return translationService.toReadDto(publicationRepository.save(publication));
+        return translationService.translate(publicationRepository.save(publication), PublicationReadDto.class);
     }
 
     private void validateCorrectionForAccepting(UUID correctionId, CorrectionStatus status) {

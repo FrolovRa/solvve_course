@@ -1,29 +1,19 @@
 package com.solvve.course.domain;
 
 import com.solvve.course.domain.constant.Role;
-import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
-import java.time.Instant;
-import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
-@Data
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Principal {
-
-    @Id
-    @GeneratedValue
-    private UUID id;
-
-    @CreatedDate
-    private Instant createdAt;
-
-    @LastModifiedDate
-    private Instant updatedAt;
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+public class Principal extends AbstractEntity {
 
     private String name;
 

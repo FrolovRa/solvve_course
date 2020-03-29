@@ -17,6 +17,8 @@ public class MovieReadDto {
 
     private LocalDate release;
 
+    private Double rating;
+
     private Instant createdAt;
 
     private Instant updatedAt;

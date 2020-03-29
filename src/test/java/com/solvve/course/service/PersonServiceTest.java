@@ -1,19 +1,12 @@
 package com.solvve.course.service;
 
+import com.solvve.course.BaseTest;
 import com.solvve.course.domain.Person;
 import com.solvve.course.dto.person.PersonCreateDto;
 import com.solvve.course.dto.person.PersonPatchDto;
 import com.solvve.course.dto.person.PersonReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
-import com.solvve.course.repository.PersonRepository;
-import com.solvve.course.util.TestUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -21,29 +14,12 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
-
-@ActiveProfiles("test")
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Sql(statements = {"delete from person"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class PersonServiceTest {
-
-    @Autowired
-    private PersonRepository personRepository;
-
-    @Autowired
-    private TestUtils utils;
-
-    @Autowired
-    private TranslationService translationService;
-
-    @Autowired
-    private PersonService personService;
+public class PersonServiceTest extends BaseTest {
 
     @Test
     public void testGetPerson() {
         Person person = utils.getPersonFromDb();
-        PersonReadDto actualPerson = translationService.toReadDto(person);
+        PersonReadDto actualPerson = translationService.translate(person, PersonReadDto.class);
 
         PersonReadDto personReadDto = personService.getPerson(person.getId());
 
@@ -81,7 +57,7 @@ public class PersonServiceTest {
         Person person = utils.getPersonFromDb();
         PersonReadDto patchedUser = personService.patchPerson(person.getId(), userPatchDto);
 
-        assertThat(translationService.toReadDto(person)).isEqualToComparingFieldByField(patchedUser);
+        assertThat(person).isEqualToComparingFieldByField(patchedUser);
     }
 
     @Test(expected = EntityNotFoundException.class)

@@ -1,28 +1,18 @@
 package com.solvve.course.domain;
 
-import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
-import java.time.Instant;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import java.util.UUID;
 
-@Data
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Rating {
-
-    @Id
-    @GeneratedValue
-    private UUID id;
-
-    @CreatedDate
-    private Instant createdAt;
-
-    @LastModifiedDate
-    private Instant updatedAt;
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+public class Rating extends AbstractEntity {
 
     @ManyToOne
     private User user;

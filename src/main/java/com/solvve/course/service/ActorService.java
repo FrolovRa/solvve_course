@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
-import static java.util.Objects.nonNull;
-
 @Service
 public class ActorService {
 
@@ -31,25 +29,24 @@ public class ActorService {
     public ActorExtendedReadDto getActor(UUID id) {
         Actor actorFromDb = repositoryHelper.getEntityRequired(Actor.class, id);
 
-        return translationService.toExtendedReadDto(actorFromDb);
+        return translationService.translate(actorFromDb, ActorExtendedReadDto.class);
     }
 
     @Transactional
     public ActorExtendedReadDto addActor(ActorCreateDto actorCreateDto) {
-        Actor actor = translationService.toEntity(actorCreateDto);
+        Actor actor = translationService.translate(actorCreateDto, Actor.class);
         actor = actorRepository.save(actor);
 
-        return translationService.toExtendedReadDto(actor);
+        return translationService.translate(actor, ActorExtendedReadDto.class);
     }
 
     public ActorExtendedReadDto patchActor(UUID id, ActorPatchDto actorPatchDto) {
         Actor actor = repositoryHelper.getEntityRequired(Actor.class, id);
-        if (nonNull(actorPatchDto.getPersonId())) {
-            actor.setPerson(repositoryHelper.getReferenceIfExist(Person.class, actorPatchDto.getPersonId()));
-        }
+
+        translationService.patchEntity(actorPatchDto, actor);
         Actor patchedActor = actorRepository.save(actor);
 
-        return translationService.toExtendedReadDto(patchedActor);
+        return translationService.translate(patchedActor, ActorExtendedReadDto.class);
     }
 
     public void deleteActor(UUID id) {
@@ -60,6 +57,6 @@ public class ActorService {
         Actor actorFromDb = repositoryHelper.getEntityRequired(Actor.class, id);
         actorFromDb.setPerson(repositoryHelper.getReferenceIfExist(Person.class, actorPutDto.getPersonId()));
 
-        return translationService.toExtendedReadDto(actorFromDb);
+        return translationService.translate(actorFromDb, ActorExtendedReadDto.class);
     }
 }

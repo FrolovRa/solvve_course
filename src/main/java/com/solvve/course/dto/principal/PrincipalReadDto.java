@@ -11,6 +11,10 @@ public class PrincipalReadDto {
 
     private UUID id;
 
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
     private String name;
 
     private String email;
@@ -18,8 +22,4 @@ public class PrincipalReadDto {
     private Role role;
 
     private Boolean blocked;
-
-    private Instant createdAt;
-
-    private Instant updatedAt;
 }

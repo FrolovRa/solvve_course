@@ -1,21 +1,16 @@
 package com.solvve.course.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solvve.course.BaseControllerTest;
 import com.solvve.course.domain.User;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.dto.user.UserReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import com.solvve.course.service.UserService;
-import com.solvve.course.util.TestUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
@@ -26,20 +21,11 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(controllers = UserController.class)
-public class UserControllerTest {
-
-    @Autowired
-    private MockMvc mvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+public class UserControllerTest extends BaseControllerTest {
 
     @MockBean
     private UserService userService;
-
-    private TestUtils utils = new TestUtils();
 
     @Test
     public void testGetUser() throws Exception {

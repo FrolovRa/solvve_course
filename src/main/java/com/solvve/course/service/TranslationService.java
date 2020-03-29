@@ -3,25 +3,26 @@ package com.solvve.course.service;
 import com.solvve.course.domain.Character;
 import com.solvve.course.domain.*;
 import com.solvve.course.dto.actor.ActorCreateDto;
-import com.solvve.course.dto.actor.ActorExtendedReadDto;
-import com.solvve.course.dto.actor.ActorReadDto;
+import com.solvve.course.dto.actor.ActorPatchDto;
+import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
-import com.solvve.course.dto.character.CharacterReadDto;
+import com.solvve.course.dto.character.CharacterPatchDto;
 import com.solvve.course.dto.correction.CorrectionCreateDto;
-import com.solvve.course.dto.correction.CorrectionReadDto;
-import com.solvve.course.dto.movie.MovieCreateDto;
-import com.solvve.course.dto.movie.MovieReadDto;
-import com.solvve.course.dto.person.PersonCreateDto;
-import com.solvve.course.dto.person.PersonReadDto;
-import com.solvve.course.dto.principal.PrincipalCreateDto;
-import com.solvve.course.dto.principal.PrincipalReadDto;
+import com.solvve.course.dto.correction.CorrectionPatchDto;
+import com.solvve.course.dto.movie.MoviePatchDto;
+import com.solvve.course.dto.person.PersonPatchDto;
+import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.publication.PublicationCreateDto;
-import com.solvve.course.dto.publication.PublicationReadDto;
+import com.solvve.course.dto.publication.PublicationPatchDto;
 import com.solvve.course.dto.user.UserCreateDto;
-import com.solvve.course.dto.user.UserReadDto;
+import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.repository.RepositoryHelper;
+import org.bitbucket.brunneng.ot.Configuration;
+import org.bitbucket.brunneng.ot.ObjectTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class TranslationService {
@@ -29,175 +30,101 @@ public class TranslationService {
     @Autowired
     private RepositoryHelper repositoryHelper;
 
-    public MovieReadDto toReadDto(Movie movie) {
-        MovieReadDto dto = new MovieReadDto();
-        dto.setId(movie.getId());
-        dto.setName(movie.getName());
-        dto.setRelease(movie.getRelease());
-        dto.setDescription(movie.getDescription());
-        dto.setCreatedAt(movie.getCreatedAt());
-        dto.setUpdatedAt(movie.getUpdatedAt());
+    private ObjectTranslator objectTranslator;
 
-        return dto;
+    public TranslationService() {
+        objectTranslator = new ObjectTranslator(createConfiguration());
     }
 
-    public CharacterReadDto toReadDto(Character character) {
-        CharacterReadDto dto = new CharacterReadDto();
-        dto.setId(character.getId());
-        dto.setName(character.getName());
-        dto.setMovie(this.toReadDto(character.getMovie()));
-        dto.setActor(this.toReadDto(character.getActor()));
-        dto.setCreatedAt(character.getCreatedAt());
-        dto.setUpdatedAt(character.getUpdatedAt());
-
-        return dto;
+    public <T> T translate(Object srcObject, Class<T> targetClass) {
+        return objectTranslator.translate(srcObject, targetClass);
     }
 
-    public ActorReadDto toReadDto(Actor actor) {
-        ActorReadDto dto = new ActorReadDto();
-        dto.setId(actor.getId());
-        dto.setPersonId(actor.getPerson().getId());
-
-        return dto;
+    public void patchEntity(Object patchDto, Object entity) {
+        objectTranslator.mapBean(patchDto, entity);
     }
 
-    public PersonReadDto toReadDto(Person person) {
-        PersonReadDto dto = new PersonReadDto();
-        dto.setId(person.getId());
-        dto.setName(person.getName());
-        dto.setCreatedAt(person.getCreatedAt());
-        dto.setUpdatedAt(person.getUpdatedAt());
+    private Configuration createConfiguration() {
+        Configuration configuration = new Configuration();
+        configureForUser(configuration);
+        configureForAbstractEntity(configuration);
+        configureForPublication(configuration);
+        configureForCharacter(configuration);
+        configureForCorrection(configuration);
+        configureForActor(configuration);
+        configureForPrincipal(configuration);
+        configureForPerson(configuration);
+        configureForMovie(configuration);
 
-        return dto;
+        return configuration;
     }
 
-    public UserReadDto toReadDto(User user) {
-        UserReadDto dto = new UserReadDto();
-        dto.setId(user.getId());
-        dto.setBlockedReview(user.getBlockedReview());
-        dto.setPrincipal(this.toReadDto(user.getPrincipal()));
-        dto.setTrustLevel(user.getTrustLevel());
-        dto.setCreatedAt(user.getCreatedAt());
-        dto.setUpdatedAt(user.getUpdatedAt());
-
-        return dto;
+    private void configureForAbstractEntity(Configuration c) {
+        c.beanOfClass(AbstractEntity.class).setIdentifierProperty("id");
+        c.beanOfClass(AbstractEntity.class).setBeanFinder(
+                (beanClass, id) -> repositoryHelper.getReferenceIfExist(beanClass, (UUID) id));
     }
 
-    public PrincipalReadDto toReadDto(Principal principal) {
-        PrincipalReadDto dto = new PrincipalReadDto();
-        dto.setId(principal.getId());
-        dto.setBlocked(principal.getBlocked());
-        dto.setEmail(principal.getEmail());
-        dto.setName(principal.getName());
-        dto.setRole(principal.getRole());
-        dto.setCreatedAt(principal.getCreatedAt());
-        dto.setUpdatedAt(principal.getUpdatedAt());
+    private void configureForUser(Configuration c) {
+        Configuration.Translation t = c.beanOfClass(UserCreateDto.class).translationTo(User.class);
+        t.srcProperty("principalId").translatesTo("principal.id");
+        t = c.beanOfClass(UserPatchDto.class).translationTo(User.class);
+        t.srcProperty("principalId").translatesTo("principal.id");
 
-        return dto;
+        c.beanOfClass(UserPatchDto.class).translationTo(User.class).mapOnlyNotNullProperties();
     }
 
-    public PublicationReadDto toReadDto(Publication publication) {
-        PublicationReadDto dto = new PublicationReadDto();
-        dto.setId(publication.getId());
-        dto.setCreatedAt(publication.getCreatedAt());
-        dto.setUpdatedAt(publication.getUpdatedAt());
-        dto.setManager(this.toReadDto(publication.getManager()));
-        dto.setContent(publication.getContent());
+    private void configureForPublication(Configuration c) {
+        Configuration.Translation t = c.beanOfClass(PublicationCreateDto.class).translationTo(Publication.class);
+        t.srcProperty("managerId").translatesTo("manager.id");
+        t = c.beanOfClass(PublicationPatchDto.class).translationTo(Publication.class);
+        t.srcProperty("managerId").translatesTo("manager.id");
 
-        return dto;
+        c.beanOfClass(PublicationPatchDto.class).translationTo(Publication.class).mapOnlyNotNullProperties();
     }
 
-    public CorrectionReadDto toReadDto(Correction correction) {
-        CorrectionReadDto dto = new CorrectionReadDto();
-        dto.setId(correction.getId());
-        dto.setCreatedAt(correction.getCreatedAt());
-        dto.setUpdatedAt(correction.getUpdatedAt());
-        dto.setUser(this.toReadDto(correction.getUser()));
-        dto.setPublication(this.toReadDto(correction.getPublication()));
-        dto.setStatus(correction.getStatus());
-        dto.setStartIndex(correction.getStartIndex());
-        dto.setSelectedText(correction.getSelectedText());
-        dto.setProposedText(correction.getProposedText());
+    private void configureForCharacter(Configuration c) {
+        Configuration.Translation t = c.beanOfClass(CharacterCreateDto.class).translationTo(Character.class);
+        t.srcProperty("movieId").translatesTo("movie.id");
+        t.srcProperty("actorId").translatesTo("actor.id");
+        t = c.beanOfClass(CharacterPatchDto.class).translationTo(Character.class);
+        t.srcProperty("movieId").translatesTo("movie.id");
+        t.srcProperty("actorId").translatesTo("actor.id");
 
-        return dto;
+        c.beanOfClass(CharacterPatchDto.class).translationTo(Character.class).mapOnlyNotNullProperties();
     }
 
-    public ActorExtendedReadDto toExtendedReadDto(Actor actor) {
-        ActorExtendedReadDto dto = new ActorExtendedReadDto();
-        dto.setId(actor.getId());
-        dto.setPerson(this.toReadDto(actor.getPerson()));
-        dto.setCreatedAt(actor.getCreatedAt());
-        dto.setUpdatedAt(actor.getUpdatedAt());
-        return dto;
+    private void configureForActor(Configuration c) {
+        Configuration.Translation t = c.beanOfClass(ActorCreateDto.class).translationTo(Actor.class);
+        t.srcProperty("personId").translatesTo("person.id");
+        t = c.beanOfClass(ActorPatchDto.class).translationTo(Actor.class);
+        t.srcProperty("personId").translatesTo("person.id");
+        t = c.beanOfClass(ActorPutDto.class).translationTo(Actor.class);
+        t.srcProperty("personId").translatesTo("person.id");
+
+        c.beanOfClass(ActorPatchDto.class).translationTo(Actor.class).mapOnlyNotNullProperties();
     }
 
-    public Movie toEntity(MovieCreateDto dto) {
-        Movie movie = new Movie();
-        movie.setName(dto.getName());
-        movie.setRelease(dto.getRelease());
-        movie.setDescription(dto.getDescription());
+    private void configureForCorrection(Configuration c) {
+        Configuration.Translation t = c.beanOfClass(CorrectionCreateDto.class).translationTo(Correction.class);
+        t.srcProperty("userId").translatesTo("user.id");
+        t.srcProperty("publicationId").translatesTo("publication.id");
+        t = c.beanOfClass(CorrectionPatchDto.class).translationTo(Correction.class);
+        t.srcProperty("userId").translatesTo("user.id");
+        t.srcProperty("publicationId").translatesTo("publication.id");
 
-        return movie;
+        c.beanOfClass(CorrectionPatchDto.class).translationTo(Correction.class).mapOnlyNotNullProperties();
     }
 
-    public Character toEntity(CharacterCreateDto dto) {
-        Character character = new Character();
-        character.setName(dto.getName());
-        character.setMovie(repositoryHelper.getReferenceIfExist(Movie.class, dto.getMovieId()));
-        character.setActor(repositoryHelper.getReferenceIfExist(Actor.class, dto.getActorId()));
-
-        return character;
+    private void configureForPrincipal(Configuration c) {
+        c.beanOfClass(PrincipalPatchDto.class).translationTo(Principal.class).mapOnlyNotNullProperties();
     }
 
-    public Actor toEntity(ActorCreateDto dto) {
-        Actor actor = new Actor();
-        actor.setPerson(repositoryHelper.getReferenceIfExist(Person.class, dto.getPersonId()));
-
-        return actor;
+    private void configureForPerson(Configuration c) {
+        c.beanOfClass(PersonPatchDto.class).translationTo(Person.class).mapOnlyNotNullProperties();
     }
 
-    public Person toEntity(PersonCreateDto dto) {
-        Person person = new Person();
-        person.setName(dto.getName());
-
-        return person;
-    }
-
-    public User toEntity(UserCreateDto dto) {
-        User user = new User();
-        user.setBlockedReview(dto.getBlockedReview());
-        user.setPrincipal(repositoryHelper.getReferenceIfExist(Principal.class, dto.getPrincipalId()));
-        user.setTrustLevel(dto.getTrustLevel());
-
-        return user;
-    }
-
-    public Principal toEntity(PrincipalCreateDto dto) {
-        Principal principal = new Principal();
-        principal.setBlocked(dto.getBlocked());
-        principal.setEmail(dto.getEmail());
-        principal.setName(dto.getName());
-        principal.setRole(dto.getRole());
-
-        return principal;
-    }
-
-    public Publication toEntity(PublicationCreateDto dto) {
-        Publication publication = new Publication();
-        publication.setManager(repositoryHelper.getReferenceIfExist(Principal.class, dto.getManagerId()));
-        publication.setContent(dto.getContent());
-
-        return publication;
-    }
-
-    public Correction toEntity(CorrectionCreateDto dto) {
-        Correction correction = new Correction();
-        correction.setUser(repositoryHelper.getReferenceIfExist(User.class, dto.getUserId()));
-        correction.setPublication(repositoryHelper.getReferenceIfExist(Publication.class, dto.getPublicationId()));
-        correction.setStartIndex(dto.getStartIndex());
-        correction.setSelectedText(dto.getSelectedText());
-        correction.setProposedText(dto.getProposedText());
-
-        return correction;
+    private void configureForMovie(Configuration c) {
+        c.beanOfClass(MoviePatchDto.class).translationTo(Movie.class).mapOnlyNotNullProperties();
     }
 }
