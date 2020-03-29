@@ -3,7 +3,6 @@ package com.solvve.course.service;
 import com.solvve.course.domain.Character;
 import com.solvve.course.domain.*;
 import com.solvve.course.dto.actor.ActorCreateDto;
-import com.solvve.course.dto.actor.ActorExtendedReadDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.correction.CorrectionCreateDto;
 import com.solvve.course.dto.movie.MovieCreateDto;
@@ -21,6 +20,9 @@ import java.util.UUID;
 
 @Service
 public class TranslationService {
+
+    @Autowired
+    private RepositoryHelper repositoryHelper;
 
     private ObjectTranslator objectTranslator;
 
@@ -51,16 +53,8 @@ public class TranslationService {
             (beanClass, id) -> repositoryHelper.getReferenceIfExist(beanClass, (UUID) id));
     }
 
-    @Autowired
-    private RepositoryHelper repositoryHelper;
-
     public <T> T translate(Object srcObject, Class<T> targetClass) {
         return objectTranslator.translate(srcObject, targetClass);
-    }
-
-    public ActorExtendedReadDto toExtendedReadDto(Actor actor) {
-
-        return objectTranslator.translate(actor, ActorExtendedReadDto.class);
     }
 
     public Movie toEntity(MovieCreateDto dto) {

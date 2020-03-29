@@ -1,17 +1,10 @@
 package com.solvve.course.service;
 
+import com.solvve.course.BaseTest;
 import com.solvve.course.domain.Correction;
 import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
-import com.solvve.course.repository.CorrectionRepository;
-import com.solvve.course.util.TestUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,26 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-@ActiveProfiles("test")
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Sql(statements = {
-        "delete from correction",
-        "delete from publication",
-        "delete from user"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class CorrectionServiceTest {
-
-    @Autowired
-    private CorrectionRepository correctionRepository;
-
-    @Autowired
-    private TestUtils utils;
-
-    @Autowired
-    private TranslationService translationService;
-
-    @Autowired
-    private CorrectionService correctionService;
+public class CorrectionServiceTest extends BaseTest {
 
     @Test
     public void testGetCorrection() {

@@ -1,5 +1,6 @@
 package com.solvve.course.service;
 
+import com.solvve.course.BaseTest;
 import com.solvve.course.domain.Actor;
 import com.solvve.course.domain.Movie;
 import com.solvve.course.domain.Rating;
@@ -9,17 +10,8 @@ import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
-import com.solvve.course.repository.MovieRepository;
-import com.solvve.course.repository.RatingRepository;
-import com.solvve.course.util.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -31,31 +23,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
-@ActiveProfiles("test")
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Sql(statements = {
-        "delete from movie_cast",
-        "delete from rating",
-        "delete from movie",
-        "delete from actor",
-        "delete from person"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class MovieServiceTest {
-
-    @Autowired
-    private MovieRepository movieRepository;
-
-    @Autowired
-    private TestUtils utils;
-
-    @Autowired
-    private TranslationService translationService;
-
-    @Autowired
-    private MovieService movieService;
-
-    @Autowired
-    private RatingRepository ratingRepository;
+public class MovieServiceTest extends BaseTest {
 
     @Test
     public void testGetMovie() {
@@ -179,7 +147,7 @@ public class MovieServiceTest {
         MovieFilter filter = new MovieFilter();
 
         assertThat(movieService.getMovies(filter)).extracting("id")
-                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
+            .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
     }
 
     @Test
@@ -197,8 +165,8 @@ public class MovieServiceTest {
         filter.setName("movie");
 
         assertThat(movieService.getMovies(filter)).extracting("id")
-                .containsOnly(movie.getId())
-                .doesNotContain(secondMovie.getId());
+            .containsOnly(movie.getId())
+            .doesNotContain(secondMovie.getId());
     }
 
     @Test
@@ -218,7 +186,7 @@ public class MovieServiceTest {
         filter.setGenres((Stream.of(Genre.ACTION, Genre.ADVENTURE).collect(Collectors.toSet())));
 
         assertThat(movieService.getMovies(filter)).extracting("id")
-                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
+            .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
     }
 
     @Test
@@ -238,7 +206,7 @@ public class MovieServiceTest {
         filter.setGenres(Collections.emptySet());
 
         assertThat(movieService.getMovies(filter)).extracting("id")
-                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
+            .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
     }
 
     @Test
@@ -258,8 +226,8 @@ public class MovieServiceTest {
         filter.setActorId(actor.getId());
 
         assertThat(movieService.getMovies(filter)).extracting("id")
-                .containsOnly(movie.getId())
-                .doesNotContain(secondMovie.getId());
+            .containsOnly(movie.getId())
+            .doesNotContain(secondMovie.getId());
     }
 
     @Test
@@ -288,8 +256,8 @@ public class MovieServiceTest {
         filter.setReleaseDateTo(LocalDate.of(2002, 2, 10));
 
         assertThat(movieService.getMovies(filter)).extracting("id")
-                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
-                .doesNotContain(thirdMovie.getId());
+            .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
+            .doesNotContain(thirdMovie.getId());
     }
 
     @Test
@@ -329,8 +297,8 @@ public class MovieServiceTest {
         filter.setActorId(actor.getId());
 
         assertThat(movieService.getMovies(filter)).extracting("id")
-                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
-                .doesNotContain(thirdMovie.getId());
+            .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
+            .doesNotContain(thirdMovie.getId());
     }
 
     @Test

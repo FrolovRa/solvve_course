@@ -1,5 +1,6 @@
 package com.solvve.course.service;
 
+import com.solvve.course.BaseTest;
 import com.solvve.course.domain.Actor;
 import com.solvve.course.domain.Person;
 import com.solvve.course.dto.actor.ActorCreateDto;
@@ -8,15 +9,7 @@ import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorPutDto;
 import com.solvve.course.dto.person.PersonReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
-import com.solvve.course.repository.ActorRepository;
-import com.solvve.course.util.TestUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -24,34 +17,12 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
-@ActiveProfiles("test")
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Sql(statements = {
-        "delete from actor",
-        "delete from movie",
-        "delete from person"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class ActorServiceTest {
-
-    @Autowired
-    private ActorRepository actorRepository;
-
-    @Autowired
-    private TestUtils utils;
-
-    @Autowired
-    private TranslationService translationService;
-
-    @Autowired
-    private ActorService actorService;
-
-    @Autowired
-    private PersonService personService;
+public class ActorServiceTest extends BaseTest {
 
     @Test
     public void testGetActor() {
         Actor actor = utils.getActorFromDb();
-        ActorExtendedReadDto actualActor = translationService.toExtendedReadDto(actor);
+        ActorExtendedReadDto actualActor = translationService.translate(actor, ActorExtendedReadDto.class);
         utils.inTransaction(() -> {
             ActorExtendedReadDto actorExtendedReadDto = actorService.getActor(actor.getId());
 
