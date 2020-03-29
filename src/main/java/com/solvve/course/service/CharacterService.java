@@ -34,7 +34,7 @@ public class CharacterService {
     }
 
     public CharacterReadDto addCharacter(CharacterCreateDto movieCreateDto) {
-        Character character = translationService.toEntity(movieCreateDto);
+        Character character = translationService.translate(movieCreateDto, Character.class);
         character = characterRepository.save(character);
 
         return translationService.translate(character, CharacterReadDto.class);

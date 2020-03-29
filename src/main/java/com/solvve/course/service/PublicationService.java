@@ -33,7 +33,7 @@ public class PublicationService {
 
     @Transactional
     public PublicationReadDto addPublication(PublicationCreateDto userCreateDto) {
-        Publication publication = translationService.toEntity(userCreateDto);
+        Publication publication = translationService.translate(userCreateDto, Publication.class);
         publication = publicationRepository.save(publication);
 
         return translationService.translate(publication, PublicationReadDto.class);

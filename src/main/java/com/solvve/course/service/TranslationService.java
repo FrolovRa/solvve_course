@@ -5,9 +5,6 @@ import com.solvve.course.domain.*;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.correction.CorrectionCreateDto;
-import com.solvve.course.dto.movie.MovieCreateDto;
-import com.solvve.course.dto.person.PersonCreateDto;
-import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.publication.PublicationCreateDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.repository.RepositoryHelper;
@@ -30,85 +27,52 @@ public class TranslationService {
         objectTranslator = new ObjectTranslator(createConfiguration());
     }
 
-    private Configuration createConfiguration() {
-        Configuration configuration = new Configuration();
-        configureForUser(configuration);
-        configureForPrincipal(configuration);
-
-        return configuration;
-    }
-
-    private void configureForUser(Configuration c) {
-        c.beanOfClass(User.class).setIdentifierProperty("id");
-        c.beanOfClass(User.class).setBeanFinder(
-            (beanClass, id) -> repositoryHelper.getReferenceIfExist(beanClass, (UUID) id));
-
-        Configuration.Translation t = c.beanOfClass(UserCreateDto.class).translationTo(User.class);
-        t.srcProperty("principalId").translatesTo("principal.id");
-    }
-
-    private void configureForPrincipal(Configuration c) {
-        c.beanOfClass(Principal.class).setIdentifierProperty("id");
-        c.beanOfClass(Principal.class).setBeanFinder(
-            (beanClass, id) -> repositoryHelper.getReferenceIfExist(beanClass, (UUID) id));
-    }
-
     public <T> T translate(Object srcObject, Class<T> targetClass) {
         return objectTranslator.translate(srcObject, targetClass);
     }
 
-    public Movie toEntity(MovieCreateDto dto) {
+    private Configuration createConfiguration() {
+        Configuration configuration = new Configuration();
+        configureForUser(configuration);
+        configureForAbstractEntity(configuration);
+        configureForPublication(configuration);
+        configureForCharacter(configuration);
+        configureForCorrection(configuration);
+        configureForActor(configuration);
 
-        return objectTranslator.translate(dto, Movie.class);
+        return configuration;
     }
 
-    public Character toEntity(CharacterCreateDto dto) {
-        Character character = new Character();
-        character.setName(dto.getName());
-        character.setMovie(repositoryHelper.getReferenceIfExist(Movie.class, dto.getMovieId()));
-        character.setActor(repositoryHelper.getReferenceIfExist(Actor.class, dto.getActorId()));
-
-        return character;
+    private void configureForAbstractEntity(Configuration c) {
+        c.beanOfClass(AbstractEntity.class).setIdentifierProperty("id");
+        c.beanOfClass(AbstractEntity.class).setBeanFinder(
+                (beanClass, id) -> repositoryHelper.getReferenceIfExist(beanClass, (UUID) id));
     }
 
-    public Actor toEntity(ActorCreateDto dto) {
-        Actor actor = new Actor();
-        actor.setPerson(repositoryHelper.getReferenceIfExist(Person.class, dto.getPersonId()));
-
-        return actor;
+    private void configureForUser(Configuration c) {
+        Configuration.Translation t = c.beanOfClass(UserCreateDto.class).translationTo(User.class);
+        t.srcProperty("principalId").translatesTo("principal.id");
     }
 
-    public Person toEntity(PersonCreateDto dto) {
-
-        return objectTranslator.translate(dto, Person.class);
+    private void configureForPublication(Configuration c) {
+        Configuration.Translation t = c.beanOfClass(PublicationCreateDto.class).translationTo(Publication.class);
+        t.srcProperty("managerId").translatesTo("manager.id");
     }
 
-    public User toEntity(UserCreateDto dto) {
-
-        return objectTranslator.translate(dto, User.class);
+    private void configureForCharacter(Configuration c) {
+        Configuration.Translation t = c.beanOfClass(CharacterCreateDto.class).translationTo(Character.class);
+        t.srcProperty("movieId").translatesTo("movie.id");
+        t.srcProperty("actorId").translatesTo("actor.id");
     }
 
-    public Principal toEntity(PrincipalCreateDto dto) {
-
-        return objectTranslator.translate(dto, Principal.class);
+    private void configureForActor(Configuration c) {
+        Configuration.Translation t = c.beanOfClass(ActorCreateDto.class).translationTo(Actor.class);
+        t.srcProperty("personId").translatesTo("person.id");
     }
 
-    public Publication toEntity(PublicationCreateDto dto) {
-        Publication publication = new Publication();
-        publication.setManager(repositoryHelper.getReferenceIfExist(Principal.class, dto.getManagerId()));
-        publication.setContent(dto.getContent());
-
-        return publication;
-    }
-
-    public Correction toEntity(CorrectionCreateDto dto) {
-        Correction correction = new Correction();
-        correction.setUser(repositoryHelper.getReferenceIfExist(User.class, dto.getUserId()));
-        correction.setPublication(repositoryHelper.getReferenceIfExist(Publication.class, dto.getPublicationId()));
-        correction.setStartIndex(dto.getStartIndex());
-        correction.setSelectedText(dto.getSelectedText());
-        correction.setProposedText(dto.getProposedText());
-
-        return correction;
+    private void configureForCorrection(Configuration c) {
+        Configuration.Translation t = c.beanOfClass(CorrectionCreateDto.class).translationTo(Correction.class);
+        t.srcProperty("userId").translatesTo("user.id");
+        t.srcProperty("publicationId").translatesTo("publication.id");
     }
 }

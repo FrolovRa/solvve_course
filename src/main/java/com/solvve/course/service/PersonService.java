@@ -32,7 +32,7 @@ public class PersonService {
     }
 
     public PersonReadDto addPerson(PersonCreateDto personCreateDto) {
-        Person person = translationService.toEntity(personCreateDto);
+        Person person = translationService.translate(personCreateDto, Person.class);
         person = personRepository.save(person);
 
         return translationService.translate(person, PersonReadDto.class);

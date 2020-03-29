@@ -36,7 +36,7 @@ public class ActorService {
 
     @Transactional
     public ActorExtendedReadDto addActor(ActorCreateDto actorCreateDto) {
-        Actor actor = translationService.toEntity(actorCreateDto);
+        Actor actor = translationService.translate(actorCreateDto, Actor.class);
         actor = actorRepository.save(actor);
 
         return translationService.translate(actor, ActorExtendedReadDto.class);

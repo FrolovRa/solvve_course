@@ -42,7 +42,7 @@ public class PrincipalService {
     }
 
     public PrincipalReadDto addPrincipal(PrincipalCreateDto principalCreateDto) {
-        Principal principal = translationService.toEntity(principalCreateDto);
+        Principal principal = translationService.translate(principalCreateDto, Principal.class);
         principal = principalRepository.save(principal);
 
         return translationService.translate(principal, PrincipalReadDto.class);

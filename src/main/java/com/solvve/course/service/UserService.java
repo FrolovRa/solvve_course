@@ -35,7 +35,7 @@ public class UserService {
 
     @Transactional
     public UserReadDto addUser(UserCreateDto userCreateDto) {
-        User user = translationService.toEntity(userCreateDto);
+        User user = translationService.translate(userCreateDto, User.class);
         user = userRepository.save(user);
 
         return translationService.translate(user, UserReadDto.class);

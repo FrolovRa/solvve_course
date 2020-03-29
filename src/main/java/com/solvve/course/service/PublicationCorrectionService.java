@@ -45,7 +45,7 @@ public class PublicationCorrectionService {
     @Transactional
     public CorrectionReadDto addPublicationCorrection(UUID publicationId, CorrectionCreateDto correctionCreateDto) {
         Publication publication = repositoryHelper.getReferenceIfExist(Publication.class, publicationId);
-        Correction correction = translationService.toEntity(correctionCreateDto);
+        Correction correction = translationService.translate(correctionCreateDto, Correction.class);
         correction.setPublication(publication);
         correction.setStatus(CorrectionStatus.NEW);
 

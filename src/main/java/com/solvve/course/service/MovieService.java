@@ -46,7 +46,7 @@ public class MovieService {
     }
 
     public MovieReadDto addMovie(MovieCreateDto movieCreateDto) {
-        Movie movie = translationService.toEntity(movieCreateDto);
+        Movie movie = translationService.translate(movieCreateDto, Movie.class);
         movie = movieRepository.save(movie);
 
         return translationService.translate(movie, MovieReadDto.class);
