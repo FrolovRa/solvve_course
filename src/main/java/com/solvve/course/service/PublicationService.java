@@ -42,7 +42,7 @@ public class PublicationService {
     public PublicationReadDto patchPublication(UUID id, PublicationPatchDto publicationPatchDto) {
         Publication publication = repositoryHelper.getEntityRequired(Publication.class, id);
 
-        translationService.patchEntity(publicationPatchDto, publication);
+        translationService.map(publicationPatchDto, publication);
         Publication patchedPublication = publicationRepository.save(publication);
 
         return translationService.translate(patchedPublication, PublicationReadDto.class);

@@ -3,11 +3,7 @@ package com.solvve.course.util;
 import com.solvve.course.domain.Character;
 import com.solvve.course.domain.*;
 import com.solvve.course.domain.constant.CorrectionStatus;
-import com.solvve.course.domain.constant.Role;
-import com.solvve.course.dto.actor.ActorCreateDto;
-import com.solvve.course.dto.actor.ActorExtendedReadDto;
-import com.solvve.course.dto.actor.ActorPatchDto;
-import com.solvve.course.dto.actor.ActorPutDto;
+import com.solvve.course.dto.actor.*;
 import com.solvve.course.dto.character.CharacterCreateDto;
 import com.solvve.course.dto.character.CharacterPatchDto;
 import com.solvve.course.dto.character.CharacterReadDto;
@@ -28,12 +24,12 @@ import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.dto.user.UserReadDto;
 import com.solvve.course.repository.*;
+import org.bitbucket.brunneng.br.Configuration;
+import org.bitbucket.brunneng.br.RandomObjectGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -66,6 +62,21 @@ public class TestUtils {
     @Autowired
     private TransactionTemplate transactionTemplate;
 
+    private RandomObjectGenerator generator;
+
+    {
+        Configuration c = new Configuration();
+        c.setFlatMode(true);
+        generator = new RandomObjectGenerator(c);
+    }
+
+    private <T extends AbstractEntity> T generateFlatEntityWithoutId(Class<T> targetClass) {
+        T testObject = generator.generateRandomObject(targetClass);
+        testObject.setId(null);
+
+        return testObject;
+    }
+
     public Actor getActorFromDb() {
         Actor actor = new Actor();
         actor.setPerson(this.getPersonFromDb());
@@ -74,33 +85,20 @@ public class TestUtils {
     }
 
     public Movie getMovieFromDb() {
-        Movie movie = new Movie();
-        movie.setName("Test film");
-        movie.setDescription("test description");
-        movie.setRelease(LocalDate.now());
+        Movie movie = generateFlatEntityWithoutId(Movie.class);
+        movie.setRating(null);
 
         return movieRepository.save(movie);
     }
 
     public Person getPersonFromDb() {
-        Person person = new Person();
-        person.setName("Test");
+        Person person = generateFlatEntityWithoutId(Person.class);
 
         return personRepository.save(person);
     }
 
-    public Character getCharacterFromDb(Actor actor, Movie movieFromDb) {
-        Character character = new Character();
-        character.setName("Test Character");
-        character.setActor(actor);
-        character.setMovie(movieFromDb);
-
-        return characterRepository.save(character);
-    }
-
     public Character getCharacterFromDb() {
-        Character character = new Character();
-        character.setName("Test Character");
+        Character character = generateFlatEntityWithoutId(Character.class);
         character.setActor(this.getActorFromDb());
         character.setMovie(this.getMovieFromDb());
 
@@ -108,28 +106,22 @@ public class TestUtils {
     }
 
     public User getUserFromDb() {
-        User user = new User();
-        user.setTrustLevel(1);
-        user.setBlockedReview(true);
+        User user = generateFlatEntityWithoutId(User.class);
         user.setPrincipal(this.getPrincipalFromDb());
 
         return userRepository.save(user);
     }
 
     public Principal getPrincipalFromDb() {
-        Principal principal = new Principal();
-        principal.setName("Principal");
-        principal.setBlocked(false);
-        principal.setEmail("principal@mail.com");
-        principal.setRole(Role.USER);
+        Principal principal = generateFlatEntityWithoutId(Principal.class);
 
         return principalRepository.save(principal);
     }
 
     public Publication getPublicationFromDb() {
-        Publication publication = new Publication();
-        publication.setContent("text content");
+        Publication publication = generateFlatEntityWithoutId(Publication.class);
         publication.setManager(this.getPrincipalFromDb());
+        publication.setContent("text content");
 
         return publicationRepository.save(publication);
     }
@@ -147,114 +139,72 @@ public class TestUtils {
     }
 
     public PersonCreateDto createPersonCreateDto() {
-        PersonCreateDto personCreateDto = new PersonCreateDto();
-        personCreateDto.setName("create");
-
-        return personCreateDto;
+        return generator.generateRandomObject(PersonCreateDto.class);
     }
 
     public CharacterCreateDto createCharacterCreateDto() {
-        CharacterCreateDto characterCreateDto = new CharacterCreateDto();
-        characterCreateDto.setName("iao");
-        characterCreateDto.setActorId(this.getActorFromDb().getId());
-        characterCreateDto.setMovieId(this.getMovieFromDb().getId());
+        CharacterCreateDto dto = generator.generateRandomObject(CharacterCreateDto.class);
+        dto.setActorId(this.getActorFromDb().getId());
+        dto.setMovieId(this.getMovieFromDb().getId());
 
-        return characterCreateDto;
+        return dto;
     }
 
     public CharacterPatchDto createCharacterPatchDto() {
-        CharacterPatchDto characterPatchDto = new CharacterPatchDto();
-        characterPatchDto.setName("Shattered island");
-
-        return characterPatchDto;
+        return generator.generateRandomObject(CharacterPatchDto.class);
     }
 
     public CharacterReadDto createCharacterReadDto() {
-        CharacterReadDto characterReadDto = new CharacterReadDto();
-        characterReadDto.setName("Les");
-        characterReadDto.setId(UUID.randomUUID());
+        CharacterReadDto characterReadDto = generator.generateRandomObject(CharacterReadDto.class);
+        characterReadDto.setActor(createActorReadDto());
 
         return characterReadDto;
     }
 
-    public MovieCreateDto createMovieCreateDto() {
-        MovieCreateDto movieCreateDto = new MovieCreateDto();
-        movieCreateDto.setName("Shattered island");
-        movieCreateDto.setDescription("cool film");
+    public ActorReadDto createActorReadDto() {
+        return generator.generateRandomObject(ActorReadDto.class);
+    }
 
-        return movieCreateDto;
+    public MovieCreateDto createMovieCreateDto() {
+        return generator.generateRandomObject(MovieCreateDto.class);
     }
 
     public UserCreateDto createUserCreateDto() {
-        UserCreateDto userCreateDto = new UserCreateDto();
-        userCreateDto.setBlockedReview(true);
-        userCreateDto.setPrincipalId(getPrincipalFromDb().getId());
-        userCreateDto.setTrustLevel(1);
+        UserCreateDto dto = generator.generateRandomObject(UserCreateDto.class);
+        dto.setPrincipalId(this.getPrincipalFromDb().getId());
 
-        return userCreateDto;
+        return dto;
+    }
+
+    public PrincipalCreateDto createPrincipalCreateDto() {
+        return generator.generateRandomObject(PrincipalCreateDto.class);
     }
 
     public UserPatchDto createUserPatchDto() {
-        UserPatchDto userPatchDto = new UserPatchDto();
-        userPatchDto.setTrustLevel(4);
-        userPatchDto.setBlockedReview(true);
-
-        return userPatchDto;
+        return generator.generateRandomObject(UserPatchDto.class);
     }
 
     public UserReadDto createUserReadDto() {
-        UserReadDto userReadDto = new UserReadDto();
-        userReadDto.setId(UUID.randomUUID());
-        userReadDto.setBlockedReview(false);
-        userReadDto.setTrustLevel(2);
+        UserReadDto userReadDto = generator.generateRandomObject(UserReadDto.class);
+        userReadDto.setPrincipal(createPrincipalReadDto());
 
         return userReadDto;
     }
 
-    public PrincipalCreateDto createPrincipalCreateDto() {
-        PrincipalCreateDto principalCreateDto = new PrincipalCreateDto();
-        principalCreateDto.setName("Test");
-        principalCreateDto.setRole(Role.USER);
-        principalCreateDto.setBlocked(false);
-        principalCreateDto.setBlocked(false);
-
-        return principalCreateDto;
-    }
-
     public PrincipalReadDto createPrincipalReadDto() {
-        PrincipalReadDto principalReadDto = new PrincipalReadDto();
-        principalReadDto.setId(UUID.randomUUID());
-        principalReadDto.setRole(Role.USER);
-        principalReadDto.setName("John");
-        principalReadDto.setBlocked(false);
-
-        return principalReadDto;
+        return generator.generateRandomObject(PrincipalReadDto.class);
     }
 
     public PrincipalPatchDto createPrincipalPatchDto() {
-        PrincipalPatchDto principalPatchDto = new PrincipalPatchDto();
-        principalPatchDto.setRole(Role.CONTENT_MANAGER);
-        principalPatchDto.setEmail("nreEmail@");
-
-        return principalPatchDto;
+        return generator.generateRandomObject(PrincipalPatchDto.class);
     }
 
     public MovieReadDto createMovieReadDto() {
-        MovieReadDto movieReadDto = new MovieReadDto();
-        movieReadDto.setId(UUID.randomUUID());
-        movieReadDto.setName("Mr.Nobody");
-        movieReadDto.setDescription("cool film");
-        movieReadDto.setRelease(LocalDate.now());
-
-        return movieReadDto;
+        return generator.generateRandomObject(MovieReadDto.class);
     }
 
     public PersonReadDto createPersonReadDto() {
-        PersonReadDto personReadDto = new PersonReadDto();
-        personReadDto.setId(UUID.randomUUID());
-        personReadDto.setName("Read Dto");
-
-        return personReadDto;
+        return generator.generateRandomObject(PersonReadDto.class);
     }
 
     public PersonPatchDto createPersonPatchDto() {
@@ -273,61 +223,45 @@ public class TestUtils {
     }
 
     public ActorPatchDto createActorPatchDto() {
-        ActorPatchDto actorPatchDto = new ActorPatchDto();
-        actorPatchDto.setPersonId(this.createPersonReadDto().getId());
-
-        return actorPatchDto;
+        return generator.generateRandomObject(ActorPatchDto.class);
     }
 
     public ActorPutDto createActorPutDto() {
-        ActorPutDto actorPutDto = new ActorPutDto();
-        actorPutDto.setPersonId(this.createPersonReadDto().getId());
-
-        return actorPutDto;
+        return generator.generateRandomObject(ActorPutDto.class);
     }
 
     public ActorCreateDto createActorCreateDto() {
-        ActorCreateDto actorCreateDto = new ActorCreateDto();
-        actorCreateDto.setPersonId(this.createPersonReadDto().getId());
-
-        return actorCreateDto;
+        return generator.generateRandomObject(ActorCreateDto.class);
     }
 
     public PublicationCreateDto createPublicationCreateDto() {
-        PublicationCreateDto publicationCreateDto = new PublicationCreateDto();
-        publicationCreateDto.setContent("content new");
+        PublicationCreateDto publicationCreateDto = generator.generateRandomObject(PublicationCreateDto.class);
+        publicationCreateDto.setManagerId(getPrincipalFromDb().getId());
 
         return publicationCreateDto;
     }
 
     public CorrectionCreateDto createCorrectionCreateDto() {
-        CorrectionCreateDto dto = new CorrectionCreateDto();
+        CorrectionCreateDto dto = generator.generateRandomObject(CorrectionCreateDto.class);
+        dto.setUserId(this.createUserReadDto().getId());
+        dto.setPublicationId(this.createPublicationReadDto().getId());
 
         return dto;
     }
 
     public PublicationReadDto createPublicationReadDto() {
-        PublicationReadDto dto = new PublicationReadDto();
-        dto.setId(UUID.randomUUID());
-        dto.setContent("content");
+        PublicationReadDto dto = generator.generateRandomObject(PublicationReadDto.class);
         dto.setManager(this.createPrincipalReadDto());
-        dto.setCreatedAt(Instant.now());
-        dto.setUpdatedAt(Instant.now());
 
         return dto;
     }
 
     public PublicationPatchDto createPublicationPatchDto() {
-        PublicationPatchDto dto = new PublicationPatchDto();
-        dto.setContent("new title");
-        dto.setManagerId(UUID.randomUUID());
-
-        return dto;
+        return generator.generateRandomObject(PublicationPatchDto.class);
     }
 
     public CorrectionReadDto createCorrectionReadDto() {
-        CorrectionReadDto dto = new CorrectionReadDto();
-        dto.setId(UUID.randomUUID());
+        CorrectionReadDto dto = generator.generateRandomObject(CorrectionReadDto.class);
         dto.setUser(this.createUserReadDto());
         dto.setPublication(this.createPublicationReadDto());
 
@@ -335,8 +269,6 @@ public class TestUtils {
     }
 
     public void inTransaction(Runnable runnable) {
-        transactionTemplate.executeWithoutResult(status -> {
-            runnable.run();
-        });
+        transactionTemplate.executeWithoutResult(status -> runnable.run());
     }
 }

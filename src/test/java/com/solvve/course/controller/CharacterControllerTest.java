@@ -64,6 +64,9 @@ public class CharacterControllerTest extends BaseControllerTest {
     @Test
     public void testAddCharacter() throws Exception {
         CharacterCreateDto characterCreateDto = new CharacterCreateDto();
+        characterCreateDto.setName("Sparrow");
+        characterCreateDto.setActorId(UUID.randomUUID());
+        characterCreateDto.setMovieId(UUID.randomUUID());
         CharacterReadDto characterReadDto = utils.createCharacterReadDto();
 
         when(characterService.addCharacter(characterCreateDto)).thenReturn(characterReadDto);

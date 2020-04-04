@@ -42,7 +42,7 @@ public class UserService {
     public UserReadDto patchUser(UUID id, UserPatchDto userPatchDto) {
         User user = repositoryHelper.getEntityRequired(User.class, id);
 
-        translationService.patchEntity(userPatchDto, user);
+        translationService.map(userPatchDto, user);
         User patchedActor = userRepository.save(user);
 
         return translationService.translate(patchedActor, UserReadDto.class);

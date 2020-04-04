@@ -7,6 +7,7 @@ import com.solvve.course.service.PublicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
@@ -22,7 +23,7 @@ public class PublicationController {
     }
 
     @PostMapping
-    public PublicationReadDto addPublication(@RequestBody PublicationCreateDto publicationCreateDto) {
+    public PublicationReadDto addPublication(@RequestBody @Valid PublicationCreateDto publicationCreateDto) {
         return publicationService.addPublication(publicationCreateDto);
     }
 

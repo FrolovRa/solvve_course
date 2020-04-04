@@ -40,7 +40,7 @@ public class TranslationService {
         return objectTranslator.translate(srcObject, targetClass);
     }
 
-    public void patchEntity(Object patchDto, Object entity) {
+    public void map(Object patchDto, Object entity) {
         objectTranslator.mapBean(patchDto, entity);
     }
 

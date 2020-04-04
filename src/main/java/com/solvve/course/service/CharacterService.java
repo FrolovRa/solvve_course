@@ -41,7 +41,7 @@ public class CharacterService {
     public CharacterReadDto patchCharacter(UUID id, CharacterPatchDto characterPatchDto) {
         Character character = repositoryHelper.getEntityRequired(Character.class, id);
 
-        translationService.patchEntity(characterPatchDto, character);
+        translationService.map(characterPatchDto, character);
         Character patchedCharacter = characterRepository.save(character);
 
         return translationService.translate(patchedCharacter, CharacterReadDto.class);

@@ -63,7 +63,9 @@ public class PublicationControllerTest extends BaseControllerTest {
 
     @Test
     public void testAddPublication() throws Exception {
-        PublicationCreateDto publicationCreateDto = utils.createPublicationCreateDto();
+        PublicationCreateDto publicationCreateDto = new PublicationCreateDto();
+        publicationCreateDto.setManagerId(UUID.randomUUID());
+        publicationCreateDto.setContent("text");
         PublicationReadDto publicationReadDto = utils.createPublicationReadDto();
 
         when(publicationService.addPublication(publicationCreateDto)).thenReturn(publicationReadDto);

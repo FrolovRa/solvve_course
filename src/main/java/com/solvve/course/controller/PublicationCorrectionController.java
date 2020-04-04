@@ -8,6 +8,7 @@ import com.solvve.course.service.PublicationCorrectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class PublicationCorrectionController {
 
     @PostMapping
     public CorrectionReadDto addPublicationCorrection(@PathVariable UUID publicationId,
-                                                      @RequestBody CorrectionCreateDto correctionCreateDto) {
+                                                      @RequestBody @Valid CorrectionCreateDto correctionCreateDto) {
         return publicationCorrectionService.addPublicationCorrection(publicationId, correctionCreateDto);
     }
 

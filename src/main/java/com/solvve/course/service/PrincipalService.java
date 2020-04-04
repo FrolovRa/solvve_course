@@ -49,7 +49,7 @@ public class PrincipalService {
     public PrincipalReadDto patchPrincipal(UUID id, PrincipalPatchDto principalPatchDto) {
         Principal principal = repositoryHelper.getEntityRequired(Principal.class, id);
 
-        translationService.patchEntity(principalPatchDto, principal);
+        translationService.map(principalPatchDto, principal);
         Principal patchedPrincipal = principalRepository.save(principal);
 
         return translationService.translate(patchedPrincipal, PrincipalReadDto.class);

@@ -43,7 +43,7 @@ public class ActorService {
     public ActorExtendedReadDto patchActor(UUID id, ActorPatchDto actorPatchDto) {
         Actor actor = repositoryHelper.getEntityRequired(Actor.class, id);
 
-        translationService.patchEntity(actorPatchDto, actor);
+        translationService.map(actorPatchDto, actor);
         Actor patchedActor = actorRepository.save(actor);
 
         return translationService.translate(patchedActor, ActorExtendedReadDto.class);

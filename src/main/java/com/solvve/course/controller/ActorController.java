@@ -8,6 +8,7 @@ import com.solvve.course.service.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
@@ -23,12 +24,12 @@ public class ActorController {
     }
 
     @PostMapping
-    public ActorExtendedReadDto addActor(@RequestBody ActorCreateDto actorCreateDto) {
+    public ActorExtendedReadDto addActor(@RequestBody @Valid ActorCreateDto actorCreateDto) {
         return actorService.addActor(actorCreateDto);
     }
 
     @PutMapping("/{id}")
-    public ActorExtendedReadDto updateActor(@PathVariable UUID id, @RequestBody ActorPutDto actorPutDto) {
+    public ActorExtendedReadDto updateActor(@PathVariable UUID id, @RequestBody @Valid ActorPutDto actorPutDto) {
         return actorService.updateActor(id, actorPutDto);
     }
 

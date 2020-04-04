@@ -53,7 +53,7 @@ public class MovieService {
     public MovieReadDto patchMovie(UUID id, MoviePatchDto moviePatchDto) {
         Movie movieFromDb = repositoryHelper.getEntityRequired(Movie.class, id);
 
-        translationService.patchEntity(moviePatchDto, movieFromDb);
+        translationService.map(moviePatchDto, movieFromDb);
         Movie patchedMovie = movieRepository.save(movieFromDb);
 
         return translationService.translate(patchedMovie, MovieReadDto.class);

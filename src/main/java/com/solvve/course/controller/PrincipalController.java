@@ -8,6 +8,7 @@ import com.solvve.course.service.PrincipalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class PrincipalController {
     }
 
     @PostMapping
-    public PrincipalReadDto addPrincipal(@RequestBody PrincipalCreateDto principalCreateDto) {
+    public PrincipalReadDto addPrincipal(@RequestBody @Valid PrincipalCreateDto principalCreateDto) {
         return principalService.addPrincipal(principalCreateDto);
     }
 

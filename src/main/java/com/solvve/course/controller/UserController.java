@@ -7,6 +7,7 @@ import com.solvve.course.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserReadDto addPrincipal(@RequestBody UserCreateDto userCreateDto) {
+    public UserReadDto addPrincipal(@RequestBody @Valid UserCreateDto userCreateDto) {
         return userService.addUser(userCreateDto);
     }
 

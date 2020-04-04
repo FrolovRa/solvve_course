@@ -8,6 +8,7 @@ import com.solvve.course.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class MovieController {
     }
 
     @PostMapping
-    public MovieReadDto addMovie(@RequestBody MovieCreateDto movieCreateDto) {
+    public MovieReadDto addMovie(@RequestBody @Valid MovieCreateDto movieCreateDto) {
         return movieService.addMovie(movieCreateDto);
     }
 

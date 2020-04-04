@@ -7,6 +7,7 @@ import com.solvve.course.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
@@ -22,7 +23,7 @@ public class PersonController {
     }
 
     @PostMapping
-    public PersonReadDto addPerson(@RequestBody PersonCreateDto personCreateDto) {
+    public PersonReadDto addPerson(@RequestBody @Valid PersonCreateDto personCreateDto) {
         return personService.addPerson(personCreateDto);
     }
 

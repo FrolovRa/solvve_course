@@ -7,11 +7,13 @@ import com.solvve.course.dto.correction.CorrectionCreateDto;
 import com.solvve.course.dto.correction.CorrectionPatchDto;
 import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.publication.PublicationReadDto;
+import com.solvve.course.event.CorrectionStatusChangedEvent;
 import com.solvve.course.exception.BadCorrectionStatusException;
 import com.solvve.course.repository.CorrectionRepository;
 import com.solvve.course.repository.PublicationRepository;
 import com.solvve.course.repository.RepositoryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,9 @@ public class PublicationCorrectionService {
 
     @Autowired
     private PublicationRepository publicationRepository;
+
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     private RepositoryHelper repositoryHelper;
@@ -70,6 +75,7 @@ public class PublicationCorrectionService {
         }
 
         correction = correctionRepository.save(correction);
+        applicationEventPublisher.publishEvent(new CorrectionStatusChangedEvent(correction));
 
         Publication publication = repositoryHelper.getEntityRequired(Publication.class, publicationId);
         String fixedContent = this.getContentWithAcceptedCorrection(publication.getContent(),
