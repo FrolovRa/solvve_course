@@ -1,15 +1,16 @@
 package com.solvve.course.controller;
 
+import com.solvve.course.dto.PageResult;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,8 +26,8 @@ public class MovieController {
     }
 
     @GetMapping
-    public List<MovieReadDto> getMovies(MovieFilter filter) {
-        return movieService.getMovies(filter);
+    public PageResult<MovieReadDto> getMovies(MovieFilter filter, Pageable pageable) {
+        return movieService.getMovies(filter, pageable);
     }
 
     @PostMapping

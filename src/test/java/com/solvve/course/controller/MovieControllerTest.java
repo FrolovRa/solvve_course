@@ -1,8 +1,10 @@
 package com.solvve.course.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.solvve.course.BaseControllerTest;
 import com.solvve.course.domain.Movie;
 import com.solvve.course.domain.constant.Genre;
+import com.solvve.course.dto.PageResult;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
@@ -13,10 +15,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -53,8 +59,11 @@ public class MovieControllerTest extends BaseControllerTest {
         filter.setReleaseDateTo(LocalDate.now());
 
         MovieReadDto movie = utils.createMovieReadDto();
-        List<MovieReadDto> expected = Collections.singletonList(movie);
-        when(movieService.getMovies(filter)).thenReturn(expected);
+        List<MovieReadDto> expectedData = Collections.singletonList(movie);
+
+        PageResult<MovieReadDto> expected = new PageResult<>();
+        expected.setData(expectedData);
+        when(movieService.getMovies(filter, PageRequest.of(0, defaultPageSize))).thenReturn(expected);
 
         String resultJson = mvc.perform(get("/api/v1/movies")
                 .param("name", filter.getName())
@@ -65,7 +74,8 @@ public class MovieControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<MovieReadDto> actual = Arrays.asList(objectMapper.readValue(resultJson, MovieReadDto[].class));
+        PageResult<MovieReadDto> actual = objectMapper.readValue(resultJson, new TypeReference<>() {
+        });
         assertEquals(expected, actual);
     }
 

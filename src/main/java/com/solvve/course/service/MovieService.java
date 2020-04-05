@@ -1,6 +1,7 @@
 package com.solvve.course.service;
 
 import com.solvve.course.domain.Movie;
+import com.solvve.course.dto.PageResult;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieFilter;
 import com.solvve.course.dto.movie.MoviePatchDto;
@@ -9,13 +10,13 @@ import com.solvve.course.repository.MovieRepository;
 import com.solvve.course.repository.RepositoryHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,11 +37,9 @@ public class MovieService {
         return translationService.translate(movieFromDb, MovieReadDto.class);
     }
 
-    public List<MovieReadDto> getMovies(MovieFilter filter) {
-        List<Movie> movies = movieRepository.findByFilter(filter);
-        return movies.stream()
-                .map(movie -> translationService.translate(movie, MovieReadDto.class))
-                .collect(Collectors.toList());
+    public PageResult<MovieReadDto> getMovies(MovieFilter filter, Pageable pageable) {
+        Page<Movie> movies = movieRepository.findByFilter(filter, pageable);
+        return translationService.toPageResult(movies, MovieReadDto.class);
     }
 
     public MovieReadDto addMovie(MovieCreateDto movieCreateDto) {

@@ -12,6 +12,7 @@ import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -146,8 +147,8 @@ public class MovieServiceTest extends BaseTest {
 
         MovieFilter filter = new MovieFilter();
 
-        assertThat(movieService.getMovies(filter)).extracting("id")
-            .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
+        assertThat(movieService.getMovies(filter, Pageable.unpaged()).getData()).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
     }
 
     @Test
@@ -164,9 +165,9 @@ public class MovieServiceTest extends BaseTest {
         MovieFilter filter = new MovieFilter();
         filter.setName("movie");
 
-        assertThat(movieService.getMovies(filter)).extracting("id")
-            .containsOnly(movie.getId())
-            .doesNotContain(secondMovie.getId());
+        assertThat(movieService.getMovies(filter, Pageable.unpaged()).getData()).extracting("id")
+                .containsOnly(movie.getId())
+                .doesNotContain(secondMovie.getId());
     }
 
     @Test
@@ -185,8 +186,8 @@ public class MovieServiceTest extends BaseTest {
         MovieFilter filter = new MovieFilter();
         filter.setGenres((Stream.of(Genre.ACTION, Genre.ADVENTURE).collect(Collectors.toSet())));
 
-        assertThat(movieService.getMovies(filter)).extracting("id")
-            .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
+        assertThat(movieService.getMovies(filter, Pageable.unpaged()).getData()).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
     }
 
     @Test
@@ -205,8 +206,8 @@ public class MovieServiceTest extends BaseTest {
         MovieFilter filter = new MovieFilter();
         filter.setGenres(Collections.emptySet());
 
-        assertThat(movieService.getMovies(filter)).extracting("id")
-            .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
+        assertThat(movieService.getMovies(filter, Pageable.unpaged()).getData()).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId());
     }
 
     @Test
@@ -225,9 +226,9 @@ public class MovieServiceTest extends BaseTest {
         MovieFilter filter = new MovieFilter();
         filter.setActorId(actor.getId());
 
-        assertThat(movieService.getMovies(filter)).extracting("id")
-            .containsOnly(movie.getId())
-            .doesNotContain(secondMovie.getId());
+        assertThat(movieService.getMovies(filter, Pageable.unpaged()).getData()).extracting("id")
+                .containsOnly(movie.getId())
+                .doesNotContain(secondMovie.getId());
     }
 
     @Test
@@ -255,9 +256,9 @@ public class MovieServiceTest extends BaseTest {
         filter.setReleaseDateFrom(LocalDate.of(2000, 1, 10));
         filter.setReleaseDateTo(LocalDate.of(2002, 2, 10));
 
-        assertThat(movieService.getMovies(filter)).extracting("id")
-            .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
-            .doesNotContain(thirdMovie.getId());
+        assertThat(movieService.getMovies(filter, Pageable.unpaged()).getData()).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
+                .doesNotContain(thirdMovie.getId());
     }
 
     @Test
@@ -296,9 +297,9 @@ public class MovieServiceTest extends BaseTest {
         filter.setGenres(Stream.of(Genre.COMEDY).collect(Collectors.toSet()));
         filter.setActorId(actor.getId());
 
-        assertThat(movieService.getMovies(filter)).extracting("id")
-            .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
-            .doesNotContain(thirdMovie.getId());
+        assertThat(movieService.getMovies(filter, Pageable.unpaged()).getData()).extracting("id")
+                .containsExactlyInAnyOrder(movie.getId(), secondMovie.getId())
+                .doesNotContain(thirdMovie.getId());
     }
 
     @Test

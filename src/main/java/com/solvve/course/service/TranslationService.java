@@ -2,6 +2,7 @@ package com.solvve.course.service;
 
 import com.solvve.course.domain.Character;
 import com.solvve.course.domain.*;
+import com.solvve.course.dto.PageResult;
 import com.solvve.course.dto.actor.ActorCreateDto;
 import com.solvve.course.dto.actor.ActorPatchDto;
 import com.solvve.course.dto.actor.ActorPutDto;
@@ -20,9 +21,11 @@ import com.solvve.course.repository.RepositoryHelper;
 import org.bitbucket.brunneng.ot.Configuration;
 import org.bitbucket.brunneng.ot.ObjectTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TranslationService {
@@ -126,5 +129,16 @@ public class TranslationService {
 
     private void configureForMovie(Configuration c) {
         c.beanOfClass(MoviePatchDto.class).translationTo(Movie.class).mapOnlyNotNullProperties();
+    }
+
+    public <E, T> PageResult<T> toPageResult(Page<E> page, Class<T> targetClass) {
+        PageResult<T> pageResult = new PageResult<>();
+        pageResult.setPage(page.getNumber());
+        pageResult.setPageSize(page.getSize());
+        pageResult.setTotalElements(page.getTotalElements());
+        pageResult.setTotalPages(page.getTotalPages());
+        pageResult.setData(page.getContent().stream().map(e -> translate(e, targetClass)).collect(Collectors.toList()));
+
+        return pageResult;
     }
 }
