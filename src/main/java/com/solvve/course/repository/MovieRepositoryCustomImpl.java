@@ -22,6 +22,7 @@ public class MovieRepositoryCustomImpl implements MovieRepositoryCustom {
     public Page<Movie> findByFilter(MovieFilter filter, Pageable pageable) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT m FROM Movie m WHERE 1=1");
+
         Query query = createQueryApplyingFilter(filter, pageable.getSort(), sb);
         applyPageable(query, pageable);
 
@@ -42,6 +43,8 @@ public class MovieRepositoryCustomImpl implements MovieRepositoryCustom {
 
     private void applyPageable(Query query, Pageable pageable) {
         if (pageable.isPaged()) {
+            System.out.println(pageable.getPageSize());
+            System.out.println(pageable.getOffset());
             query.setMaxResults(pageable.getPageSize());
             query.setFirstResult((int) pageable.getOffset());
         }
@@ -66,9 +69,9 @@ public class MovieRepositoryCustomImpl implements MovieRepositoryCustom {
             sb.append(" AND m.release < :releaseDateTo");
         }
         if (sort != null && sort.isSorted()) {
-            sb.append(" order by ");
+            sb.append(" ORDER BY ");
             for (Sort.Order order : sort.toList()) {
-                sb.append("v.").append(order.getProperty()).append(" ").append(order.getDirection().toString());
+                sb.append("m.").append(order.getProperty()).append(" ").append(order.getDirection());
             }
         }
         Query query = entityManager.createQuery(sb.toString());

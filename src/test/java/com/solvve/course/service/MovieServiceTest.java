@@ -12,10 +12,13 @@ import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.exception.EntityNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -354,5 +357,30 @@ public class MovieServiceTest extends BaseTest {
         movieService.updateAverageRatingOfMovie(movie.getId());
         movie = movieRepository.findById(movie.getId()).get();
         Assert.assertEquals(1.95d, movie.getRating(), Double.MIN_VALUE);
+    }
+
+    @Test
+    public void testGetMoviesWithEmptyFilterWithPagingAndSorting() {
+        Movie movie = new Movie();
+        movie.setName("aaa");
+        movie.setDescription("description");
+        movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
+        movie.setRelease(LocalDate.now());
+
+        Movie secondMovie = new Movie();
+        secondMovie.setName("bbb");
+        secondMovie.setDescription("description");
+        secondMovie.setGenres(Stream.of(Genre.WESTERN).collect(Collectors.toSet()));
+        secondMovie.setRelease(LocalDate.now());
+
+        movie = movieRepository.save(movie);
+        secondMovie = movieRepository.save(secondMovie);
+
+        MovieFilter filter = new MovieFilter();
+
+        PageRequest pageRequest = PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "name"));
+
+        assertThat(movieService.getMovies(filter, pageRequest).getData()).extracting("id")
+                .isEqualTo(Arrays.asList(secondMovie.getId(), movie.getId()));
     }
 }

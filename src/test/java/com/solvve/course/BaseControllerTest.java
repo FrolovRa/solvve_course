@@ -21,4 +21,7 @@ public abstract class BaseControllerTest {
 
     @Value("${spring.data.web.pageable.default-page-size}")
     protected int defaultPageSize;
+
+    @Value("${spring.data.web.pageable.max-page-size}")
+    protected int maxPageSize;
 }
