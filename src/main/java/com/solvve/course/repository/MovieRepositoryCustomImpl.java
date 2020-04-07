@@ -43,8 +43,6 @@ public class MovieRepositoryCustomImpl implements MovieRepositoryCustom {
 
     private void applyPageable(Query query, Pageable pageable) {
         if (pageable.isPaged()) {
-            System.out.println(pageable.getPageSize());
-            System.out.println(pageable.getOffset());
             query.setMaxResults(pageable.getPageSize());
             query.setFirstResult((int) pageable.getOffset());
         }

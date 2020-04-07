@@ -9,6 +9,7 @@
     <include file="db/changelog/updates/home-work-14.xml"/>
     <include file="db/changelog/updates/home-work-15.xml"/>
     <include file="db/changelog/updates/SignalToContentManagerProcessing.xml"/>
+    <include file="db/changelog/updates/home-work-18.xml"/>
     <include file="db/changelog/load-data.xml"/>
 
 </databaseChangeLog>
