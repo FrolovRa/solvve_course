@@ -81,8 +81,7 @@ public class PrincipalServiceTest extends BaseTest {
 
     @Test
     public void testCreatedAtIsSet() {
-        Principal principal = new Principal();
-        principal.setEmail("@");
+        Principal principal = utils.getPrincipalFromDb();
 
         principal = principalRepository.save(principal);
 
@@ -97,8 +96,7 @@ public class PrincipalServiceTest extends BaseTest {
 
     @Test
     public void testUpdatedAtIsSet() {
-        Principal principal = new Principal();
-        principal.setEmail("@");
+        Principal principal = utils.getPrincipalFromDb();
 
         principal = principalRepository.save(principal);
 
@@ -119,15 +117,15 @@ public class PrincipalServiceTest extends BaseTest {
 
     @Test
     public void testGetPrincipalsByRole() {
-        Principal principalUser = new Principal();
+        Principal principalUser = utils.getPrincipalFromDb();
         principalUser.setRole(Role.USER);
         principalUser = principalRepository.save(principalUser);
 
-        Principal principalCM = new Principal();
+        Principal principalCM = utils.getPrincipalFromDb();
         principalCM.setRole(Role.CONTENT_MANAGER);
         principalCM = principalRepository.save(principalCM);
 
-        Principal secondPrincipalCM = new Principal();
+        Principal secondPrincipalCM = utils.getPrincipalFromDb();
         secondPrincipalCM.setRole(Role.CONTENT_MANAGER);
         secondPrincipalCM = principalRepository.save(secondPrincipalCM);
 

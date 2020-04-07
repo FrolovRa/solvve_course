@@ -89,7 +89,7 @@ public class PublicationServiceTest extends BaseTest {
     public void testCreatedAtIsSet() {
         Principal principal = utils.getPrincipalFromDb();
 
-        Publication publication = new Publication();
+        Publication publication = utils.getPublicationFromDb();
         publication.setManager(principal);
 
         publication = publicationRepository.save(publication);

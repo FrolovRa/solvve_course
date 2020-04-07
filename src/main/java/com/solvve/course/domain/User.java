@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -13,6 +14,7 @@ import javax.persistence.OneToOne;
 @EqualsAndHashCode(callSuper = true)
 public class User extends AbstractEntity {
 
+    @NotNull
     @OneToOne
     private Principal principal;
 

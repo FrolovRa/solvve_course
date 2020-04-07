@@ -17,7 +17,7 @@ public class MovieRepositoryTest extends BaseTest {
 
     @Test
     public void testSave() {
-        Movie movie = new Movie();
+        Movie movie = utils.getMovieFromDb();
         Movie movieFromDb = movieRepository.save(movie);
         assertNotNull(movieFromDb);
         assertTrue(movieRepository.findById(movieFromDb.getId()).isPresent());

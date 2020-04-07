@@ -100,9 +100,7 @@ public class MovieServiceTest extends BaseTest {
 
     @Test
     public void testCreatedAtIsSet() {
-        Movie movie = new Movie();
-        movie.setName("Time");
-
+        Movie movie = utils.getMovieFromDb();
         movie = movieRepository.save(movie);
 
         Instant createdAtBeforeReload = movie.getCreatedAt();
@@ -116,9 +114,7 @@ public class MovieServiceTest extends BaseTest {
 
     @Test
     public void testUpdatedAtIsSet() {
-        Movie movie = new Movie();
-        movie.setName("Time");
-
+        Movie movie = utils.getMovieFromDb();
         movie = movieRepository.save(movie);
 
         Instant updatedAtBeforeReload = movie.getCreatedAt();
@@ -138,13 +134,9 @@ public class MovieServiceTest extends BaseTest {
 
     @Test
     public void testGetMoviesWithEmptyFilter() {
-        Movie movie = new Movie();
-        movie.setName("movie");
-        movie.setDescription("description");
-        movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
-        movie.setRelease(LocalDate.now());
+        Movie movie = utils.getMovieFromDb();
+        Movie secondMovie = utils.getMovieFromDb();
 
-        Movie secondMovie = new Movie();
         movie = movieRepository.save(movie);
         secondMovie = movieRepository.save(secondMovie);
 
@@ -156,12 +148,10 @@ public class MovieServiceTest extends BaseTest {
 
     @Test
     public void testGetMoviesWithFilterWithName() {
-        Movie movie = new Movie();
+        Movie movie = utils.getMovieFromDb();
         movie.setName("movie");
-        movie.setDescription("description");
-        movie.setRelease(LocalDate.now());
 
-        Movie secondMovie = new Movie();
+        Movie secondMovie = utils.getMovieFromDb();
         movie = movieRepository.save(movie);
         secondMovie = movieRepository.save(secondMovie);
 
@@ -175,14 +165,12 @@ public class MovieServiceTest extends BaseTest {
 
     @Test
     public void testGetMoviesWithFilterWithGenres() {
-        Movie movie = new Movie();
-        movie.setName("movie");
-        movie.setDescription("description");
+        Movie movie = utils.getMovieFromDb();
         movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
-        movie.setRelease(LocalDate.now());
 
-        Movie secondMovie = new Movie();
+        Movie secondMovie = utils.getMovieFromDb();
         secondMovie.setGenres(Stream.of(Genre.ADVENTURE).collect(Collectors.toSet()));
+
         movie = movieRepository.save(movie);
         secondMovie = movieRepository.save(secondMovie);
 
@@ -195,14 +183,12 @@ public class MovieServiceTest extends BaseTest {
 
     @Test
     public void testGetMoviesWithFilterWithEmptyGenres() {
-        Movie movie = new Movie();
-        movie.setName("movie");
-        movie.setDescription("description");
+        Movie movie = utils.getMovieFromDb();
         movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
-        movie.setRelease(LocalDate.now());
 
-        Movie secondMovie = new Movie();
+        Movie secondMovie = utils.getMovieFromDb();
         secondMovie.setGenres(Stream.of(Genre.ADVENTURE).collect(Collectors.toSet()));
+
         movie = movieRepository.save(movie);
         secondMovie = movieRepository.save(secondMovie);
 
@@ -216,12 +202,10 @@ public class MovieServiceTest extends BaseTest {
     @Test
     public void testGetMoviesWithFilterWithActor() {
         Actor actor = utils.getActorFromDb();
-        Movie movie = new Movie();
+        Movie movie = utils.getMovieFromDb();
         movie.setCast(Collections.singletonList(actor));
-        movie.setName("movie");
-        movie.setDescription("description");
 
-        Movie secondMovie = new Movie();
+        Movie secondMovie = utils.getMovieFromDb();
         secondMovie.setGenres(Stream.of(Genre.ADVENTURE).collect(Collectors.toSet()));
         movie = movieRepository.save(movie);
         secondMovie = movieRepository.save(secondMovie);

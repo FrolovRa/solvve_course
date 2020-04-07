@@ -64,6 +64,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testAddUser() throws Exception {
         UserCreateDto userCreateDto = new UserCreateDto();
+        userCreateDto.setPrincipalId(UUID.randomUUID());
         UserReadDto userReadDto = utils.createUserReadDto();
 
         when(userService.addUser(userCreateDto)).thenReturn(userReadDto);

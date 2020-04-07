@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -15,10 +16,12 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Publication extends AbstractEntity {
 
+    @NotNull
+    private String content;
+
+    @NotNull
     @OneToOne
     private Principal manager;
-
-    private String content;
 
     @OneToMany(mappedBy = "publication")
     private List<Correction> corrections;

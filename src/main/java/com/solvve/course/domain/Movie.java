@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,12 +19,15 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 public class Movie extends AbstractEntity {
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String description;
 
     private Double rating;
 
+    @NotNull
     private LocalDate release;
 
     @ElementCollection(targetClass = Genre.class, fetch = FetchType.EAGER)

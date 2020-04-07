@@ -69,9 +69,7 @@ public class PublicationCorrectionServiceTest extends BaseTest {
 
     @Test
     public void testCreatedAtIsSet() {
-        Correction publicationCorrection = new Correction();
-        publicationCorrection.setUser(utils.getUserFromDb());
-        publicationCorrection.setPublication(utils.getPublicationFromDb());
+        Correction publicationCorrection = utils.getCorrectionFromDb();
 
         publicationCorrection = correctionRepository.save(publicationCorrection);
 
@@ -86,9 +84,7 @@ public class PublicationCorrectionServiceTest extends BaseTest {
 
     @Test
     public void testUpdatedAtIsSet() {
-        Correction publicationCorrection = new Correction();
-        publicationCorrection.setUser(utils.getUserFromDb());
-        publicationCorrection.setPublication(utils.getPublicationFromDb());
+        Correction publicationCorrection = utils.getCorrectionFromDb();
         publicationCorrection.setStatus(CorrectionStatus.NEW);
 
         publicationCorrection = correctionRepository.save(publicationCorrection);

@@ -1,5 +1,6 @@
 package com.solvve.course.controller;
 
+import com.solvve.course.controller.validation.ControllerValidationUtil;
 import com.solvve.course.dto.correction.CorrectionCreateDto;
 import com.solvve.course.dto.correction.CorrectionPatchDto;
 import com.solvve.course.dto.correction.CorrectionReadDto;
@@ -27,6 +28,8 @@ public class PublicationCorrectionController {
     @PostMapping
     public CorrectionReadDto addPublicationCorrection(@PathVariable UUID publicationId,
                                                       @RequestBody @Valid CorrectionCreateDto correctionCreateDto) {
+        ControllerValidationUtil.validateNotEqual(correctionCreateDto.getProposedText(),
+                correctionCreateDto.getSelectedText(), "proposedText", "selectedText");
         return publicationCorrectionService.addPublicationCorrection(publicationId, correctionCreateDto);
     }
 

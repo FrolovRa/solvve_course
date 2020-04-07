@@ -14,19 +14,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(statements = {
-    "delete from movie_cast",
-    "delete from movie_stars",
-    "delete from movie_genres",
-    "delete from correction",
-    "delete from rating",
-    "delete from user",
-    "delete from publication",
-    "delete from principal",
-    "delete from character",
-    "delete from actor",
-    "delete from person",
-    "delete from movie",
-}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+        "delete from movie_cast",
+        "delete from movie_stars",
+        "delete from movie_genres",
+        "delete from correction",
+        "delete from rating",
+        "delete from user",
+        "delete from publication",
+        "delete from principal",
+        "delete from character",
+        "delete from actor",
+        "delete from person",
+        "delete from movie"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public abstract class BaseTest {
 
     @Autowired

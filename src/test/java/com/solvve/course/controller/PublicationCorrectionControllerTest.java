@@ -7,8 +7,11 @@ import com.solvve.course.dto.correction.CorrectionCreateDto;
 import com.solvve.course.dto.correction.CorrectionPatchDto;
 import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.publication.PublicationReadDto;
+import com.solvve.course.exception.ControllerValidationException;
 import com.solvve.course.exception.EntityNotFoundException;
+import com.solvve.course.exception.handler.ErrorInfo;
 import com.solvve.course.service.PublicationCorrectionService;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -73,6 +76,7 @@ public class PublicationCorrectionControllerTest extends BaseControllerTest {
     @Test
     public void testAddCorrection() throws Exception {
         CorrectionCreateDto correctionCreateDto = utils.createCorrectionCreateDto();
+        correctionCreateDto.setProposedText(null);
         CorrectionReadDto correctionReadDto = utils.createCorrectionReadDto();
         UUID publicationId = correctionReadDto.getPublication().getId();
 
@@ -119,5 +123,24 @@ public class PublicationCorrectionControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk());
 
         verify(publicationCorrectionService).deletePublicationCorrection(id);
+    }
+
+    @Test
+    public void testCreateCorrectionValidation() throws Exception {
+        final UUID publicationId = UUID.randomUUID();
+        CorrectionCreateDto dto = utils.createCorrectionCreateDto();
+        dto.setProposedText("text");
+        dto.setSelectedText("text");
+
+        String resultJson = mvc.perform(post("/api/v1/publications/{publicationId}/corrections", publicationId)
+                .content(objectMapper.writeValueAsString(dto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        ErrorInfo errorInfo = objectMapper.readValue(resultJson, ErrorInfo.class);
+        Assert.assertTrue(errorInfo.getMessage().contains("proposedText"));
+        Assert.assertTrue(errorInfo.getMessage().contains("selectedText"));
+        Assert.assertEquals(ControllerValidationException.class, errorInfo.getExceptionClass());
     }
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -12,5 +13,6 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = true)
 public class Person extends AbstractEntity {
 
+    @NotNull
     private String name;
 }
