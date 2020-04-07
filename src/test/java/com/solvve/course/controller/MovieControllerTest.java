@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
@@ -42,8 +43,8 @@ public class MovieControllerTest extends BaseControllerTest {
         when(movieService.getMovie(movieReadDto.getId())).thenReturn(movieReadDto);
 
         String resultJson = mvc.perform(get("/api/v1/movies/{id}", movieReadDto.getId()))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString();
         MovieReadDto actualMovie = objectMapper.readValue(resultJson, MovieReadDto.class);
 
         assertEquals(actualMovie, movieReadDto);
@@ -66,13 +67,13 @@ public class MovieControllerTest extends BaseControllerTest {
         when(movieService.getMovies(filter, PageRequest.of(0, defaultPageSize))).thenReturn(expected);
 
         String resultJson = mvc.perform(get("/api/v1/movies")
-                .param("name", filter.getName())
-                .param("actorId", filter.getActorId().toString())
-                .param("genres", "ADVENTURE, CRIME")
-                .param("releaseDateFrom", filter.getReleaseDateFrom().toString())
-                .param("releaseDateTo", filter.getReleaseDateTo().toString()))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+            .param("name", filter.getName())
+            .param("actorId", filter.getActorId().toString())
+            .param("genres", "ADVENTURE, CRIME")
+            .param("releaseDateFrom", filter.getReleaseDateFrom().toString())
+            .param("releaseDateTo", filter.getReleaseDateTo().toString()))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString();
 
         PageResult<MovieReadDto> actual = objectMapper.readValue(resultJson, new TypeReference<>() {
         });
@@ -87,8 +88,8 @@ public class MovieControllerTest extends BaseControllerTest {
         when(movieService.getMovie(wrongId)).thenThrow(exception);
 
         String resultJson = mvc.perform(get("/api/v1/movies/{id}", wrongId))
-                .andExpect(status().isNotFound())
-                .andReturn().getResponse().getContentAsString();
+            .andExpect(status().isNotFound())
+            .andReturn().getResponse().getContentAsString();
 
         Assert.assertTrue(resultJson.contains(exception.getMessage()));
     }
@@ -108,10 +109,10 @@ public class MovieControllerTest extends BaseControllerTest {
         when(movieService.addMovie(movieCreateDto)).thenReturn(movieReadDto);
 
         String resultJson = mvc.perform(post("/api/v1/movies")
-                .content(objectMapper.writeValueAsString(movieCreateDto))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+            .content(objectMapper.writeValueAsString(movieCreateDto))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString();
         MovieReadDto actualMovieReadDto = objectMapper.readValue(resultJson, MovieReadDto.class);
         assertThat(actualMovieReadDto).isEqualToComparingFieldByField(movieReadDto);
     }
@@ -128,10 +129,10 @@ public class MovieControllerTest extends BaseControllerTest {
         when(movieService.patchMovie(id, moviePatchDto)).thenReturn(movieReadDto);
 
         String resultJson = mvc.perform(patch("/api/v1/movies/" + id)
-                .content(objectMapper.writeValueAsString(moviePatchDto))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+            .content(objectMapper.writeValueAsString(moviePatchDto))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString();
         MovieReadDto actualMovieReadDto = objectMapper.readValue(resultJson, MovieReadDto.class);
         assertThat(actualMovieReadDto).isEqualToComparingFieldByField(movieReadDto);
     }
@@ -143,5 +144,68 @@ public class MovieControllerTest extends BaseControllerTest {
         mvc.perform(delete("/api/v1/movies/" + id)).andExpect(status().isOk());
 
         verify(movieService).deleteMovie(id);
+    }
+
+    @Test
+    public void testGetMoviesByFilterWithPagingAndSorting() throws Exception {
+        MovieFilter filter = new MovieFilter();
+
+        MovieReadDto movie = utils.createMovieReadDto();
+        List<MovieReadDto> expectedData = Collections.singletonList(movie);
+
+        final int page = 1;
+        final int size = 25;
+
+        PageResult<MovieReadDto> expected = new PageResult<>();
+        expected.setPage(page);
+        expected.setTotalPages(4);
+        expected.setPageSize(size);
+        expected.setTotalElements(100);
+        expected.setData(expectedData);
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.DESC, "name");
+        when(movieService.getMovies(filter, pageRequest)).thenReturn(expected);
+
+        String resultJson = mvc.perform(get("/api/v1/movies")
+            .param("page", Integer.toString(page))
+            .param("size", Integer.toString(size))
+            .param("sort", "name,desc"))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString();
+
+        PageResult<MovieReadDto> actual = objectMapper.readValue(resultJson, new TypeReference<>() {
+        });
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetMoviesByFilterWithBigPage() throws Exception {
+        MovieFilter filter = new MovieFilter();
+
+        MovieReadDto movie = utils.createMovieReadDto();
+        List<MovieReadDto> expectedData = Collections.singletonList(movie);
+
+        final int page = 0;
+        final int size = 99999;
+
+        PageResult<MovieReadDto> expected = new PageResult<>();
+        expected.setPage(page);
+        expected.setTotalPages(4);
+        expected.setPageSize(size);
+        expected.setTotalElements(100);
+        expected.setData(expectedData);
+
+        PageRequest pageRequest = PageRequest.of(page, maxPageSize);
+        when(movieService.getMovies(filter, pageRequest)).thenReturn(expected);
+
+        String resultJson = mvc.perform(get("/api/v1/movies")
+            .param("page", Integer.toString(page))
+            .param("size", Integer.toString(size)))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString();
+
+        PageResult<MovieReadDto> actual = objectMapper.readValue(resultJson, new TypeReference<>() {
+        });
+        assertEquals(expected, actual);
     }
 }
