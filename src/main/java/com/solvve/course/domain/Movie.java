@@ -41,8 +41,14 @@ public class Movie extends AbstractEntity {
     private List<Character> characters = new ArrayList<>();
 
     @ManyToMany
+    @JoinTable(name = "movie_actor",
+            joinColumns = @JoinColumn(name = "actor_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private List<Actor> cast = new ArrayList<>();
 
     @ManyToMany
+    @JoinTable(name = "movie_star_actor",
+            joinColumns = @JoinColumn(name = "actor_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private List<Actor> stars = new ArrayList<>();
 }

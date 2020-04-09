@@ -1,0 +1,17 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="rename-many-to-many-relation-tables" author="frolov">
+        <renameColumn tableName="movie_cast" oldColumnName="cast_id" newColumnName="movie_id"/>
+        <renameColumn tableName="movie_cast" oldColumnName="movies_id" newColumnName="actor_id"/>
+        <renameTable oldTableName="movie_cast" newTableName="movie_actor"/>
+
+        <renameColumn tableName="movie_stars" oldColumnName="stars_id" newColumnName="movie_id"/>
+        <renameColumn tableName="movie_stars" oldColumnName="movies_as_star_id" newColumnName="actor_id"/>
+        <renameTable oldTableName="movie_stars" newTableName="movie_star_actor"/>
+    </changeSet>
+
+</databaseChangeLog>

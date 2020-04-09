@@ -14,8 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(statements = {
-        "delete from movie_cast",
-        "delete from movie_stars",
+        "delete from movie_actor",
+        "delete from movie_star_actor",
         "delete from movie_genres",
         "delete from correction",
         "delete from rating",
