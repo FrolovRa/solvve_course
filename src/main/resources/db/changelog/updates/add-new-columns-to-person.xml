@@ -1,0 +1,16 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="add-new-columns-to-person" author="frolov">
+        <addColumn tableName="person">
+            <column name="birth_date" type="Date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="biography" type="varchar(2500)"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

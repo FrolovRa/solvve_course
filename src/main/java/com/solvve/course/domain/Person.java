@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -15,4 +16,9 @@ public class Person extends AbstractEntity {
 
     @NotNull
     private String name;
+
+    @NotNull
+    private LocalDate birthDate;
+
+    private String biography;
 }

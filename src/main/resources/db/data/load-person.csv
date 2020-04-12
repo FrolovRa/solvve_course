@@ -1,7 +1,7 @@
-id;name
-49f801c7-de7e-42bb-9725-863d94432808;John
-8dfe62f9-e0f5-4abf-b1e8-608094174e6b;Sam
-11be7710-5bc8-42a5-b5ff-40ae53080014;Nick
-49f801c7-de7e-42bb-42a5-863d94432808;Bob
-8dfe62f9-e0f5-b1e8-b1e8-608094174e6b;Kris
-11be7710-9725-42a5-b5ff-40ae53080014;Paul
+id;name;birth_date;biography
+49f801c7-de7e-42bb-9725-863d94432808;John;2020-05-23;lorem ipsumlorem ipsumlorem ipsum
+8dfe62f9-e0f5-4abf-b1e8-608094174e6b;Sam;2020-05-22;lorem ipsumlorem ipsumlorem ipsum
+11be7710-5bc8-42a5-b5ff-40ae53080014;Nick;2020-05-22;lorem ipsumlorem ipsumlorem ipsum
+49f801c7-de7e-42bb-42a5-863d94432808;Bob;2020-05-21;lorem ipsumlorem ipsumlorem ipsum
+8dfe62f9-e0f5-b1e8-b1e8-608094174e6b;Kris;2020-05-21;lorem ipsumlorem ipsumlorem ipsum
+11be7710-9725-42a5-b5ff-40ae53080014;Paul;2020-05-23;lorem ipsumlorem ipsumlorem ipsum

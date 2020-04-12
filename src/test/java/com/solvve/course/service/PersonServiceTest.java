@@ -9,6 +9,7 @@ import com.solvve.course.exception.EntityNotFoundException;
 import org.junit.Test;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,13 +42,14 @@ public class PersonServiceTest extends BaseTest {
 
     @Test
     public void testPatchPerson() {
-        PersonPatchDto userPatchDto = new PersonPatchDto();
-        userPatchDto.setName("Name");
+        PersonPatchDto personPatchDto = new PersonPatchDto();
+        personPatchDto.setName("Name");
 
         Person person = utils.getPersonFromDb();
-        PersonReadDto patchedUser = personService.patchPerson(person.getId(), userPatchDto);
+        PersonReadDto patchedPerson = personService.patchPerson(person.getId(), personPatchDto);
 
-        assertThat(userPatchDto).isEqualToComparingFieldByField(patchedUser);
+        assertThat(patchedPerson).isEqualToIgnoringGivenFields(person, "name", "updatedAt");
+        assertEquals(patchedPerson.getName(), personPatchDto.getName());
     }
 
     @Test
@@ -83,6 +85,7 @@ public class PersonServiceTest extends BaseTest {
     public void testCreatedAtIsSet() {
         Person person = new Person();
         person.setName("Udjin");
+        person.setBirthDate(LocalDate.of(2000,10,10));
 
         person = personRepository.save(person);
 
@@ -99,6 +102,7 @@ public class PersonServiceTest extends BaseTest {
     public void testUpdatedAtIsSet() {
         Person person = new Person();
         person.setName("Udjin");
+        person.setBirthDate(LocalDate.of(2000,10,10));
 
         person = personRepository.save(person);
 
