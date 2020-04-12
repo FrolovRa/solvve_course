@@ -92,6 +92,10 @@ public class PrincipalControllerTest extends BaseControllerTest {
         PrincipalCreateDto principalCreateDto = utils.createPrincipalCreateDto();
         PrincipalReadDto principalReadDto = utils.createPrincipalReadDto();
 
+        final String validEmail = "email@meta.com";
+        principalCreateDto.setEmail(validEmail);
+        principalReadDto.setEmail(validEmail);
+
         when(principalService.addPrincipal(principalCreateDto)).thenReturn(principalReadDto);
 
         String resultJson = mvc.perform(post("/api/v1/principals")

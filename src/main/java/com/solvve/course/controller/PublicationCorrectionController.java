@@ -29,7 +29,9 @@ public class PublicationCorrectionController {
     public CorrectionReadDto addPublicationCorrection(@PathVariable UUID publicationId,
                                                       @RequestBody @Valid CorrectionCreateDto correctionCreateDto) {
         ControllerValidationUtil.validateNotEqual(correctionCreateDto.getProposedText(),
-                correctionCreateDto.getSelectedText(), "proposedText", "selectedText");
+                correctionCreateDto.getSelectedText(),
+                "proposedText",
+                "selectedText");
         return publicationCorrectionService.addPublicationCorrection(publicationId, correctionCreateDto);
     }
 

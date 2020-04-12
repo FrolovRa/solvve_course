@@ -110,14 +110,14 @@ public class PublicationCorrectionServiceTest extends BaseTest {
         Publication publication = utils.getPublicationFromDb();
         CorrectionPatchDto dto = new CorrectionPatchDto();
 
-        Correction publicationBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
+        Correction correctionBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
         PublicationReadDto publicationReadDto = publicationCorrectionService
                 .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
         assertEquals("fixed text content", publicationReadDto.getContent());
 
         Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
-        assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
-        assertEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
+        assertEquals(correctionBeforeMethod.getStatus(), CorrectionStatus.NEW);
+        assertEquals(correctionBeforeMethod.getProposedText(), correctionDb.getProposedText());
         assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED);
     }
 
@@ -128,19 +128,19 @@ public class PublicationCorrectionServiceTest extends BaseTest {
         CorrectionPatchDto dto = new CorrectionPatchDto();
         dto.setProposedText("content manager fix");
 
-        Correction publicationBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
+        Correction correctionBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
         PublicationReadDto publicationReadDto = publicationCorrectionService
                 .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
         assertEquals("content manager fix content", publicationReadDto.getContent());
 
         Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
-        assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
-        assertNotEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
+        assertEquals(correctionBeforeMethod.getStatus(), CorrectionStatus.NEW);
+        assertNotEquals(correctionBeforeMethod.getProposedText(), correctionDb.getProposedText());
         assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED_AFTER_FIX);
     }
 
     @Test
-    public void testAcceptPublicationCorrectionWithUpdateSimilar() {
+    public void testAcceptPublicationCorrectionWithUpdateSimilar() throws InterruptedException {
         Correction publicationCorrection = utils.getCorrectionFromDb();
         Correction similarCorrection = utils.getCorrectionFromDb();
         Correction secondSimilarCorrection = utils.getCorrectionFromDb();
@@ -151,7 +151,7 @@ public class PublicationCorrectionServiceTest extends BaseTest {
         similarCorrection = correctionRepository.save(similarCorrection);
         secondSimilarCorrection = correctionRepository.save(secondSimilarCorrection);
 
-        Correction publicationBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
+        Correction correctionBeforeMethod = correctionRepository.findById(publicationCorrection.getId()).get();
 
         CorrectionPatchDto dto = new CorrectionPatchDto();
         dto.setProposedText("content manager fix");
@@ -159,10 +159,11 @@ public class PublicationCorrectionServiceTest extends BaseTest {
                 .acceptPublicationCorrection(publicationCorrection.getId(), publication.getId(), dto);
         assertEquals("content manager fix content", publicationReadDto.getContent());
 
+        Thread.sleep(250);
         Correction correctionDb = correctionRepository.findById(publicationCorrection.getId()).get();
-        assertEquals(publicationBeforeMethod.getStatus(), CorrectionStatus.NEW);
+        assertEquals(correctionBeforeMethod.getStatus(), CorrectionStatus.NEW);
         assertEquals(correctionDb.getStatus(), CorrectionStatus.ACCEPTED_AFTER_FIX);
-        assertNotEquals(publicationBeforeMethod.getProposedText(), correctionDb.getProposedText());
+        assertNotEquals(correctionBeforeMethod.getProposedText(), correctionDb.getProposedText());
         assertNotEquals(similarCorrection, correctionRepository.findById(similarCorrection.getId()));
         assertNotEquals(secondSimilarCorrection, correctionRepository.findById(secondSimilarCorrection.getId()));
     }

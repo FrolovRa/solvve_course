@@ -12,7 +12,7 @@ public class SchedulingConfigurationTest extends BaseTest {
 
     @Test
     public void testSpringContextUpAndRunning() {
-        log.info("@Scheduling configuration are OK");
+        log.info("@Scheduled configurations are OK");
     }
 
     @EnableScheduling
