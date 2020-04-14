@@ -18,22 +18,22 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{id}")
-    public UserReadDto getPrincipal(@PathVariable UUID id) {
+    public UserReadDto getUser(@PathVariable UUID id) {
         return userService.getUser(id);
     }
 
     @PostMapping
-    public UserReadDto addPrincipal(@RequestBody @Valid UserCreateDto userCreateDto) {
+    public UserReadDto addUser(@RequestBody @Valid UserCreateDto userCreateDto) {
         return userService.addUser(userCreateDto);
     }
 
     @PatchMapping("/{id}")
-    public UserReadDto patchPrincipal(@PathVariable UUID id, @RequestBody UserPatchDto userPatchDto) {
+    public UserReadDto patchUser(@PathVariable UUID id, @RequestBody UserPatchDto userPatchDto) {
         return userService.patchUser(id, userPatchDto);
     }
 
     @DeleteMapping("/{id}")
-    public void deletePrincipal(@PathVariable UUID id) {
+    public void deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
     }
 }

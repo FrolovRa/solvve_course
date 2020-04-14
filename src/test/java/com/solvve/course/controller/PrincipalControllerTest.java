@@ -2,7 +2,6 @@ package com.solvve.course.controller;
 
 import com.solvve.course.BaseControllerTest;
 import com.solvve.course.domain.Principal;
-import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
@@ -13,9 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,19 +54,19 @@ public class PrincipalControllerTest extends BaseControllerTest {
         assertTrue(resultJson.contains(exception.getMessage()));
     }
 
-    @Test
-    public void testGetPrincipalsByRole() throws Exception {
-        List<PrincipalReadDto> expected = Collections.singletonList(utils.createPrincipalReadDto());
-
-        when(principalService.getPrincipalsByRole(Role.USER)).thenReturn(expected);
-
-        String resultJson = mvc.perform(get("/api/v1/principals/by-role/{role}", Role.USER))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        List<PrincipalReadDto> actual = Arrays.asList(objectMapper.readValue(resultJson, PrincipalReadDto[].class));
-        assertEquals(expected, actual);
-    }
+//    @Test
+//    public void testGetPrincipalsByRole() throws Exception {
+//        List<PrincipalReadDto> expected = Collections.singletonList(utils.createPrincipalReadDto());
+//
+//        when(principalService.getPrincipalsByRole(Role.USER)).thenReturn(expected);
+//
+//        String resultJson = mvc.perform(get("/api/v1/principals/by-role/{role}", Role.USER))
+//                .andExpect(status().isOk())
+//                .andReturn().getResponse().getContentAsString();
+//
+//        List<PrincipalReadDto> actual = Arrays.asList(objectMapper.readValue(resultJson, PrincipalReadDto[].class));
+//        assertEquals(expected, actual);
+//    }
 
     @Test
     public void testGetPrincipalByRoleWithNotValidRole() throws Exception {

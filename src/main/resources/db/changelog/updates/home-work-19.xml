@@ -4,14 +4,61 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="rename-many-to-many-relation-tables" author="frolov">
-        <renameColumn tableName="movie_cast" oldColumnName="cast_id" newColumnName="movie_id"/>
-        <renameColumn tableName="movie_cast" oldColumnName="movies_id" newColumnName="actor_id"/>
-        <renameTable oldTableName="movie_cast" newTableName="movie_actor"/>
+    <changeSet id="many-to-many-relations" author="frolov">
+        <renameColumn tableName="movie_cast"
+                      oldColumnName="cast_id"
+                      newColumnName="movie_id"/>
 
-        <renameColumn tableName="movie_stars" oldColumnName="stars_id" newColumnName="movie_id"/>
-        <renameColumn tableName="movie_stars" oldColumnName="movies_as_star_id" newColumnName="actor_id"/>
-        <renameTable oldTableName="movie_stars" newTableName="movie_star_actor"/>
+        <renameColumn tableName="movie_cast"
+                      oldColumnName="movies_id"
+                      newColumnName="actor_id"/>
+
+        <renameTable oldTableName="movie_cast"
+                     newTableName="movie_actor"/>
+
+        <renameColumn tableName="movie_stars"
+                      oldColumnName="stars_id"
+                      newColumnName="movie_id"/>
+
+        <renameColumn tableName="movie_stars"
+                      oldColumnName="movies_as_star_id"
+                      newColumnName="actor_id"/>
+
+        <renameTable oldTableName="movie_stars"
+                     newTableName="movie_star_actor"/>
+
+        <dropColumn tableName="principal" columnName="role"/>
+
+        <createTable tableName="principal_role">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="role" type="varchar(20)"/>
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </createTable>
+
+        <createTable tableName="principal_principal_role">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="principal_id" type="uuid">
+                <constraints referencedTableName="principal"
+                             referencedColumnNames="id"
+                             foreignKeyName="fk__principal_principal_role__principal"
+                             deleteCascade="true"
+                             nullable="false"/>
+            </column>
+            <column name="role_id" type="uuid">
+                <constraints referencedTableName="principal_role"
+                             referencedColumnNames="id"
+                             foreignKeyName="fk__principal_principal_role__principal_role"
+                             deleteCascade="true"
+                             nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>

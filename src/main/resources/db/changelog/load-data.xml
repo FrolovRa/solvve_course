@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="load-principles" author="frolov">
+    <changeSet id="load-data" author="frolov">
         <loadData tableName="principal" file="db/data/load-principal.csv" separator=";">
             <column name="id" type="uuid"/>
             <column name="name" type="string"/>

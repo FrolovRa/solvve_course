@@ -11,5 +11,5 @@ import java.util.UUID;
 @Repository
 public interface PrincipalRepository extends CrudRepository<Principal, UUID> {
 
-    List<Principal> getAllByRole(Role role);
+    List<Principal> getAllByRoles(Role role);
 }

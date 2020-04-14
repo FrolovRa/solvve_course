@@ -1,4 +1,4 @@
-id;name;email;blocked;role
-efa58f40-b832-4cab-9842-863d94432808;Castle;a@mail.net;false;USER
-0d09a686-e3d8-4150-9579-608094174e6b;Ron;b@mail.net;false;USER
-200ee407-f074-4a14-8848-40ae53080014;Harry;c@mail.net;false;GUEST
+id;name;email;blocked
+efa58f40-b832-4cab-9842-863d94432808;Castle;a@mail.net;false
+0d09a686-e3d8-4150-9579-608094174e6b;Ron;b@mail.net;false
+200ee407-f074-4a14-8848-40ae53080014;Harry;c@mail.net;false

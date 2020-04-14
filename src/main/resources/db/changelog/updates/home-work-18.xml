@@ -6,22 +6,28 @@
 
     <changeSet id="add-not-null-constraint-to-all-entities-where-needed" author="frolov">
         <addNotNullConstraint tableName="actor" columnName="person_id"/>
+
         <addNotNullConstraint tableName="character" columnName="name"/>
         <addNotNullConstraint tableName="character" columnName="actor_id"/>
         <addNotNullConstraint tableName="character" columnName="movie_id"/>
+
         <addNotNullConstraint tableName="correction" columnName="user_id"/>
         <addNotNullConstraint tableName="correction" columnName="publication_id"/>
         <addNotNullConstraint tableName="correction" columnName="start_index"/>
         <addNotNullConstraint tableName="correction" columnName="selected_text"/>
+
         <addNotNullConstraint tableName="movie" columnName="name"/>
         <addNotNullConstraint tableName="movie" columnName="description"/>
         <addNotNullConstraint tableName="movie" columnName="release"/>
+
         <addNotNullConstraint tableName="person" columnName="name"/>
+
         <addNotNullConstraint tableName="principal" columnName="name"/>
         <addNotNullConstraint tableName="principal" columnName="email"/>
-        <addNotNullConstraint tableName="principal" columnName="role"/>
+
         <addNotNullConstraint tableName="publication" columnName="content"/>
         <addNotNullConstraint tableName="publication" columnName="manager_id"/>
+
         <addNotNullConstraint tableName="user" columnName="principal_id"/>
     </changeSet>
 

@@ -33,7 +33,7 @@ public class PrincipalService {
     }
 
     public List<PrincipalReadDto> getPrincipalsByRole(Role role) {
-        return principalRepository.getAllByRole(role)
+        return principalRepository.getAllByRoles(role)
                 .stream()
                 .map(principal -> translationService.translate(principal, PrincipalReadDto.class))
                 .collect(Collectors.toList());
