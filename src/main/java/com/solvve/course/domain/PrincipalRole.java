@@ -22,5 +22,5 @@ public class PrincipalRole extends AbstractEntity {
     private Role role;
 
     @ManyToMany(mappedBy = "roles")
-    private List<Principal> principal = new ArrayList<>();
+    private List<Principal> principals = new ArrayList<>();
 }

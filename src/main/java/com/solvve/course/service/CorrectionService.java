@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CorrectionService {
@@ -30,9 +29,8 @@ public class CorrectionService {
     }
 
     public List<CorrectionReadDto> getAllCorrections() {
-        return correctionRepository.getAll().stream()
-            .map(correction -> translationService.translate(correction, CorrectionReadDto.class))
-            .collect(Collectors.toList());
+        return translationService
+                .translateList(correctionRepository.getAll(), CorrectionReadDto.class);
     }
 
     public void deleteCorrection(UUID id) {

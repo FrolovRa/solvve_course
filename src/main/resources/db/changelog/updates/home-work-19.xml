@@ -39,9 +39,6 @@
         </createTable>
 
         <createTable tableName="principal_principal_role">
-            <column name="id" type="uuid">
-                <constraints primaryKey="true"/>
-            </column>
             <column name="principal_id" type="uuid">
                 <constraints referencedTableName="principal"
                              referencedColumnNames="id"
@@ -56,8 +53,6 @@
                              deleteCascade="true"
                              nullable="false"/>
             </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="created_at" type="datetime"/>
         </createTable>
     </changeSet>
 

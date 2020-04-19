@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,9 +43,8 @@ public class PublicationCorrectionService {
     public List<CorrectionReadDto> getPublicationCorrections(UUID publicationId) {
         repositoryHelper.validateExist(Publication.class, publicationId);
 
-        return correctionRepository.getAllByPublicationId(publicationId).stream()
-                .map(correction -> translationService.translate(correction, CorrectionReadDto.class))
-                .collect(Collectors.toList());
+        return translationService
+                .translateList(correctionRepository.getAllByPublicationId(publicationId), CorrectionReadDto.class);
     }
 
     @Transactional
@@ -122,5 +120,4 @@ public class PublicationCorrectionService {
                 .append(buff, startIndex + selectedText.length(), buff.length - selectedText.length());
         return sb.toString();
     }
-
 }

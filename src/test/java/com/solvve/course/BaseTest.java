@@ -44,6 +44,9 @@ public abstract class BaseTest {
     protected PrincipalRepository principalRepository;
 
     @Autowired
+    protected PrincipalRoleRepository principalRoleRepository;
+
+    @Autowired
     protected UserRepository userRepository;
 
     @Autowired
@@ -69,6 +72,9 @@ public abstract class BaseTest {
 
     @Autowired
     protected PrincipalService principalService;
+
+    @Autowired
+    protected PrincipalRoleService principalRoleService;
 
     @Autowired
     protected UserService userService;

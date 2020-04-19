@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class PrincipalService {
@@ -33,10 +32,8 @@ public class PrincipalService {
     }
 
     public List<PrincipalReadDto> getPrincipalsByRole(Role role) {
-        return principalRepository.getAllByRoles(role)
-                .stream()
-                .map(principal -> translationService.translate(principal, PrincipalReadDto.class))
-                .collect(Collectors.toList());
+        return translationService
+                .translateList(principalRepository.getAllByRoles(role), PrincipalReadDto.class);
     }
 
     public PrincipalReadDto addPrincipal(PrincipalCreateDto principalCreateDto) {

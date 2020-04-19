@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,12 @@ public class TranslationService {
 
     public <T> T translate(Object srcObject, Class<T> targetClass) {
         return objectTranslator.translate(srcObject, targetClass);
+    }
+
+    public <T> List<T> translateList(List<?> objects, Class<T> targetClass) {
+        return objects.stream()
+                .map(o -> translate(o, targetClass))
+                .collect(Collectors.toList());
     }
 
     public void map(Object patchDto, Object entity) {
