@@ -39,20 +39,19 @@ public class PrincipalServiceTest extends BaseTest {
         assertThat(readDto).isEqualToComparingFieldByField(userFromDb);
     }
 
-//    @Test
-//    public void testPatchPrincipal() {
-//        PrincipalPatchDto principalPatchDto = new PrincipalPatchDto();
-//        principalPatchDto.setName("Test");
-//        principalPatchDto.setBlocked(true);
-//        principalPatchDto.setRoles(Collections.singletonList(Role.ADMIN));
-//        principalPatchDto.setEmail("test@maol.ss");
-//
-//        Principal principal = utils.getPrincipalFromDb();
-//
-//        PrincipalReadDto patchedPrincipal = principalService.patchPrincipal(principal.getId(), principalPatchDto);
-//
-//        assertThat(principalPatchDto).isEqualToComparingFieldByField(patchedPrincipal);
-//    }
+    @Test
+    public void testPatchPrincipal() {
+        PrincipalPatchDto principalPatchDto = new PrincipalPatchDto();
+        principalPatchDto.setName("Test");
+        principalPatchDto.setBlocked(true);
+        principalPatchDto.setEmail("test@maol.ss");
+
+        Principal principal = utils.getPrincipalFromDb();
+
+        PrincipalReadDto patchedPrincipal = principalService.patchPrincipal(principal.getId(), principalPatchDto);
+
+        assertThat(principalPatchDto).isEqualToComparingFieldByField(patchedPrincipal);
+    }
 
     @Test
     public void testEmptyPatchPrincipal() {
@@ -113,28 +112,4 @@ public class PrincipalServiceTest extends BaseTest {
 
         assertNotEquals(updatedAtAfterUpdate, updatedAtAfterReload);
     }
-
-//    @Test
-//    public void testGetPrincipalsByRole() {
-//        Principal principalUser = utils.getPrincipalFromDb();
-//        principalUser.setRoles(Collections.singletonList(Role.USER));
-//        principalUser = principalRepository.save(principalUser);
-//
-//        PrincipalRole role = new PrincipalRole();
-//        role.setRole(Role.CONTENT_MANAGER);
-//        role.setPrincipal();
-//
-//        Principal principalCM = utils.getPrincipalFromDb();
-//        principalCM.setRoles(Collections.singletonList(Role.CONTENT_MANAGER));
-//        principalCM = principalRepository.save(principalCM);
-//
-//        Principal secondPrincipalCM = utils.getPrincipalFromDb();
-//        secondPrincipalCM.setRoles(Collections.singletonList(Role.CONTENT_MANAGER));
-//        secondPrincipalCM = principalRepository.save(secondPrincipalCM);
-//
-//        assertThat(principalService.getPrincipalsByRole(Role.CONTENT_MANAGER))
-//                .extracting("id")
-//                .containsExactlyInAnyOrder(principalCM.getId(), secondPrincipalCM.getId())
-//                .doesNotContain(principalUser.getId());
-//    }
 }

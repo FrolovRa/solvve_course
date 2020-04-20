@@ -28,7 +28,8 @@ public class PersonController {
     }
 
     @PatchMapping("/{id}")
-    public PersonReadDto patchPerson(@PathVariable UUID id, @RequestBody PersonPatchDto personPatchDto) {
+    public PersonReadDto patchPerson(@PathVariable UUID id,
+                                     @RequestBody PersonPatchDto personPatchDto) {
         return personService.patchPerson(id, personPatchDto);
     }
 

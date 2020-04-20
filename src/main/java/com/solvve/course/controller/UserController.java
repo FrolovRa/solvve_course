@@ -28,7 +28,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserReadDto patchUser(@PathVariable UUID id, @RequestBody UserPatchDto userPatchDto) {
+    public UserReadDto patchUser(@PathVariable UUID id,
+                                 @RequestBody UserPatchDto userPatchDto) {
         return userService.patchUser(id, userPatchDto);
     }
 

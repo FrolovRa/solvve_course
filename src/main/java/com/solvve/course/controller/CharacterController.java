@@ -28,7 +28,8 @@ public class CharacterController {
     }
 
     @PatchMapping("/{id}")
-    public CharacterReadDto patchCharacter(@PathVariable UUID id, @RequestBody CharacterPatchDto characterPatchDto) {
+    public CharacterReadDto patchCharacter(@PathVariable UUID id,
+                                           @RequestBody CharacterPatchDto characterPatchDto) {
         return characterService.patchCharacter(id, characterPatchDto);
     }
 

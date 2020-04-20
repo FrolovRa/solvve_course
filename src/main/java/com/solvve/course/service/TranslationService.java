@@ -144,7 +144,9 @@ public class TranslationService {
         pageResult.setPageSize(page.getSize());
         pageResult.setTotalElements(page.getTotalElements());
         pageResult.setTotalPages(page.getTotalPages());
-        pageResult.setData(page.getContent().stream().map(e -> translate(e, targetClass)).collect(Collectors.toList()));
+        pageResult.setData(page.getContent().stream()
+                .map(e -> translate(e, targetClass))
+                .collect(Collectors.toList()));
 
         return pageResult;
     }

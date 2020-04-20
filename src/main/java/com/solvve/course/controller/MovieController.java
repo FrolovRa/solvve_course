@@ -36,7 +36,8 @@ public class MovieController {
     }
 
     @PatchMapping("/{id}")
-    public MovieReadDto patchMovie(@PathVariable UUID id, @RequestBody MoviePatchDto moviePatchDto) {
+    public MovieReadDto patchMovie(@PathVariable UUID id,
+                                   @RequestBody MoviePatchDto moviePatchDto) {
         return movieService.patchMovie(id, moviePatchDto);
     }
 

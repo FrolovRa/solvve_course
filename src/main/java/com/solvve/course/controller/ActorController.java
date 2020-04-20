@@ -29,12 +29,14 @@ public class ActorController {
     }
 
     @PutMapping("/{id}")
-    public ActorExtendedReadDto updateActor(@PathVariable UUID id, @RequestBody @Valid ActorPutDto actorPutDto) {
+    public ActorExtendedReadDto updateActor(@PathVariable UUID id,
+                                            @RequestBody @Valid ActorPutDto actorPutDto) {
         return actorService.updateActor(id, actorPutDto);
     }
 
     @PatchMapping("/{id}")
-    public ActorExtendedReadDto patchActor(@PathVariable UUID id, @RequestBody ActorPatchDto actorPatchDto) {
+    public ActorExtendedReadDto patchActor(@PathVariable UUID id,
+                                           @RequestBody ActorPatchDto actorPatchDto) {
         return actorService.patchActor(id, actorPatchDto);
     }
 

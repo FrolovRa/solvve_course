@@ -1,6 +1,5 @@
 package com.solvve.course.controller;
 
-import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.principal.PrincipalCreateDto;
 import com.solvve.course.dto.principal.PrincipalPatchDto;
 import com.solvve.course.dto.principal.PrincipalReadDto;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,18 +22,14 @@ public class PrincipalController {
         return principalService.getPrincipal(id);
     }
 
-    @GetMapping("/by-role/{role}")
-    public List<PrincipalReadDto> getPrincipalsByRole(@PathVariable Role role) {
-        return principalService.getPrincipalsByRole(role);
-    }
-
     @PostMapping
     public PrincipalReadDto addPrincipal(@RequestBody @Valid PrincipalCreateDto principalCreateDto) {
         return principalService.addPrincipal(principalCreateDto);
     }
 
     @PatchMapping("/{id}")
-    public PrincipalReadDto patchPrincipal(@PathVariable UUID id, @RequestBody PrincipalPatchDto principalPatchDto) {
+    public PrincipalReadDto patchPrincipal(@PathVariable UUID id,
+                                           @RequestBody PrincipalPatchDto principalPatchDto) {
         return principalService.patchPrincipal(id, principalPatchDto);
     }
 

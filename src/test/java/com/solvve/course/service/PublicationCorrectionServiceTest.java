@@ -41,14 +41,16 @@ public class PublicationCorrectionServiceTest extends BaseTest {
         createDto.setUserId(utils.getUserFromDb().getId());
         createDto.setPublicationId(publication.getId());
 
-        CorrectionReadDto readDto = publicationCorrectionService.addPublicationCorrection(publication.getId(), createDto);
+        CorrectionReadDto readDto =
+                publicationCorrectionService.addPublicationCorrection(publication.getId(), createDto);
         assertThat(createDto).isEqualToIgnoringGivenFields(readDto,
                 "userId", "publicationId", "updatedAt", "createdAt");
         assertNotNull(readDto.getId());
         assertEquals(readDto.getUser().getId(), createDto.getUserId());
         assertEquals(readDto.getPublication().getId(), createDto.getPublicationId());
 
-        List<CorrectionReadDto> corrections = publicationCorrectionService.getPublicationCorrections(publication.getId());
+        List<CorrectionReadDto> corrections =
+                publicationCorrectionService.getPublicationCorrections(publication.getId());
         assertThat(corrections.size()).isEqualTo(1);
         assertThat(corrections.get(0)).isEqualTo(readDto);
     }

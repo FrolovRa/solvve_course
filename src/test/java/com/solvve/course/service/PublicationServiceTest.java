@@ -53,7 +53,8 @@ public class PublicationServiceTest extends BaseTest {
         publicationPatchDto.setContent("Test");
         publicationPatchDto.setManagerId(manager.getId());
 
-        PublicationReadDto patchedPublication = publicationService.patchPublication(publication.getId(), publicationPatchDto);
+        PublicationReadDto patchedPublication =
+                publicationService.patchPublication(publication.getId(), publicationPatchDto);
 
         assertThat(publicationPatchDto).isEqualToIgnoringGivenFields(patchedPublication,
             "managerId", "updatedAt", "createdAt");
@@ -65,7 +66,8 @@ public class PublicationServiceTest extends BaseTest {
         PublicationPatchDto publicationPatchDto = new PublicationPatchDto();
         Publication publication = utils.getPublicationFromDb();
 
-        PublicationReadDto patchedPublication = publicationService.patchPublication(publication.getId(), publicationPatchDto);
+        PublicationReadDto patchedPublication =
+                publicationService.patchPublication(publication.getId(), publicationPatchDto);
 
         assertThat(patchedPublication).isEqualToIgnoringGivenFields(publication, "manager");
         assertThat(patchedPublication.getManager()).isEqualToComparingFieldByField(publication.getManager());

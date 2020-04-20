@@ -54,28 +54,6 @@ public class PrincipalControllerTest extends BaseControllerTest {
         assertTrue(resultJson.contains(exception.getMessage()));
     }
 
-//    @Test
-//    public void testGetPrincipalsByRole() throws Exception {
-//        List<PrincipalReadDto> expected = Collections.singletonList(utils.createPrincipalReadDto());
-//
-//        when(principalService.getPrincipalsByRole(Role.USER)).thenReturn(expected);
-//
-//        String resultJson = mvc.perform(get("/api/v1/principals/by-role/{role}", Role.USER))
-//                .andExpect(status().isOk())
-//                .andReturn().getResponse().getContentAsString();
-//
-//        List<PrincipalReadDto> actual = Arrays.asList(objectMapper.readValue(resultJson, PrincipalReadDto[].class));
-//        assertEquals(expected, actual);
-//    }
-
-    @Test
-    public void testGetPrincipalByRoleWithNotValidRole() throws Exception {
-        mvc.perform(get("/api/v1/principals/by-role/{role}", "bad"))
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(principalService);
-    }
-
     @Test
     public void testGetPrincipalWithNotValidId() throws Exception {
         mvc.perform(get("/api/v1/principals/{id}", 42)).andExpect(status().isBadRequest());
