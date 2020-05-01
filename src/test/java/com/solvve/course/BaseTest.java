@@ -2,6 +2,7 @@ package com.solvve.course;
 
 import com.solvve.course.repository.*;
 import com.solvve.course.service.*;
+import com.solvve.course.service.importer.MovieImporterService;
 import com.solvve.course.util.TestUtils;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +15,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(statements = {
-        "delete from movie_actor",
-        "delete from movie_star_actor",
-        "delete from movie_genres",
-        "delete from correction",
-        "delete from rating",
-        "delete from user",
-        "delete from publication",
-        "delete from principal",
-        "delete from character",
-        "delete from actor",
-        "delete from person",
-        "delete from movie"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    "delete from movie_actor",
+    "delete from movie_star_actor",
+    "delete from movie_genres",
+    "delete from correction",
+    "delete from rating",
+    "delete from user",
+    "delete from publication",
+    "delete from principal",
+    "delete from character",
+    "delete from actor",
+    "delete from person",
+    "delete from movie"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public abstract class BaseTest {
 
     @Autowired
@@ -87,6 +88,9 @@ public abstract class BaseTest {
 
     @Autowired
     protected PublicationCorrectionService publicationCorrectionService;
+
+    @Autowired
+    protected MovieImporterService movieImporterService;
 
     @Autowired
     protected RepositoryHelper repositoryHelper;

@@ -10,6 +10,7 @@ public enum Genre {
     HORROR,
     MUSICAL,
     SCIENCE_FICTION,
+    THRILLER,
     WAR,
     WESTERN
 }
