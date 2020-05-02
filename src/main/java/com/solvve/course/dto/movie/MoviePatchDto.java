@@ -11,5 +11,5 @@ public class MoviePatchDto {
 
     private String description;
 
-    private LocalDate release;
+    private LocalDate releaseDate;
 }

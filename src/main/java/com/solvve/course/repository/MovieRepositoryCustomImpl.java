@@ -61,10 +61,10 @@ public class MovieRepositoryCustomImpl implements MovieRepositoryCustom {
             sb.append(" AND m.name = :name");
         }
         if (filter.getReleaseDateFrom() != null) {
-            sb.append(" AND m.release >= :releaseDateFrom");
+            sb.append(" AND m.releaseDate >= :releaseDateFrom");
         }
         if (filter.getReleaseDateTo() != null) {
-            sb.append(" AND m.release < :releaseDateTo");
+            sb.append(" AND m.releaseDate < :releaseDateTo");
         }
         if (sort != null && sort.isSorted()) {
             sb.append(" ORDER BY ");

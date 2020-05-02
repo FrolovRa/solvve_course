@@ -15,7 +15,7 @@ public class MovieReadDto {
 
     private String description;
 
-    private LocalDate release;
+    private LocalDate releaseDate;
 
     private Double rating;
 

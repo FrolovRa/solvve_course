@@ -39,6 +39,7 @@ public class MovieService {
 
     public PageResult<MovieReadDto> getMovies(MovieFilter filter, Pageable pageable) {
         Page<Movie> movies = movieRepository.findByFilter(filter, pageable);
+
         return translationService.toPageResult(movies, MovieReadDto.class);
     }
 

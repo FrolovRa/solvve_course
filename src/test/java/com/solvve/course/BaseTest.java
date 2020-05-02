@@ -2,6 +2,7 @@ package com.solvve.course;
 
 import com.solvve.course.repository.*;
 import com.solvve.course.service.*;
+import com.solvve.course.service.importer.ExternalSystemImportService;
 import com.solvve.course.service.importer.MovieImporterService;
 import com.solvve.course.util.TestUtils;
 import org.junit.runner.RunWith;
@@ -26,7 +27,8 @@ import org.springframework.test.context.junit4.SpringRunner;
     "delete from character",
     "delete from actor",
     "delete from person",
-    "delete from movie"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    "delete from movie",
+    "delete from external_system_import"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public abstract class BaseTest {
 
     @Autowired
@@ -91,6 +93,12 @@ public abstract class BaseTest {
 
     @Autowired
     protected MovieImporterService movieImporterService;
+
+    @Autowired
+    protected ExternalSystemImportRepository externalSystemImportRepository;
+
+    @Autowired
+    protected ExternalSystemImportService externalSystemImportService;
 
     @Autowired
     protected RepositoryHelper repositoryHelper;

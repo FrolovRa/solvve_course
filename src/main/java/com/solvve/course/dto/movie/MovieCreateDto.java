@@ -18,5 +18,5 @@ public class MovieCreateDto {
     private String description;
 
     @NotNull
-    private LocalDate release;
+    private LocalDate releaseDate;
 }

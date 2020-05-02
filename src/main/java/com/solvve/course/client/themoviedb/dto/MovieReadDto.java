@@ -8,14 +8,12 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class MovieReadDto {
 
     private String id;
-
-    private String originalTitle;
 
     private String title;
 
@@ -26,5 +24,5 @@ public class MovieReadDto {
     private LocalDate releaseDate;
 
     @JsonDeserialize(using = TheMovieDbClientConfig.GenresDeserializer.class)
-    private List<Genre> genres;
+    private Set<Genre> genres;
 }

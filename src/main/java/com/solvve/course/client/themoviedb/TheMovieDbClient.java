@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = "api.themoviedb.org",
     url = "${themoviedb.api.url}",
@@ -13,5 +14,5 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface TheMovieDbClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/movie/{movieId}")
-    MovieReadDto getMovie(@PathVariable String movieId);
+    MovieReadDto getMovie(@PathVariable String movieId, @RequestParam String language);
 }

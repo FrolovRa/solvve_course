@@ -70,7 +70,7 @@ public class TestUtils {
         generator = new RandomObjectGenerator(c);
     }
 
-    private <T extends AbstractEntity> T generateFlatEntityWithoutId(Class<T> targetClass) {
+    public <T extends AbstractEntity> T generateFlatEntityWithoutId(Class<T> targetClass) {
         T testObject = generator.generateRandomObject(targetClass);
         testObject.setId(null);
 

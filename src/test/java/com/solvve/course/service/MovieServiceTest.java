@@ -62,7 +62,7 @@ public class MovieServiceTest extends BaseTest {
         MoviePatchDto moviePatchDto = new MoviePatchDto();
         moviePatchDto.setName("Epic");
         moviePatchDto.setDescription("test Description");
-        moviePatchDto.setRelease(LocalDate.now());
+        moviePatchDto.setReleaseDate(LocalDate.now());
 
         Movie movieFromDb = utils.getMovieFromDb();
         MovieReadDto patchedMovie = movieService.patchMovie(movieFromDb.getId(), moviePatchDto);
@@ -223,17 +223,17 @@ public class MovieServiceTest extends BaseTest {
         Movie movie = new Movie();
         movie.setName("movie");
         movie.setDescription("description");
-        movie.setRelease(LocalDate.of(2000, 1, 10));
+        movie.setReleaseDate(LocalDate.of(2000, 1, 10));
 
         Movie secondMovie = new Movie();
         secondMovie.setName("movie2");
         secondMovie.setDescription("description2");
-        secondMovie.setRelease(LocalDate.of(2001, 2, 10));
+        secondMovie.setReleaseDate(LocalDate.of(2001, 2, 10));
 
         Movie thirdMovie = new Movie();
         thirdMovie.setName("movie3");
         thirdMovie.setDescription("description3");
-        thirdMovie.setRelease(LocalDate.of(2002, 2, 10));
+        thirdMovie.setReleaseDate(LocalDate.of(2002, 2, 10));
 
         movie = movieRepository.save(movie);
         secondMovie = movieRepository.save(secondMovie);
@@ -257,21 +257,21 @@ public class MovieServiceTest extends BaseTest {
         movie.setDescription("description");
         movie.setCast(Collections.singletonList(actor));
         movie.setGenres(Stream.of(Genre.ADVENTURE, Genre.COMEDY).collect(Collectors.toSet()));
-        movie.setRelease(LocalDate.of(2000, 1, 10));
+        movie.setReleaseDate(LocalDate.of(2000, 1, 10));
 
         Movie secondMovie = new Movie();
         secondMovie.setName("movie");
         secondMovie.setDescription("description2");
         secondMovie.setCast(Collections.singletonList(actor));
         secondMovie.setGenres(Stream.of(Genre.COMEDY, Genre.SCIENCE_FICTION).collect(Collectors.toSet()));
-        secondMovie.setRelease(LocalDate.of(2001, 2, 10));
+        secondMovie.setReleaseDate(LocalDate.of(2001, 2, 10));
 
         Movie thirdMovie = new Movie();
         thirdMovie.setName("movie3");
         thirdMovie.setDescription("description3");
         thirdMovie.setCast(Collections.singletonList(actor));
         thirdMovie.setGenres(Stream.of(Genre.HORROR).collect(Collectors.toSet()));
-        thirdMovie.setRelease(LocalDate.of(2002, 2, 10));
+        thirdMovie.setReleaseDate(LocalDate.of(2002, 2, 10));
 
         movie = movieRepository.save(movie);
         secondMovie = movieRepository.save(secondMovie);
@@ -295,7 +295,7 @@ public class MovieServiceTest extends BaseTest {
         movie.setName("movie");
         movie.setDescription("description");
         movie.setGenres(Stream.of(Genre.ADVENTURE, Genre.COMEDY).collect(Collectors.toSet()));
-        movie.setRelease(LocalDate.of(2000, 1, 10));
+        movie.setReleaseDate(LocalDate.of(2000, 1, 10));
 
         movie = movieRepository.save(movie);
 
@@ -320,7 +320,7 @@ public class MovieServiceTest extends BaseTest {
         movie.setName("movie");
         movie.setDescription("description");
         movie.setGenres(Stream.of(Genre.ADVENTURE, Genre.COMEDY).collect(Collectors.toSet()));
-        movie.setRelease(LocalDate.of(2000, 1, 10));
+        movie.setReleaseDate(LocalDate.of(2000, 1, 10));
 
         movie = movieRepository.save(movie);
         Double oldAvgRating = movie.getRating();
@@ -349,13 +349,13 @@ public class MovieServiceTest extends BaseTest {
         movie.setName("aaa");
         movie.setDescription("description");
         movie.setGenres(Stream.of(Genre.ACTION, Genre.COMEDY).collect(Collectors.toSet()));
-        movie.setRelease(LocalDate.now());
+        movie.setReleaseDate(LocalDate.now());
 
         Movie secondMovie = new Movie();
         secondMovie.setName("bbb");
         secondMovie.setDescription("description");
         secondMovie.setGenres(Stream.of(Genre.WESTERN).collect(Collectors.toSet()));
-        secondMovie.setRelease(LocalDate.now());
+        secondMovie.setReleaseDate(LocalDate.now());
 
         movie = movieRepository.save(movie);
         secondMovie = movieRepository.save(secondMovie);

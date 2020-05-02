@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -16,4 +17,7 @@ public interface MovieRepository extends CrudRepository<Movie, UUID>, MovieRepos
 
     @Query(value = "SELECT m.id FROM Movie m")
     Stream<UUID> getIdsOfAllMovies();
+
+    @Query(value = "SELECT m.id FROM Movie m WHERE m.name = :name AND m.releaseDate = :releaseDate")
+    UUID findMovieIdByNameAndReleaseDate(String name, LocalDate releaseDate);
 }

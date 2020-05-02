@@ -16,9 +16,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TheMovieDbClientConfig {
@@ -44,10 +42,10 @@ public class TheMovieDbClientConfig {
         return objectMapper;
     }
 
-    public static class GenresDeserializer extends JsonDeserializer<List<Genre>> {
+    public static class GenresDeserializer extends JsonDeserializer<Set<Genre>> {
 
         @Override
-        public List<Genre> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+        public Set<Genre> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
             throws IOException {
             List<HashMap<String, String>> parsedResult = jsonParser.readValueAs(new TypeReference<>() {
             });
@@ -56,7 +54,8 @@ public class TheMovieDbClientConfig {
                 .map(genre -> Arrays.stream(Genre.values())
                     .filter(genreEnum -> genreEnum.name().equalsIgnoreCase(genre.replace(" ", "_")))
                     .findFirst().orElse(null))
-                .collect(Collectors.toList());
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
         }
     }
 }

@@ -28,7 +28,7 @@ public class Movie extends AbstractEntity {
     private Double rating;
 
     @NotNull
-    private LocalDate release;
+    private LocalDate releaseDate;
 
     @ElementCollection(targetClass = Genre.class, fetch = FetchType.EAGER)
     @CollectionTable(
