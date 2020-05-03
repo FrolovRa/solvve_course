@@ -14,9 +14,7 @@ import java.util.Set;
 public class MovieReadDto {
 
     private String id;
-
     private String title;
-
     private String overview;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

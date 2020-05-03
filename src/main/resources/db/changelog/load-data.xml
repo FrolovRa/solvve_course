@@ -4,58 +4,66 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="load-data" author="frolov">
-        <loadData tableName="principal" file="db/data/load-principal.csv" separator=";">
+    <changeSet id="load-data" author="frolov" runOnChange="true">
+        <loadUpdateData tableName="principal" file="db/data/load-principal.csv" separator=";"
+                        primaryKey="id">
             <column name="id" type="uuid"/>
             <column name="name" type="string"/>
             <column name="email" type="string"/>
             <column name="blocked" type="boolean"/>
             <column name="role" type="string"/>
-        </loadData>
+        </loadUpdateData>
 
-        <loadData tableName="user" file="db/data/load-user.csv" separator=";">
+        <loadUpdateData tableName="user" file="db/data/load-user.csv" separator=";" primaryKey="id">
             <column name="id" type="uuid"/>
             <column name="principal_id" type="uuid"/>
             <column name="blocked_review" type="boolean"/>
             <column name="trust_level" type="numeric"/>
-        </loadData>
+        </loadUpdateData>
 
-        <loadData tableName="person" file="db/data/load-person.csv" separator=";">
+        <loadUpdateData tableName="person" file="db/data/load-person.csv" separator=";"
+                        primaryKey="id">
             <column name="id" type="uuid"/>
             <column name="name" type="string"/>
-        </loadData>
+            <column name="birth_date" type="Date"/>
+            <column name="biography" type="string"/>
+        </loadUpdateData>
 
-        <loadData tableName="director" file="db/data/load-director.csv" separator=";">
+        <loadUpdateData tableName="actor" file="db/data/load-actor.csv" separator=";"
+                        primaryKey="id">
             <column name="id" type="uuid"/>
             <column name="person_id" type="uuid"/>
-        </loadData>
+        </loadUpdateData>
 
-        <loadData tableName="actor" file="db/data/load-actor.csv" separator=";">
-            <column name="id" type="uuid"/>
-            <column name="person_id" type="uuid"/>
-        </loadData>
-
-        <loadData tableName="movie" file="db/data/load-movie.csv" separator=";">
+        <loadUpdateData tableName="movie" file="db/data/load-movie.csv" separator=";"
+                        primaryKey="id">
             <column name="id" type="uuid"/>
             <column name="name" type="string"/>
             <column name="description" type="string"/>
-            <column name="release" type="Date"/>
-        </loadData>
+            <column name="release_date" type="Date"/>
+            <column name="create_date" type="Date"
+                    defaultValueComputed="${column.datetime.defaultValue}"/>
+            <column name="update_date" type="Date"
+                    defaultValueComputed="${column.datetime.defaultValue}"/>
+        </loadUpdateData>
 
-        <loadData tableName="character" file="db/data/load-character.csv" separator=";">
+        <loadUpdateData tableName="character" file="db/data/load-character.csv" separator=";"
+                        primaryKey="id">
             <column name="id" type="uuid"/>
             <column name="name" type="string"/>
             <column name="actor_id" type="uuid"/>
             <column name="movie_id" type="uuid"/>
-        </loadData>
+        </loadUpdateData>
 
-        <loadData tableName="publication" file="db/data/load-publication.csv" separator=";">
+        <loadUpdateData tableName="publication" file="db/data/load-publication.csv" separator=";"
+                        primaryKey="id">
             <column name="id" type="uuid"/>
             <column name="manager_id" type="uuid"/>
             <column name="content" type="string"/>
-        </loadData>
+        </loadUpdateData>
 
-        <loadData tableName="correction" file="db/data/load-correction.csv" separator=";">
+        <loadUpdateData tableName="correction" file="db/data/load-correction.csv" separator=";"
+                        primaryKey="id">
             <column name="id" type="uuid"/>
             <column name="user_id" type="uuid"/>
             <column name="publication_id" type="uuid"/>
@@ -63,14 +71,15 @@
             <column name="selected_text" type="string"/>
             <column name="proposed_text" type="string"/>
             <column name="status" type="string"/>
-        </loadData>
+        </loadUpdateData>
 
-        <loadData tableName="rating" file="db/data/load-rating.csv" separator=";">
+        <loadUpdateData tableName="rating" file="db/data/load-rating.csv" separator=";"
+                        primaryKey="id">
             <column name="id" type="uuid"/>
             <column name="user_id" type="uuid"/>
             <column name="entity_id" type="uuid"/>
             <column name="rating" type="numeric"/>
-        </loadData>
+        </loadUpdateData>
     </changeSet>
 
 </databaseChangeLog>

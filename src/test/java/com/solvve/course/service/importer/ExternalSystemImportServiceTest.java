@@ -1,8 +1,10 @@
 package com.solvve.course.service.importer;
 
 import com.solvve.course.BaseTest;
+import com.solvve.course.domain.Actor;
 import com.solvve.course.domain.ExternalSystemImport;
 import com.solvve.course.domain.Movie;
+import com.solvve.course.domain.User;
 import com.solvve.course.domain.constant.ImportedEntityType;
 import com.solvve.course.exception.ImportAlreadyPerformedException;
 import org.assertj.core.api.Assertions;
@@ -39,10 +41,19 @@ public class ExternalSystemImportServiceTest extends BaseTest {
     @Test
     public void testNoExceptionWhenAlreadyImportedButDifferentEntityType() throws ImportAlreadyPerformedException {
         ExternalSystemImport esi = utils.generateFlatEntityWithoutId(ExternalSystemImport.class);
-        esi.setEntityType(ImportedEntityType.ACTOR);
+        esi.setEntityType(ImportedEntityType.MOVIE);
         esi = externalSystemImportRepository.save(esi);
 
-        externalSystemImportService.validateNotImported(Movie.class, esi.getIdInExternalSystem());
+        externalSystemImportService.validateNotImported(Actor.class, esi.getIdInExternalSystem());
+    }
+
+    @Test
+    public void testExceptionForUnsupportedType() throws ImportAlreadyPerformedException {
+        ExternalSystemImport esi = utils.generateFlatEntityWithoutId(ExternalSystemImport.class);
+        esi.setEntityType(ImportedEntityType.MOVIE);
+        esi = externalSystemImportRepository.save(esi);
+
+        externalSystemImportService.validateNotImported(User.class, esi.getIdInExternalSystem());
     }
 
     @Test
