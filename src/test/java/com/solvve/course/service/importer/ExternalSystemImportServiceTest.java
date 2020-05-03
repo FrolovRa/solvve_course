@@ -48,12 +48,17 @@ public class ExternalSystemImportServiceTest extends BaseTest {
     }
 
     @Test
-    public void testExceptionForUnsupportedType() throws ImportAlreadyPerformedException {
+    public void testExceptionForUnsupportedType() {
         ExternalSystemImport esi = utils.generateFlatEntityWithoutId(ExternalSystemImport.class);
         esi.setEntityType(ImportedEntityType.MOVIE);
         esi = externalSystemImportRepository.save(esi);
 
-        externalSystemImportService.validateNotImported(User.class, esi.getIdInExternalSystem());
+        final String idInExternalSystem = esi.getIdInExternalSystem();
+        IllegalArgumentException exception = Assertions.catchThrowableOfType(
+            () -> externalSystemImportService.validateNotImported(User.class, idInExternalSystem),
+            IllegalArgumentException.class
+        );
+        assertEquals("Importing of entities " + User.class + " is not supported", exception.getMessage());
     }
 
     @Test
