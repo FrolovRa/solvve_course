@@ -18,5 +18,7 @@ public class PrincipalReadDto {
 
     private String email;
 
+    private String password;
+
     private Boolean blocked;
 }

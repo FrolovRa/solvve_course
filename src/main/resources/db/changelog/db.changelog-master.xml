@@ -13,6 +13,7 @@
     <include file="db/changelog/updates/home-work-19.xml"/>
     <include file="db/changelog/updates/add-new-columns-to-person.xml"/>
     <include file="db/changelog/updates/home-work-21.xml"/>
+    <include file="db/changelog/updates/home-work-22.xml"/>
     <include file="db/changelog/load-data.xml"/>
     <include file="db/changelog/load-static-data.xml"/>
 

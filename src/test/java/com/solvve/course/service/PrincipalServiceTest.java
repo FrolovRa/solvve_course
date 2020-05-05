@@ -41,10 +41,7 @@ public class PrincipalServiceTest extends BaseTest {
 
     @Test
     public void testPatchPrincipal() {
-        PrincipalPatchDto principalPatchDto = new PrincipalPatchDto();
-        principalPatchDto.setName("Test");
-        principalPatchDto.setBlocked(true);
-        principalPatchDto.setEmail("test@maol.ss");
+        PrincipalPatchDto principalPatchDto = utils.createPrincipalPatchDto();
 
         Principal principal = utils.getPrincipalFromDb();
 
