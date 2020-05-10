@@ -63,7 +63,7 @@ public class TheMovieDbImportOneOffJob {
             }
 
             log.info("Total movies to import={}, successfully imported={}, skipped={}, failed={}",
-                moviesToImport.size(), successfullyImported, skipped, failed);
+                    moviesToImport.size(), successfullyImported, skipped, failed);
         } catch (Exception e) {
             log.warn("Failed to perform import", e);
         }

@@ -24,19 +24,19 @@ public class MovieImporterService {
     private ExternalSystemImportService externalSystemImportService;
 
     public UUID importMovie(String movieExternalId)
-        throws ImportedEntityAlreadyExistException, ImportAlreadyPerformedException {
+            throws ImportedEntityAlreadyExistException, ImportAlreadyPerformedException {
         externalSystemImportService.validateNotImported(Movie.class, movieExternalId);
 
         MovieReadDto externalMovie = theMovieDbClient.getMovie(movieExternalId, "en");
 
         final UUID existingMovieId = movieRepository.findMovieIdByNameAndReleaseDate(
-            externalMovie.getTitle(),
-            externalMovie.getReleaseDate()
+                externalMovie.getTitle(),
+                externalMovie.getReleaseDate()
         );
 
         if (existingMovieId != null) {
             throw new ImportedEntityAlreadyExistException(Movie.class, existingMovieId,
-                "Movie " + externalMovie.getTitle() + " already exist");
+                    "Movie " + externalMovie.getTitle() + " already exist");
         }
 
         Movie movie = new Movie();

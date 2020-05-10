@@ -22,8 +22,8 @@ public class ExternalSystemImportService {
                                     String idInExternalSystem) throws ImportAlreadyPerformedException {
         ImportedEntityType importedEntityType = getImportedEntityType(entityToImport);
         ExternalSystemImport esi = externalSystemImportRepository.findByIdInExternalSystemAndEntityType(
-            idInExternalSystem,
-            importedEntityType
+                idInExternalSystem,
+                importedEntityType
         );
 
         if (esi != null) {

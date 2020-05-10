@@ -10,10 +10,10 @@ public class ImportAlreadyPerformedException extends Exception {
 
     public ImportAlreadyPerformedException(ExternalSystemImport esi) {
         super(String.format(
-            "Already performed import of %s with id=%s and id in external system = %s",
-            esi.getEntityType(),
-            esi.getEntityId(),
-            esi.getIdInExternalSystem())
+                "Already performed import of %s with id=%s and id in external system = %s",
+                esi.getEntityType(),
+                esi.getEntityId(),
+                esi.getIdInExternalSystem())
         );
         this.externalSystemImport = esi;
     }
