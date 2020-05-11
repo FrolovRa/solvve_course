@@ -24,6 +24,9 @@ public class Principal extends AbstractEntity {
     @NotNull
     private String email;
 
+    @NotNull
+    private String password;
+
     @ManyToMany
     @JoinTable(name = "principal_principal_role",
             joinColumns = @JoinColumn(name = "principal_id"),

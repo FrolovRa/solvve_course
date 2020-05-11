@@ -1,6 +1,7 @@
 package com.solvve.course;
 
 import com.solvve.course.repository.*;
+import com.solvve.course.security.UserDetailServiceImpl;
 import com.solvve.course.service.*;
 import com.solvve.course.service.importer.ExternalSystemImportService;
 import com.solvve.course.service.importer.MovieImporterService;
@@ -99,6 +100,9 @@ public abstract class BaseTest {
 
     @Autowired
     protected ExternalSystemImportService externalSystemImportService;
+
+    @Autowired
+    protected UserDetailServiceImpl userDetailService;
 
     @Autowired
     protected RepositoryHelper repositoryHelper;

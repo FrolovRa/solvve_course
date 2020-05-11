@@ -9,5 +9,7 @@ public class PrincipalPatchDto {
 
     private String email;
 
+    private String password;
+
     private Boolean blocked;
 }

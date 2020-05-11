@@ -15,5 +15,8 @@ public class PrincipalCreateDto {
     @Email
     private String email;
 
+    @NotNull
+    private String password;
+
     private Boolean blocked;
 }
