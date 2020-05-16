@@ -10,8 +10,8 @@ public class UserDetailImpl extends User {
 
     public UserDetailImpl(Principal principal) {
         super(principal.getEmail(), principal.getPassword(),
-            principal.getRoles().stream()
-                .map(r -> new SimpleGrantedAuthority(r.getRole().toString()))
-                .collect(Collectors.toList()));
+                principal.getRoles().stream()
+                        .map(r -> new SimpleGrantedAuthority(r.getRole().toString()))
+                        .collect(Collectors.toList()));
     }
 }
