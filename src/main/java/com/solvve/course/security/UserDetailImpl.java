@@ -15,3 +15,4 @@ public class UserDetailImpl extends User {
                         .collect(Collectors.toList()));
     }
 }
+

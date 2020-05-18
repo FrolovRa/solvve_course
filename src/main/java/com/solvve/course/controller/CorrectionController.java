@@ -3,6 +3,7 @@ package com.solvve.course.controller;
 import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.service.CorrectionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class CorrectionController {
     @Autowired
     private CorrectionService correctionService;
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR')")
     @GetMapping
     public List<CorrectionReadDto> getAllCorrections() {
         return correctionService.getAllCorrections();
