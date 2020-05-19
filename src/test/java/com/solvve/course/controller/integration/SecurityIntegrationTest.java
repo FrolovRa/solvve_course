@@ -2,7 +2,10 @@ package com.solvve.course.controller.integration;
 
 import com.solvve.course.BaseTest;
 import com.solvve.course.domain.Principal;
+import com.solvve.course.domain.PrincipalRole;
+import com.solvve.course.domain.constant.Role;
 import com.solvve.course.dto.PageResult;
+import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.movie.MovieReadDto;
 import com.solvve.course.repository.PrincipalRepository;
 import org.assertj.core.api.Assertions;
@@ -129,6 +132,87 @@ public class SecurityIntegrationTest extends BaseTest {
                 })).isInstanceOf(HttpClientErrorException.class)
                 .extracting("statusCode")
                 .isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    public void testGetAllCorrections() {
+        final String email = "test@mail.reom";
+        final String password = "pass1234";
+
+        Principal principal = new Principal();
+        principal.setName("Bob");
+        principal.setEmail(email);
+        principal.setPassword(passwordEncoder.encode(password));
+
+        principalRepository.save(principal);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", getBasicAuthorizationHeaderValue(email, password));
+        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+
+        Assertions.assertThatThrownBy(() -> restTemplate.exchange(
+                "http://localhost:8080/api/v1/corrections", HttpMethod.GET, httpEntity,
+                new ParameterizedTypeReference<Object>() {
+                })).isInstanceOf(HttpClientErrorException.class)
+                .extracting("statusCode")
+                .isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void testGetAllCorrectionsWithAdminRole() {
+        final String email = "test@mail.reom";
+        final String password = "pass1234";
+
+        PrincipalRole adminRole = principalRoleRepository.getByRole(Role.ADMIN);
+
+        Principal principal = new Principal();
+        principal.setName("Bob");
+        principal.setEmail(email);
+        principal.setRoles(List.of(adminRole));
+        principal.setPassword(passwordEncoder.encode(password));
+
+        principalRepository.save(principal);
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", getBasicAuthorizationHeaderValue(email, password));
+        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<List<CorrectionReadDto>> response = restTemplate.exchange(
+                "http://localhost:8080/api/v1/corrections", HttpMethod.GET, httpEntity,
+                new ParameterizedTypeReference<>() {
+                });
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testGetAllCorrectionsWithManagerRole() {
+        final String email = "test@mail.reom";
+        final String password = "pass1234";
+
+        PrincipalRole adminRole = principalRoleRepository.getByRole(Role.MODERATOR);
+
+        Principal principal = new Principal();
+        principal.setName("Bob");
+        principal.setEmail(email);
+        principal.setRoles(List.of(adminRole));
+        principal.setPassword(passwordEncoder.encode(password));
+
+        principalRepository.save(principal);
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", getBasicAuthorizationHeaderValue(email, password));
+        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+
+        Assertions.assertThatThrownBy(() -> restTemplate.exchange(
+                "http://localhost:8080/api/v1/corrections", HttpMethod.GET, httpEntity,
+                new ParameterizedTypeReference<Object>() {
+                })).isInstanceOf(HttpClientErrorException.class)
+                .extracting("statusCode")
+                .isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     private String getBasicAuthorizationHeaderValue(String username, String password) {
