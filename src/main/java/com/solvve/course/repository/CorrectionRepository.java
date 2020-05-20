@@ -21,4 +21,6 @@ public interface CorrectionRepository extends CrudRepository<Correction, UUID> {
                                            String selectedText, Integer startIndex);
 
     List<Correction> getAllByPublicationId(UUID publicationId);
+
+    List<Correction> getAllByUserId(UUID userId);
 }

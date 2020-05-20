@@ -29,8 +29,7 @@ public class CorrectionService {
     }
 
     public List<CorrectionReadDto> getAllCorrections() {
-        return translationService
-                .translateList(correctionRepository.getAll(), CorrectionReadDto.class);
+        return translationService.translateList(correctionRepository.getAll(), CorrectionReadDto.class);
     }
 
     public void deleteCorrection(UUID id) {

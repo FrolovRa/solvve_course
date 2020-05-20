@@ -1,13 +1,16 @@
 package com.solvve.course.controller;
 
+import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.dto.user.UserReadDto;
 import com.solvve.course.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,6 +23,12 @@ public class UserController {
     @GetMapping("/{id}")
     public UserReadDto getUser(@PathVariable UUID id) {
         return userService.getUser(id);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODERATOR', 'USER')")
+    @GetMapping("/{id}/corrections")
+    public List<CorrectionReadDto> getUserCorrections(@PathVariable UUID id) {
+        return userService.getUserCorrections(id);
     }
 
     @PostMapping

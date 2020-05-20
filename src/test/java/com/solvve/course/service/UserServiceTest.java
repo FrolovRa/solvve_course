@@ -1,7 +1,9 @@
 package com.solvve.course.service;
 
 import com.solvve.course.BaseTest;
+import com.solvve.course.domain.Correction;
 import com.solvve.course.domain.User;
+import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.dto.user.UserReadDto;
@@ -24,6 +26,17 @@ public class UserServiceTest extends BaseTest {
         UserReadDto userReadDto = userService.getUser(user.getId());
 
         assertThat(actualUser).isEqualToComparingFieldByField(userReadDto);
+    }
+
+    @Test
+    public void getUserCorrections() {
+        Correction correction = utils.getCorrectionFromDb();
+        Correction correction2 = utils.getCorrectionFromDb();
+
+        assertEquals(2, correctionRepository.getAll().size());
+        assertThat(userService.getUserCorrections(correction.getUser().getId()))
+                .containsOnly(translationService.translate(correction, CorrectionReadDto.class))
+                .doesNotContain(translationService.translate(correction2, CorrectionReadDto.class));
     }
 
     @Test

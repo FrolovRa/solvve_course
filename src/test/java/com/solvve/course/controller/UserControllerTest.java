@@ -1,7 +1,9 @@
 package com.solvve.course.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.solvve.course.BaseControllerTest;
 import com.solvve.course.domain.User;
+import com.solvve.course.dto.correction.CorrectionReadDto;
 import com.solvve.course.dto.user.UserCreateDto;
 import com.solvve.course.dto.user.UserPatchDto;
 import com.solvve.course.dto.user.UserReadDto;
@@ -12,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +42,22 @@ public class UserControllerTest extends BaseControllerTest {
         UserReadDto actualPrincipal = objectMapper.readValue(resultJson, UserReadDto.class);
 
         assertEquals(actualPrincipal, userReadDto);
+    }
+
+    @Test
+    public void testGetUserCorrections() throws Exception {
+        UserReadDto userReadDto = utils.createUserReadDto();
+        CorrectionReadDto correctionReadDto = utils.createCorrectionReadDto();
+        when(userService.getUserCorrections(userReadDto.getId()))
+                .thenReturn(Collections.singletonList(correctionReadDto));
+
+        String resultJson = mvc.perform(get("/api/v1/users/{id}/corrections", userReadDto.getId()))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        List<CorrectionReadDto> actualCorrections = objectMapper.readValue(resultJson, new TypeReference<>() {
+        });
+
+        assertEquals(Collections.singletonList(correctionReadDto), actualCorrections);
     }
 
     @Test

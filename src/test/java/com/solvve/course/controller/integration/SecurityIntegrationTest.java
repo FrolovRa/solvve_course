@@ -192,12 +192,12 @@ public class SecurityIntegrationTest extends BaseTest {
         final String email = "test@mail.reom";
         final String password = "pass1234";
 
-        PrincipalRole adminRole = principalRoleRepository.getByRole(Role.MODERATOR);
+        PrincipalRole managerRole = principalRoleRepository.getByRole(Role.CONTENT_MANAGER);
 
         Principal principal = new Principal();
         principal.setName("Bob");
         principal.setEmail(email);
-        principal.setRoles(List.of(adminRole));
+        principal.setRoles(List.of(managerRole));
         principal.setPassword(passwordEncoder.encode(password));
 
         principalRepository.save(principal);
