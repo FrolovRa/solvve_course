@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface PrincipalRepository extends CrudRepository<Principal, UUID> {
 
     Principal findByEmail(String email);
+
+    boolean existsByIdAndEmail(UUID id, String email);
 }

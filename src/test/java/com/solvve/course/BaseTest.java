@@ -1,6 +1,7 @@
 package com.solvve.course;
 
 import com.solvve.course.repository.*;
+import com.solvve.course.security.CurrentPrincipalValidator;
 import com.solvve.course.security.UserDetailServiceImpl;
 import com.solvve.course.service.*;
 import com.solvve.course.service.importer.ExternalSystemImportService;
@@ -109,6 +110,9 @@ public abstract class BaseTest {
 
     @Autowired
     protected TranslationService translationService;
+
+    @Autowired
+    protected CurrentPrincipalValidator currentPrincipalValidator;
 
     @Autowired
     protected TestUtils utils;
