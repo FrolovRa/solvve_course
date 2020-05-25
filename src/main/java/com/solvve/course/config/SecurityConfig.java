@@ -34,7 +34,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/health").anonymous()
+                .antMatchers("/health").anonymous()
+                .antMatchers("/v2/api-docs").anonymous()
+                .antMatchers("/swagger-ui.html",
+                        "/webjars/springfox-swagger-ui/**",
+                        "/swagger-resources/**",
+                        "/csrf",
+                        "/").anonymous()
             .anyRequest().authenticated()
             .and().httpBasic()
             .and().csrf().disable();
