@@ -1,5 +1,6 @@
 package com.solvve.course.controller;
 
+import com.solvve.course.controller.documentation.ApiPageable;
 import com.solvve.course.dto.PageResult;
 import com.solvve.course.dto.movie.MovieCreateDto;
 import com.solvve.course.dto.movie.MovieFilter;
@@ -9,6 +10,7 @@ import com.solvve.course.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.UUID;
@@ -26,7 +28,8 @@ public class MovieController {
     }
 
     @GetMapping
-    public PageResult<MovieReadDto> getMovies(MovieFilter filter, Pageable pageable) {
+    @ApiPageable
+    public PageResult<MovieReadDto> getMovies(MovieFilter filter, @ApiIgnore Pageable pageable) {
         return movieService.getMovies(filter, pageable);
     }
 
